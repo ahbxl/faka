@@ -17,6 +17,6 @@ public class demo {
     @RequestMapping("/qrcode")
     @ResponseBody
     public ResultVO<Object> qrcode() {
-        return ResultVOUtil.success(qrcodejsUtil.qrcode("iphone", "123465789", "0.01"));
+        return ResultVOUtil.success(qrcodejsUtil.qrcode("iphone", "1234657890", "0.01"));
     }
 }
