@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>支付</title>
     <script th:src="@{/jquery-1.11.0.min.js}"></script>
     <script th:src="@{/qrcode.min.js}"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -19,7 +19,7 @@
         },
         mounted: function () {
             var that = this;
-            axios.get("/demo/qrcode").then(function (response) {
+            axios.get("/card/faceToFace").then(function (response) {
                 console.log(response.data.data);
                 that.url = response.data.data;
                 new QRCode(document.getElementById("qrcode"), response.data.data);  // 设置要生成二维码的链接

@@ -1,6 +1,6 @@
-package com.zhifubao.util;
+package com.card.util;
 
-import com.zhifubao.entity.vo.ResultVO;
+import com.card.entity.vo.ResultVO;
 
 public class ResultVOUtil {
     public static ResultVO<Object> success(Object object) {

@@ -1,4 +1,4 @@
-package com.zhifubao.entity.vo;
+package com.card.entity.vo;
 
 import lombok.Getter;
 import lombok.Setter;
