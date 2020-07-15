@@ -1,4 +1,4 @@
-package com.card.command;
+package com.card.command.alipay;
 
 import lombok.Getter;
 import lombok.Setter;

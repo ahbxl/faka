@@ -19,7 +19,7 @@
         },
         mounted: function () {
             var that = this;
-            axios.get("/card/faceToFace").then(function (response) {
+            axios.post("/card/aliPay/faceToFace").then(function (response) {
                 console.log(response.data.data);
                 that.url = response.data.data;
                 new QRCode(document.getElementById("qrcode"), response.data.data);  // 设置要生成二维码的链接
