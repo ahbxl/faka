@@ -12,13 +12,17 @@ import java.io.Serializable;
 @Getter
 @Setter
 @ToString
-@TableName("admin")
-public class Admin implements Serializable {
-    private static final long serialVersionUID = -7912163658901708119L;
+@TableName("card")
+public class Card implements Serializable {
+    private static final long serialVersionUID = 8632318572265851654L;
     @TableId("id")
     private Long id;
-    @TableField("username")
-    private String username;
-    @TableField("password")
-    private String password;
+    @TableField("content")
+    private String content;
+    @TableField("state")
+    private Integer state;
+    @TableField("product_id")
+    private Long productId;
+    @TableField("create_time")
+    private Long createTime;
 }

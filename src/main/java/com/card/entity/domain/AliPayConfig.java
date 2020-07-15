@@ -7,13 +7,16 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @ToString
 @TableName("ali_pay_config")
-public class AliPayConfig {
+public class AliPayConfig implements Serializable {
+    private static final long serialVersionUID = -5565956842416722322L;
     @TableId("id")
-    private Integer id;
+    private Long id;
     @TableField("app_id")
     private String appId;
     @TableField("merchant_private_key")
