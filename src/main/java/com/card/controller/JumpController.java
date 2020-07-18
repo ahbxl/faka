@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class JumpController {
     @GetMapping(value = {"/", "/index"})
     public String index() {
-        return "AliPay";
+        return "index";
     }
 }
