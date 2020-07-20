@@ -18,7 +18,7 @@
         <div class="container">
             <div class="navbar-header">
                 <a class="navbar-brand" href="./">个人发卡系统</a>
-                <p class="navbar-text pull-left text-muted hidden-xs hidden-sm"><small class="text-muted text-sm"><em>作者QQ：485206058</em></small>
+                <p class="navbar-text pull-left text-muted hidden-xs hidden-sm"><small class="text-muted text-sm"><em>搭建系统联系作者QQ：485206058</em></small>
                 </p>
             </div>
             <div class="collapse navbar-collapse">
@@ -89,13 +89,20 @@
                         <div class="form-group">
                             <div class="input-group">
                                 <div class="input-group-addon">你的邮箱</div>
-                                <input type="email" class="form-control" placeholder="用于接收卡密和查询订单" required=""
+                                <input type="email" class="form-control" placeholder="用于接收订单号" required=""
                                        v-model="email">
                             </div>
                         </div>
-                        <!--                    <div id="alert_frame" class="alert alert-warning" style="font-weight: bold;"><h3>扫码领优惠（保存二维码，打开支付宝APP进行扫码即可领取）</h3>-->
-                        <!--                        <img src="./hb.png" width="240" height="320"></div>-->
                         <input type="submit" class="btn btn-primary btn-block" value="立即购买">
+                        <div class="alert alert-warning" style="font-weight: bold;" v-show="paymentQrCode">
+                            <h4>请使用支付宝扫描下方二维码完成支付</h4>
+                            <img src="./hb.png" width="240" height="320" align="center">
+                        </div>
+                        <div class="alert alert-warning" style="font-weight: bold;" v-show="orderNumber">
+                            <h4 style="color: red">支付成功</h4>
+                            <h4>你的订单号为：</h4>
+                            <h4>（该订单号已同步发送至你留的邮箱，你可随时通过订单号查询卡密）</h4>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -103,6 +110,13 @@
     </div>
 </div>
 </body>
+<style>
+    body {
+        background: #ecedf0 url(//cn.bing.com/th?id=OHR.GrandCanalGondolas_ZH-CN0542933448_1920x1080.jpg&rf=LaDigue_1920x1080.jpg&pid=hp) fixed;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+    }
+</style>
 <script type="text/javascript">
     var app = new Vue({
         el: "#app",
@@ -114,7 +128,9 @@
             totalPrice: 0,
             stock: 0,
             count: 1,
-            email: ''
+            email: '',
+            orderNumber: true,
+            paymentQrCode: true
         },
         mounted: function () {
             var that = this;

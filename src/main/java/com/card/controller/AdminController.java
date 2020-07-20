@@ -1,6 +1,7 @@
 package com.card.controller;
 
 import com.card.command.admin.LoginCommand;
+import com.card.entity.domain.Admin;
 import com.card.entity.vo.ResultVO;
 import com.card.service.AdminService;
 import com.card.util.ResultVOUtil;
@@ -19,7 +20,11 @@ public class AdminController {
     @PostMapping("/login")
     @ResponseBody
     public ResultVO<Object> findByUsernameAndPassword(@RequestBody LoginCommand command) {
-        return ResultVOUtil.success(adminService.findByUsernameAndPassword(command.getUsername(), command.getPassword()));
+        Admin admin = adminService.findByUsernameAndPassword(command.getUsername(), command.getPassword());
+        if (admin != null) {
+            return ResultVOUtil.success(admin);
+        }
+        return ResultVOUtil.success("用户名或者密码输入错误！");
     }
 
     @PostMapping("/countUsername/{username}")

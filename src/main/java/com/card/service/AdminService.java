@@ -6,4 +6,6 @@ public interface AdminService {
     Admin findByUsernameAndPassword(String username, String password);
 
     Integer countByUsername(String username);
+
+    Admin findAdminById(Long id);
 }

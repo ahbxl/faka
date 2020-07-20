@@ -1,4 +1,4 @@
-package com.card.configuration;
+package com.card.config;
 
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import org.springframework.context.annotation.Bean;
