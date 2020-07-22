@@ -8,10 +8,10 @@
         <version>2.3.1.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.zhifubao</groupId>
-    <artifactId>dangmianfu</artifactId>
+    <groupId>com.card</groupId>
+    <artifactId>faka</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>dangmianfu</name>
+    <name>faka</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
