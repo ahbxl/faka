@@ -14,6 +14,6 @@
 </head>
 <body>
 <p>管理员后台</p>
-<p th:text="${session.user.username}"></p>
+<p th:text="'当前用户：'+${session.user.username}"></p>
 </body>
 </html>
