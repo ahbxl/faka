@@ -6,13 +6,16 @@ import com.card.service.AdminService;
 import com.card.util.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @Slf4j
@@ -22,18 +25,19 @@ public class AdminController {
     private AdminService adminService;
 
     @PostMapping("/login")
-    @ResponseBody
-    public ResultVO<Object> findByUsernameAndPassword(@RequestBody LoginCommand command) {
+    public ModelAndView findByUsernameAndPassword(LoginCommand command) {
+        ModelAndView modelAndView = new ModelAndView();
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(command.getUsername(), command.getPassword());
         try {
             subject.login(usernamePasswordToken);
+            modelAndView.setViewName("admin");
+            return modelAndView;
         } catch (UnknownAccountException e) {
-            return ResultVOUtil.success("用户名不存在");
-        } catch (IncorrectCredentialsException e) {
-            return ResultVOUtil.success("密码错误");
+            modelAndView.addObject("msg", "登陆失败！用户名或密码不正确");
+            modelAndView.setViewName("login");
+            return modelAndView;
         }
-        return ResultVOUtil.success("登录失败");
     }
 
     @PostMapping("/countUsername/{username}")
