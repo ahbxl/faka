@@ -1,5 +1,6 @@
 package com.card.config;
 
+import com.card.security.UserRealm;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
