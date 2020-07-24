@@ -8,4 +8,6 @@ public interface AdminService {
     Integer countByUsername(String username);
 
     Admin findAdminById(Long id);
+
+    Admin findByUsername(String username);
 }

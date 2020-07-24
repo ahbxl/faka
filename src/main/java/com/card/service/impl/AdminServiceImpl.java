@@ -34,4 +34,11 @@ public class AdminServiceImpl implements AdminService {
         queryWrapper.eq("id", id);
         return adminDao.selectOne(queryWrapper);
     }
+
+    @Override
+    public Admin findByUsername(String username) {
+        QueryWrapper<Admin> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(Admin::getUsername,username);
+        return adminDao.selectOne(queryWrapper);
+    }
 }
