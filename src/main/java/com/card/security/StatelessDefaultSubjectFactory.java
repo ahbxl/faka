@@ -1,4 +1,4 @@
-package com.card.config;
+package com.card.security;
 
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.SubjectContext;

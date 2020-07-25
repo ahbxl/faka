@@ -18,8 +18,7 @@ public class JwtUtil {
      * @param ttlMillis 有效时间
      * @return String
      */
-    public static String createJWT(String id, String subject, long ttlMillis) {
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+    public static String createJWT(String id, String subject, Long ttlMillis) {
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
         SecretKey secretKey = generalKey();
@@ -28,9 +27,9 @@ public class JwtUtil {
                 .setSubject(subject)   // 代表这个JWT的主体，即它的所有人，这个是一个json格式的字符串，可以存放什么userid，roldid之类的，作为什么用户的唯一标志
                 .setIssuer("user")     // 颁发者是使用 HTTP 或 HTTPS 方案的 URL（区分大小写），其中包含方案、主机及（可选的）端口号和路径部分
                 .setIssuedAt(now)      // jwt的签发时间
-                .signWith(signatureAlgorithm, secretKey); // 设置签名使用的签名算法和签名使用的秘钥
-        if (ttlMillis >= 0) {
-            long expMillis = nowMillis + ttlMillis;
+                .signWith(SignatureAlgorithm.HS256, secretKey); // 设置签名使用的签名算法和签名使用的秘钥
+        if (ttlMillis > 0) {
+            Long expMillis = nowMillis + ttlMillis;
             Date expDate = new Date(expMillis);
             builder.setExpiration(expDate); // 过期时间
         }

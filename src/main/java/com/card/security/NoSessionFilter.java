@@ -1,4 +1,4 @@
-package com.card.config;
+package com.card.security;
 
 import com.card.entity.SystemConstant;
 import com.card.entity.vo.CheckResult;
