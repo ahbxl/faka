@@ -28,6 +28,9 @@ public class ShiroConfig {
         // 过滤规则
         Map<String, String> linkedHashMap = new LinkedHashMap<>();
         linkedHashMap.put("/product/**", "jwt");
+        linkedHashMap.put("/card/**", "jwt");
+        linkedHashMap.put("/category/**", "jwt");
+        linkedHashMap.put("/admin/**", "jwt");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(linkedHashMap);
         return shiroFilterFactoryBean;
     }
