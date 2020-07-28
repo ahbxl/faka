@@ -8,13 +8,12 @@ import com.card.service.AliPayService;
 import com.card.util.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @Slf4j
 @RequestMapping("/aliPay")
 public class AliPayController {
@@ -22,7 +21,6 @@ public class AliPayController {
     private AliPayService aliPayService;
 
     @PostMapping("/faceToFace")
-    @ResponseBody
     public ResultVO<Object> faceToFace(@RequestBody AliPayCommand aliPayCommand) throws Exception {
         log.info("当面付支付调用");
 //        AlipayTradePrecreateResponse response = aliPayService.faceToFace(aliPayCommand.getSubject(), aliPayCommand.getOutTradeNo(), aliPayCommand.getTotalAmount());

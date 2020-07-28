@@ -44,9 +44,8 @@ public class JwtUtil {
      */
     public static CheckResult validateJWT(String jwtStr) {
         CheckResult checkResult = new CheckResult();
-        Claims claims;
         try {
-            claims = parseJWT(jwtStr);
+            Claims claims = parseJWT(jwtStr);
             checkResult.setSuccess(true);
             checkResult.setClaims(claims);
         } catch (ExpiredJwtException e) {
@@ -59,7 +58,7 @@ public class JwtUtil {
         return checkResult;
     }
 
-    public static SecretKey generalKey() {
+    private static SecretKey generalKey() {
         byte[] encodedKey = Base64.decode(SystemConstant.JWT_SECERT);
         return new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
     }

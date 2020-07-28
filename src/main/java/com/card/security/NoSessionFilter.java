@@ -3,9 +3,9 @@ package com.card.security;
 import com.card.entity.SystemConstant;
 import com.card.entity.vo.CheckResult;
 import com.card.util.JwtUtil;
-import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -13,41 +13,33 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.PrintWriter;
 
+@Slf4j
 public class NoSessionFilter extends BasicHttpAuthenticationFilter {
-    @SneakyThrows
+
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
         HttpServletRequest servletRequest = (HttpServletRequest) request;
-        // 1.从Cookie获取jwt
+        // 1.从Cookie获取token
         String token = getTokenFromCookie(servletRequest);
-        if (StringUtils.isEmpty(token)) {
+        if (StringUtils.isBlank(token)) {
             // 2.从headers中获取
             token = servletRequest.getHeader("token");
         }
-        if (StringUtils.isEmpty(token)) {
+        if (StringUtils.isBlank(token)) {
             // 3.从请求参数获取
             token = request.getParameter("token");
         }
-        if (StringUtils.isEmpty(token)) {
+        if (StringUtils.isBlank(token)) {
             return false;
         }
         CheckResult checkResult = JwtUtil.validateJWT(token);
         if (checkResult.isSuccess()) {
-            request.setAttribute("claims", checkResult.getClaims());
             return true;
         } else {
             if (checkResult.getErrCode().equals(SystemConstant.JWT_ERRCODE_EXPIRE)) {
-                response.setCharacterEncoding("utf-8");
-                PrintWriter printWriter = response.getWriter();
-                printWriter.write("token过期，请重新登录");
-                printWriter.flush();
-                printWriter.close();
+                throw new RuntimeException("token过期，请重新登录");
             } else if (checkResult.getErrCode().equals(SystemConstant.JWT_ERRCODE_FAIL)) {
-                PrintWriter printWriter = response.getWriter();
-                response.setCharacterEncoding("utf-8");
-                printWriter.write("token验证失败！");
-                printWriter.flush();
-                printWriter.close();
+                throw new RuntimeException("token验证失败");
             }
             return false;
         }
@@ -55,7 +47,11 @@ public class NoSessionFilter extends BasicHttpAuthenticationFilter {
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
-        response.getWriter().print("403");
+        PrintWriter printWriter = response.getWriter();
+        response.setCharacterEncoding("utf-8");
+        printWriter.write("403");
+        printWriter.flush();
+        printWriter.close();
         return false;
     }
 

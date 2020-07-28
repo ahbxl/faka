@@ -23,15 +23,13 @@ public class ShiroConfig {
     public ShiroFilterFactoryBean getShiroFilterFactoryBean(@Qualifier("getDefaultSecurityManager") DefaultSecurityManager defaultSecurityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(defaultSecurityManager);
-        // 自定义拦截器
+        // 自定义过滤器
         HashMap<String, Filter> filterHashMap = new HashMap<>();
         filterHashMap.put("jwt", new NoSessionFilter());
         shiroFilterFactoryBean.setFilters(filterHashMap);
         // 过滤规则
         Map<String, String> linkedHashMap = new LinkedHashMap<>();
-        linkedHashMap.put("/product/**", "jwt");
         linkedHashMap.put("/card/**", "jwt");
-        linkedHashMap.put("/category/**", "jwt");
         linkedHashMap.put("/admin/**", "jwt");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(linkedHashMap);
         return shiroFilterFactoryBean;
