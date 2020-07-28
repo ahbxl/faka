@@ -29,7 +29,7 @@ public class JwtUtil {
                 .setIssuedAt(now)      // jwt的签发时间
                 .signWith(SignatureAlgorithm.HS256, secretKey); // 设置签名使用的签名算法和签名使用的秘钥
         if (ttlMillis > 0) {
-            Long expMillis = nowMillis + ttlMillis;
+            long expMillis = nowMillis + ttlMillis;
             Date expDate = new Date(expMillis);
             builder.setExpiration(expDate); // 过期时间
         }
