@@ -32,6 +32,7 @@ public class NoSessionFilter extends BasicHttpAuthenticationFilter {
         if (StringUtils.isBlank(token)) {
             return false;
         }
+        // 验证token
         CheckResult checkResult = JwtUtil.validateJWT(token);
         if (checkResult.isSuccess()) {
             return true;
