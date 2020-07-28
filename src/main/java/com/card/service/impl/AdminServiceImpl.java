@@ -1,10 +1,17 @@
 package com.card.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.card.command.category.CategoryCommand;
+import com.card.command.category.CategoryIdsCommand;
 import com.card.dao.AdminDao;
+import com.card.dao.CategoryDao;
 import com.card.entity.domain.Admin;
+import com.card.entity.domain.Category;
 import com.card.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +20,9 @@ import org.springframework.stereotype.Service;
 public class AdminServiceImpl implements AdminService {
     @Autowired
     private AdminDao adminDao;
+
+    @Autowired
+    private CategoryDao categoryDao;
 
     @Override
     public Admin findByUsernameAndPassword(String username, String password) {
@@ -38,7 +48,35 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Admin findByUsername(String username) {
         QueryWrapper<Admin> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(Admin::getUsername,username);
+        queryWrapper.lambda().eq(Admin::getUsername, username);
         return adminDao.selectOne(queryWrapper);
+    }
+
+    @Override
+    public IPage<Category> categoryFindByPage(Integer pageNum, Integer pageSize, CategoryCommand command) {
+        Page<Category> categoryPage = new Page<>(pageNum, pageSize);
+        QueryWrapper<Category> wrapper = new QueryWrapper<>();
+        if (!StringUtils.isBlank(command.getName())) {
+            wrapper.eq("name", command.getName());
+        }
+        if (null != command.getState()) {
+            wrapper.eq("state", command.getState());
+        }
+        return categoryDao.selectPage(categoryPage, wrapper);
+    }
+
+    @Override
+    public void categoryDeleteByIds(CategoryIdsCommand command) {
+        categoryDao.categoryDeleteByIds(command.getIds());
+    }
+
+    @Override
+    public void categoryUpdateById(CategoryCommand command) {
+        categoryDao.categoryUpdateById(command);
+    }
+
+    @Override
+    public void categoryInsert(CategoryCommand command) {
+        categoryDao.categoryInsert(command);
     }
 }
