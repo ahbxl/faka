@@ -3,7 +3,6 @@ package com.card.entity.domain;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.card.command.product.ProductCommand;
 import com.card.entity.vo.ResultVO;
 import com.card.util.ResultVOUtil;
 import lombok.Getter;
@@ -32,10 +31,19 @@ public class Product implements Serializable {
     @TableField("create_time")
     private Long createTime;
 
+
+    public Product doBuild() {
+        Product product = new Product();
+        product.setId(id);
+        product.setName(name);
+        product.setPrice(price);
+        product.setState(state);
+        product.setCreateTime(categoryId);
+        product.setCreateTime(System.currentTimeMillis());
+        return product;
+    }
+
     public ResultVO<Object> validate() {
-        if (id == null) {
-            return ResultVOUtil.success("id不能为空");
-        }
         if (name == null) {
             return ResultVOUtil.success("name不能为空");
         }
@@ -49,15 +57,5 @@ public class Product implements Serializable {
             return ResultVOUtil.success("categoryId不能为空");
         }
         return null;
-    }
-
-    public ProductCommand doBuild(ProductCommand productCommand) {
-        productCommand.setId(id);
-        productCommand.setName(name);
-        productCommand.setPrice(price);
-        productCommand.setState(state);
-        productCommand.setCreateTime(categoryId);
-        productCommand.setCreateTime(System.currentTimeMillis());
-        return productCommand;
     }
 }

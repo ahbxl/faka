@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.card.dao.OrderDao">
+
+    <delete id="orderDeleteByIds">
+        delete from order where id in
+        <foreach collection="ids" open="(" separator="," close=")" item="item">
+            #{item}
+        </foreach>
+    </delete>
+    <update id="orderUpdateById">
+        update order
+        <set>
+            <if test="order.productId != null and order.productId!=''">
+                product_id = #{order.productId}
+            </if>
+            <if test="order.subject != null and order.subject!=''">
+                and subject = #{order.subject}
+            </if>
+            <if test="order.quantity != null and order.quantity!=''">
+                and quantity = #{order.quantity}
+            </if>
+            <if test="order.outTradeNo != null and order.outTradeNo!=''">
+                and outTradeNo = #{order.outTradeNo}
+            </if>
+        </set>
+        where id = #{order.id}
+    </update>
+    <insert id="orderInsert">
+        insert into order(product_id,quantity,subject,outTradeNo,create_time) values
+            (#{order.productId},#{order.quantity},#{order.subject},#{order.outTradeNo},#{order.createTime})
+    </insert>
+</mapper>

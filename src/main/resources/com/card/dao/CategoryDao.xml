@@ -4,26 +4,24 @@
 <mapper namespace="com.card.dao.CategoryDao">
     <delete id="categoryDeleteByIds">
         delete from category where id in
-        <foreach collection="list" open="(" close=")" separator="," item="item">
+        <foreach collection="ids" open="(" close=")" separator="," item="item">
             #{item}
         </foreach>
     </delete>
     <update id="categoryUpdateById">
         update category
         <set>
-            <if test="command.name !=null and command.name != ''">
-                `name` = #{command.name}
+            <if test="category.name !=null and category.name != ''">
+                `name` = #{category.name}
             </if>
-            <if test="command.state != null ">
-                and state = #{command.state}
+            <if test="category.state != null and category.state != ''">
+                and state = #{category.state}
             </if>
         </set>
-        where id = #{command.id}
+        where id = #{category.id}
     </update>
     <insert id="categoryInsert">
         insert into category(`name`,state) values
-        <foreach collection="ids" open="(" separator="," close=")" item="item">
-            #{item.name},#{item.state}
-        </foreach>
+            (#{category.name},#{category.state})
     </insert>
 </mapper>

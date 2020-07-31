@@ -12,9 +12,7 @@
     </resultMap>
     <insert id="productInsert">
         insert into product(`name`,price,state,category_id,create_time)values
-        <foreach collection="commands" open="(" separator="," close=")" item="item">
-            #{item.name},#{item.price},#{item.state},#{item.categoryId},#{item.createTime}
-        </foreach>
+            (#{product.name},#{product.price},#{product.state},#{product.categoryId},#{product.createTime})
     </insert>
     <delete id="productDeleteByIds">
         delete from product where id in
@@ -25,21 +23,22 @@
     <update id="productUpdateById">
         update product
         <set>
-            <if test="command.name != null and command.name!=''">
-                name = #{command.name}
+            <if test="product.name != null and product.name!=''">
+                name = #{product.name}
             </if>
-            <if test="command.price != null and command.price!=''">
-                and price = #{command.price}
+            <if test="product.price != null and product.price!=''">
+                and price = #{product.price}
             </if>
-            <if test="command.state != null and command.state!=''">
-                and state = #{command.state}
+            <if test="product.state != null and product.state!=''">
+                and state = #{product.state}
             </if>
-            <if test="command.categoryId != null and command.categoryId!=''">
-                and category_id = #{command.categoryId}
+            <if test="product.categoryId != null and product.categoryId!=''">
+                and category_id = #{product.categoryId}
             </if>
-            <if test="command.createTime != null and command.createTime!=''">
-                and create_time = #{command.createTime}
+            <if test="product.createTime != null and product.createTime!=''">
+                and create_time = #{product.createTime}
             </if>
         </set>
+        where id = #{product.id}
     </update>
 </mapper>

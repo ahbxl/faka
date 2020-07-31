@@ -1,10 +1,32 @@
 package com.card.service.impl;
 
+import com.card.dao.OrderDao;
+import com.card.entity.domain.Order;
 import com.card.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
 public class OrderServiceImpl implements OrderService {
+    @Autowired
+    private OrderDao orderDao;
+
+    @Override
+    public void orderDeleteByIds(List<Long> ids) {
+        orderDao.orderDeleteByIds(ids);
+    }
+
+    @Override
+    public void orderUpdateById(Order order) {
+        orderDao.orderUpdateById(order);
+    }
+
+    @Override
+    public void orderInsert(Order order) {
+        orderDao.orderInsert(order);
+    }
 }
