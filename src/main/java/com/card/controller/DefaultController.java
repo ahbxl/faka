@@ -21,7 +21,7 @@ import java.util.HashMap;
 
 @RestController
 @Slf4j
-public class JumpController {
+public class DefaultController {
 
     @Autowired
     private AdminService adminService;
