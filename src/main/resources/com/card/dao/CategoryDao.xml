@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.card.dao.AdminDao">
+<mapper namespace="com.card.dao.CategoryDao">
     <delete id="categoryDeleteByIds">
         delete from category where id in
         <foreach collection="list" open="(" close=")" separator="," item="item">
@@ -11,17 +11,19 @@
     <update id="categoryUpdateById">
         update category
         <set>
-            <if test="name !=null and name != ''">
-                `name` = #{name}
+            <if test="command.name !=null and command.name != ''">
+                `name` = #{command.name}
             </if>
-            <if test="state != null ">
-                and state = #{state}
+            <if test="command.state != null ">
+                and state = #{command.state}
             </if>
         </set>
-        where id = #{id}
+        where id = #{command.id}
     </update>
     <insert id="categoryInsert">
-        insert into category(`name`,state) value
-
+        insert into category(`name`,state) values
+        <foreach collection="ids" open="(" separator="," close=")" item="item">
+            #{item.name},#{item.state}
+        </foreach>
     </insert>
 </mapper>

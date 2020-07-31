@@ -17,5 +17,5 @@ public interface CategoryDao extends BaseMapper<Category> {
 
     void categoryUpdateById(@Param("command") CategoryCommand command);
 
-    void categoryInsert(@Param("command") CategoryCommand command);
+    void categoryInsert(@Param("ids") List<CategoryCommand> commands);
 }

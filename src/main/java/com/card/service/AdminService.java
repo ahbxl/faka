@@ -3,6 +3,7 @@ package com.card.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.card.command.category.CategoryCommand;
 import com.card.command.category.CategoryIdsCommand;
+import com.card.command.product.ProductCommand;
 import com.card.entity.domain.Admin;
 import com.card.entity.domain.Category;
 
@@ -22,4 +23,6 @@ public interface AdminService {
     void categoryUpdateById(CategoryCommand command);
 
     void categoryInsert(CategoryCommand command);
+
+    void productInsert(ProductCommand command);
 }

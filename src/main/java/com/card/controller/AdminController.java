@@ -2,6 +2,7 @@ package com.card.controller;
 
 import com.card.command.category.CategoryCommand;
 import com.card.command.category.CategoryIdsCommand;
+import com.card.command.product.ProductCommand;
 import com.card.entity.vo.ResultVO;
 import com.card.service.AdminService;
 import com.card.util.ResultVOUtil;
@@ -43,6 +44,12 @@ public class AdminController {
     @PostMapping("/category/insert")
     public ResultVO<Object> categoryInsert(@RequestBody CategoryCommand command) {
         adminService.categoryInsert(command);
+        return ResultVOUtil.success();
+    }
+
+    @PostMapping("/product/insert")
+    public ResultVO<Object> productInsert(@RequestBody ProductCommand command) {
+        adminService.productInsert(command);
         return ResultVOUtil.success();
     }
 }

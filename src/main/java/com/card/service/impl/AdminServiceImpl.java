@@ -5,8 +5,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.card.command.category.CategoryCommand;
 import com.card.command.category.CategoryIdsCommand;
+import com.card.command.product.ProductCommand;
 import com.card.dao.AdminDao;
 import com.card.dao.CategoryDao;
+import com.card.dao.ProductDao;
 import com.card.entity.domain.Admin;
 import com.card.entity.domain.Category;
 import com.card.service.AdminService;
@@ -23,6 +25,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private CategoryDao categoryDao;
+
+    @Autowired
+    private ProductDao productDao;
 
     @Override
     public Admin findByUsernameAndPassword(String username, String password) {
@@ -78,5 +83,10 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void categoryInsert(CategoryCommand command) {
         categoryDao.categoryInsert(command);
+    }
+
+    @Override
+    public void productInsert(ProductCommand command) {
+        productDao.productInsert(command);
     }
 }
