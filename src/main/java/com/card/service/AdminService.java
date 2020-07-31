@@ -1,13 +1,12 @@
 package com.card.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.card.command.IdsCommand;
 import com.card.command.category.CategoryFindCommand;
-import com.card.command.category.CategoryIdsCommand;
+import com.card.command.product.ProductFindCommand;
 import com.card.entity.domain.Admin;
 import com.card.entity.domain.Category;
 import com.card.entity.domain.Product;
-
-import java.util.List;
 
 public interface AdminService {
     Admin findByUsernameAndPassword(String username, String password);
@@ -20,11 +19,17 @@ public interface AdminService {
 
     IPage<Category> categoryFindByPage(Integer pageNum, Integer pageSize, CategoryFindCommand command);
 
-    void categoryDeleteByIds(CategoryIdsCommand command);
+    void categoryDeleteByIds(IdsCommand command);
 
-    void categoryUpdateById(Category command);
+    void categoryUpdateById(Long id, Category category);
 
-    void categoryInsert(Category command);
+    void categoryInsert(Category category);
 
-    void productInsert(Product command);
+    void productInsert(Product product);
+
+    void productUpdateById(Long id, Product product);
+
+    void productDeleteByIds(IdsCommand command);
+
+    Object productFindByPage(Integer pageNum, Integer pageSize, ProductFindCommand command);
 }

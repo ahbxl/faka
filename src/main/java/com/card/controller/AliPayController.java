@@ -22,6 +22,7 @@ public class AliPayController {
 
     @PostMapping("/faceToFace")
     public ResultVO<Object> faceToFace(@RequestBody AliPayCommand aliPayCommand) throws Exception {
+        aliPayCommand.validate();
         log.info("当面付支付调用");
 //        AlipayTradePrecreateResponse response = aliPayService.faceToFace(aliPayCommand.getSubject(), aliPayCommand.getOutTradeNo(), aliPayCommand.getTotalAmount());
         AlipayTradePrecreateResponse response = aliPayService.faceToFace(aliPayCommand.getSubject(), aliPayCommand.getOutTradeNo(), aliPayCommand.getTotalAmount());

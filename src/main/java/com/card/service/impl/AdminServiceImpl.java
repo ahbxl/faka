@@ -3,8 +3,9 @@ package com.card.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.card.command.IdsCommand;
 import com.card.command.category.CategoryFindCommand;
-import com.card.command.category.CategoryIdsCommand;
+import com.card.command.product.ProductFindCommand;
 import com.card.dao.AdminDao;
 import com.card.dao.CategoryDao;
 import com.card.dao.ProductDao;
@@ -74,22 +75,51 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void categoryDeleteByIds(CategoryIdsCommand command) {
+    public void categoryDeleteByIds(IdsCommand command) {
         categoryDao.categoryDeleteByIds(command.getIds());
     }
 
     @Override
-    public void categoryUpdateById(Category command) {
-        categoryDao.categoryUpdateById(command);
+    public void categoryUpdateById(Long id, Category category) {
+        categoryDao.categoryUpdateById(id, category);
     }
 
     @Override
-    public void categoryInsert(Category command) {
-        categoryDao.categoryInsert(command);
+    public void categoryInsert(Category category) {
+        categoryDao.categoryInsert(category);
     }
 
     @Override
-    public void productInsert(Product command) {
-        productDao.productInsert(command);
+    public void productInsert(Product product) {
+        productDao.productInsert(product);
+    }
+
+    @Override
+    public void productUpdateById(Long id, Product product) {
+        productDao.productUpdateById(id, product);
+    }
+
+    @Override
+    public void productDeleteByIds(IdsCommand command) {
+        productDao.productDeleteByIds(command.getIds());
+    }
+
+    @Override
+    public Object productFindByPage(Integer pageNum, Integer pageSize, ProductFindCommand command) {
+        Page<Product> productPage = new Page<>(pageNum, pageSize);
+        QueryWrapper<Product> wrapper = new QueryWrapper<>();
+        if (!StringUtils.isBlank(command.getName())) {
+            wrapper.eq("name", command.getName());
+        }
+        if (null != command.getState()) {
+            wrapper.eq("state", command.getState());
+        }
+        if (null != command.getCategoryId()) {
+            wrapper.eq("category_id", command.getCategoryId());
+        }
+        if (null != command.getStartTime() && null != command.getEndTime()) {
+            wrapper.between("create_time", command.getStartTime(), command.getEndTime());
+        }
+        return productDao.selectPage(productPage, wrapper);
     }
 }

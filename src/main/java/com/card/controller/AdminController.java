@@ -1,7 +1,8 @@
 package com.card.controller;
 
+import com.card.command.IdsCommand;
 import com.card.command.category.CategoryFindCommand;
-import com.card.command.category.CategoryIdsCommand;
+import com.card.command.product.ProductFindCommand;
 import com.card.entity.domain.Category;
 import com.card.entity.domain.Product;
 import com.card.entity.vo.ResultVO;
@@ -18,27 +19,21 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
-    @PostMapping("/countUsername/{username}")
-    public ResultVO<Object> countUsername(@PathVariable String username) {
-        return ResultVOUtil.success(adminService.countByUsername(username));
-    }
-
     @PostMapping("/category/findByPage/{pageNum}/{pageSize}")
     public ResultVO<Object> categoryFindByPage(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @RequestBody CategoryFindCommand command) {
         return ResultVOUtil.success(adminService.categoryFindByPage(pageNum, pageSize, command));
     }
 
     @PostMapping("/category/deleteByIds")
-    public ResultVO<Object> categoryDeleteByIds(@RequestBody CategoryIdsCommand command) {
+    public ResultVO<Object> categoryDeleteByIds(@RequestBody IdsCommand command) {
         command.validate();
         adminService.categoryDeleteByIds(command);
         return ResultVOUtil.success();
     }
 
-    @PostMapping("/category/updateById")
-    public ResultVO<Object> categoryUpdateById(@RequestBody Category command) {
-        command.validate();
-        adminService.categoryUpdateById(command);
+    @PostMapping("/category/updateById/{id}")
+    public ResultVO<Object> categoryUpdateById(@PathVariable("id") Long id, @RequestBody Category category) {
+        adminService.categoryUpdateById(id, category);
         return ResultVOUtil.success();
     }
 
@@ -49,10 +44,28 @@ public class AdminController {
         return ResultVOUtil.success();
     }
 
-    @PostMapping("/product/insert")
-    public ResultVO<Object> productInsert(@RequestBody Product command) {
+    @PostMapping("/product/findByPage/{pageNum}/{pageSize}")
+    public ResultVO<Object> productFindByPage(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @RequestBody ProductFindCommand command) {
+        return ResultVOUtil.success(adminService.productFindByPage(pageNum, pageSize, command));
+    }
+
+    @PostMapping("/product/deleteByIds")
+    public ResultVO<Object> productDeleteByIds(@RequestBody IdsCommand command) {
         command.validate();
-        adminService.productInsert(command.doBuild());
+        adminService.productDeleteByIds(command);
+        return ResultVOUtil.success();
+    }
+
+    @PostMapping("/product/updateById/{id}")
+    public ResultVO<Object> categoryUpdateById(@PathVariable("id") Long id, @RequestBody Product product) {
+        adminService.productUpdateById(id, product);
+        return ResultVOUtil.success();
+    }
+
+    @PostMapping("/product/insert")
+    public ResultVO<Object> productInsert(@RequestBody Product product) {
+        product.validate();
+        adminService.productInsert(product.doBuild());
         return ResultVOUtil.success();
     }
 }

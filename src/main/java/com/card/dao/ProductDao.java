@@ -15,5 +15,5 @@ public interface ProductDao extends BaseMapper<Product> {
 
     void productDeleteByIds(@Param("ids") List<Long> ids);
 
-    void productUpdateById(@Param("product") Product product);
+    void productUpdateById(@Param("id") Long id, @Param("product") Product product);
 }

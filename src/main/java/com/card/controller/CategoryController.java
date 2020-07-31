@@ -16,6 +16,11 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    /**
+     * 查看所有的分类信息
+     *
+     * @return
+     */
     @PostMapping("/findAll")
     public ResultVO<Object> findAll() {
         return ResultVOUtil.success(categoryService.findAll());

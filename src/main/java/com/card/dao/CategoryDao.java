@@ -13,7 +13,7 @@ import java.util.List;
 public interface CategoryDao extends BaseMapper<Category> {
     void categoryDeleteByIds(@Param("ids") List<Long> ids);
 
-    void categoryUpdateById(@Param("category") Category category);
+    void categoryUpdateById(@Param("id") Long id, @Param("category") Category category);
 
     void categoryInsert(@Param("category") Category category);
 }

@@ -8,4 +8,6 @@ public interface ProductService {
     Product findOne(Integer id);
 
     List<Product> findByCategoryId(Integer categoryId);
+
+    Integer countCardByProductId(Long id);
 }

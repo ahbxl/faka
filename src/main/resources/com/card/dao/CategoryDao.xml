@@ -18,7 +18,7 @@
                 and state = #{category.state}
             </if>
         </set>
-        where id = #{category.id}
+        where id = #{id}
     </update>
     <insert id="categoryInsert">
         insert into category(`name`,state) values

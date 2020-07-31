@@ -39,6 +39,6 @@
                 and create_time = #{product.createTime}
             </if>
         </set>
-        where id = #{product.id}
+        where id = #{id}
     </update>
 </mapper>

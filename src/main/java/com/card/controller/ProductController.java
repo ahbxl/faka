@@ -17,13 +17,36 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    /**
+     * 查看指定产品的信息
+     *
+     * @param id 逐渐
+     * @return
+     */
     @PostMapping("/findOne/{id}")
     public ResultVO<Object> findOne(@PathVariable("id") Integer id) {
         return ResultVOUtil.success(productService.findOne(id));
     }
 
+    /**
+     * 查看知道分类的产品
+     *
+     * @param categoryId 分类的id
+     * @return
+     */
     @PostMapping("/findByCategoryId/{categoryId}")
     public ResultVO<Object> findByCategoryId(@PathVariable("categoryId") Integer categoryId) {
         return ResultVOUtil.success(productService.findByCategoryId(categoryId));
+    }
+
+    /**
+     * 计算产品的库存
+     *
+     * @param productId 产品的id
+     * @return
+     */
+    @PostMapping("/countCardByProductId/{productId}")
+    public ResultVO<Object> countCardByProductId(@PathVariable("productId") Long productId) {
+        return ResultVOUtil.success(productService.countCardByProductId(productId));
     }
 }
