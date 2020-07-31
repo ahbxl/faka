@@ -5,6 +5,7 @@ import com.alipay.easysdk.payment.facetoface.models.AlipayTradePrecreateResponse
 import com.card.command.alipay.AliPayCommand;
 import com.card.entity.vo.ResultVO;
 import com.card.service.AliPayService;
+import com.card.service.OrderService;
 import com.card.util.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class AliPayController {
     @Autowired
     private AliPayService aliPayService;
 
+    @Autowired
+    private OrderService orderService;
+
     @PostMapping("/faceToFace")
     public ResultVO<Object> faceToFace(@RequestBody AliPayCommand aliPayCommand) throws Exception {
         aliPayCommand.validate();
@@ -27,6 +31,7 @@ public class AliPayController {
 //        AlipayTradePrecreateResponse response = aliPayService.faceToFace(aliPayCommand.getSubject(), aliPayCommand.getOutTradeNo(), aliPayCommand.getTotalAmount());
         AlipayTradePrecreateResponse response = aliPayService.faceToFace(aliPayCommand.getSubject(), aliPayCommand.getOutTradeNo(), aliPayCommand.getTotalAmount());
         if (ResponseChecker.success(response)) {
+            orderService.orderInsert(aliPayCommand.doBuildOrder());
             return ResultVOUtil.success(response.qrCode);
         }
         return ResultVOUtil.success("支付调用失败，原因：" + response.msg + "，" + response.subMsg);

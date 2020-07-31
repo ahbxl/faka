@@ -27,6 +27,8 @@ public class Order implements Serializable {
     private String subject;
     @TableField("outTradeNo")
     private String outTradeNo;
+    @TableField("total_amount")
+    private String totalAmount;
     @TableField("create_time")
     private Long createTime;
 
@@ -37,6 +39,7 @@ public class Order implements Serializable {
         order.setQuantity(quantity);
         order.setSubject(subject);
         order.setOutTradeNo(outTradeNo);
+        order.setTotalAmount(totalAmount);
         order.setCreateTime(System.currentTimeMillis());
         return order;
     }
@@ -48,11 +51,14 @@ public class Order implements Serializable {
         if (subject == null) {
             return ResultVOUtil.success("subject不能为空");
         }
-        if (quantity == null) {
-            return ResultVOUtil.success("quantity不能为空");
+        if (quantity < 1) {
+            return ResultVOUtil.success("quantity不能小于1");
         }
         if (outTradeNo == null) {
             return ResultVOUtil.success("outTradeNo不能为空");
+        }
+        if (totalAmount == null) {
+            return ResultVOUtil.success("totalAmount不能为空");
         }
         return null;
     }
