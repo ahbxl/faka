@@ -2,6 +2,7 @@ package com.card.command.alipay;
 
 import com.card.entity.domain.Order;
 import com.card.entity.vo.ResultVO;
+import com.card.util.RandomUtil;
 import com.card.util.ResultVOUtil;
 import lombok.Data;
 
@@ -14,9 +15,11 @@ public class AliPayCommand {
     // 主题
     private String subject;
     // 订单号
-    private String outTradeNo;
+    private String outTradeNo = RandomUtil.getStringRandom(9); // 随机订单号
     // 总金额
     private String totalAmount;
+    // 状态
+    private Integer state = 0; // 默认状态为未支付
 
     public ResultVO<Object> validate() {
         if (productId == null) {
@@ -44,6 +47,7 @@ public class AliPayCommand {
         order.setSubject(subject);
         order.setOutTradeNo(outTradeNo);
         order.setTotalAmount(totalAmount);
+        order.setState(state);
         order.setCreateTime(System.currentTimeMillis());
         return order;
     }

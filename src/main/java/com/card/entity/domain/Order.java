@@ -29,6 +29,8 @@ public class Order implements Serializable {
     private String outTradeNo;
     @TableField("total_amount")
     private String totalAmount;
+    @TableField("state")
+    private Integer state;
     @TableField("create_time")
     private Long createTime;
 
@@ -40,6 +42,7 @@ public class Order implements Serializable {
         order.setSubject(subject);
         order.setOutTradeNo(outTradeNo);
         order.setTotalAmount(totalAmount);
+        order.setState(0);
         order.setCreateTime(System.currentTimeMillis());
         return order;
     }

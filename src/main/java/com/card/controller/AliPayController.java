@@ -9,10 +9,7 @@ import com.card.service.OrderService;
 import com.card.util.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
@@ -25,15 +22,24 @@ public class AliPayController {
     private OrderService orderService;
 
     @PostMapping("/faceToFace")
-    public ResultVO<Object> faceToFace(@RequestBody AliPayCommand aliPayCommand) throws Exception {
+    public ResultVO<Object> faceToFace(@RequestBody AliPayCommand aliPayCommand) {
         aliPayCommand.validate();
         log.info("当面付支付调用");
-//        AlipayTradePrecreateResponse response = aliPayService.faceToFace(aliPayCommand.getSubject(), aliPayCommand.getOutTradeNo(), aliPayCommand.getTotalAmount());
         AlipayTradePrecreateResponse response = aliPayService.faceToFace(aliPayCommand.getSubject(), aliPayCommand.getOutTradeNo(), aliPayCommand.getTotalAmount());
         if (ResponseChecker.success(response)) {
             orderService.orderInsert(aliPayCommand.doBuildOrder());
             return ResultVOUtil.success(response.qrCode);
         }
         return ResultVOUtil.success("支付调用失败，原因：" + response.msg + "，" + response.subMsg);
+    }
+
+    @PostMapping("/queryOutTradeNo/{outTradeNo}")
+    public ResultVO<Object> queryOutTradeNo(@PathVariable("outTradeNo") String outTradeNo) {
+        return ResultVOUtil.success(aliPayService.queryTrade(outTradeNo));
+    }
+
+    @PostMapping("/cancelTrade/{outTradeNo}")
+    public ResultVO<Object> cancelTrade(@PathVariable("outTradeNo") String outTradeNo) {
+        return ResultVOUtil.success(aliPayService.cancelTrade(outTradeNo));
     }
 }

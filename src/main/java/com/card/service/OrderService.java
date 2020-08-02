@@ -10,4 +10,6 @@ public interface OrderService {
     void orderUpdateById(Order order);
 
     void orderInsert(Order order);
+
+    void orderDeleteByState(Integer state);
 }

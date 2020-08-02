@@ -1,5 +1,6 @@
 package com.card.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.card.dao.OrderDao;
 import com.card.entity.domain.Order;
 import com.card.service.OrderService;
@@ -28,5 +29,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void orderInsert(Order order) {
         orderDao.orderInsert(order);
+    }
+
+    @Override
+    public void orderDeleteByState(Integer state) {
+        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("state", 0);
+        orderDao.delete(queryWrapper);
     }
 }

@@ -1,6 +1,7 @@
 package com.card.service;
 
 import com.alipay.easysdk.payment.facetoface.models.AlipayTradePrecreateResponse;
+import com.card.entity.domain.AliPayConfig;
 
 public interface AliPayService {
     /**
@@ -11,5 +12,13 @@ public interface AliPayService {
      * @param totalAmount 订单总金额，单位为元，精确到小数点后两位，取值范围[0.01,100000000]
      * @return
      */
-    AlipayTradePrecreateResponse faceToFace(String subject, String outTradeNo, String totalAmount) throws Exception;
+    AlipayTradePrecreateResponse faceToFace(String subject, String outTradeNo, String totalAmount);
+
+    String queryTrade(String outTradeNo);
+
+    String cancelTrade(String outTradeNo);
+
+    void updateById(Long id, AliPayConfig aliPayConfig);
+
+    AliPayConfig selectById(Long id);
 }
