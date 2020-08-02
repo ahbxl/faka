@@ -28,6 +28,7 @@ public class AliPayController {
         AlipayTradePrecreateResponse response = aliPayService.faceToFace(aliPayCommand.getSubject(), aliPayCommand.getOutTradeNo(), aliPayCommand.getTotalAmount());
         if (ResponseChecker.success(response)) {
             orderService.orderInsert(aliPayCommand.doBuildOrder());
+            log.info("生成支付二维码链接");
             return ResultVOUtil.success(response.qrCode);
         }
         return ResultVOUtil.success("支付调用失败，原因：" + response.msg + "，" + response.subMsg);
@@ -35,6 +36,10 @@ public class AliPayController {
 
     @PostMapping("/queryOutTradeNo/{outTradeNo}")
     public ResultVO<Object> queryOutTradeNo(@PathVariable("outTradeNo") String outTradeNo) {
+        String state = aliPayService.queryTrade(outTradeNo);
+        if ("TRADE_SUCCESS".equalsIgnoreCase(state)) {
+            orderService.orderUpdateStateByOutTradeNo(outTradeNo, 1);
+        }
         return ResultVOUtil.success(aliPayService.queryTrade(outTradeNo));
     }
 

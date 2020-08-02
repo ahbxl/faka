@@ -64,13 +64,13 @@ public class AliPayServiceImpl implements AliPayService {
         try {
             AliPayConfig aliPayConfig = aliPayConfigDao.selectById(1);
             //获得初始化的AlipayClient
-            AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", aliPayConfig.getAppId(), aliPayConfig.getMerchantPrivateKey(), "json", CHARSET, aliPayConfig.getAliPayPublicKey(), "RSA2");
+            AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", aliPayConfig.getAppId(), aliPayConfig.getMerchantPrivateKey(), "json", "GBK", aliPayConfig.getAliPayPublicKey(), "RSA2");
             AlipayTradeQueryRequest request = new AlipayTradeQueryRequest(); //创建API对应的request类
-            request.setBizContent("{" +
-                    "    \"out_trade_no\":\"" + outTradeNo + "\"}");  //设置业务参数
+            request.setBizContent("{" + "\"out_trade_no\":\"" + outTradeNo + "\"}");  //设置业务参数
             //通过alipayClient调用API，获得对应的response类，在获取action属性，本次撤销触发的交易动作 close：关闭交易，无退款 refund：产生了退款
             return alipayClient.execute(request).getTradeStatus();
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("查询交易失败！");
         }
     }
@@ -80,10 +80,9 @@ public class AliPayServiceImpl implements AliPayService {
         try {
             AliPayConfig aliPayConfig = aliPayConfigDao.selectById(1);
             //获得初始化的AlipayClient
-            AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", aliPayConfig.getAppId(), aliPayConfig.getMerchantPrivateKey(), "json", CHARSET, aliPayConfig.getAliPayPublicKey(), "RSA2");
+            AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", aliPayConfig.getAppId(), aliPayConfig.getMerchantPrivateKey(), "json", "GBK", aliPayConfig.getAliPayPublicKey(), "RSA2");
             AlipayTradeCancelRequest request = new AlipayTradeCancelRequest(); //创建API对应的request类
-            request.setBizContent("{" +
-                    "    \"out_trade_no\":\"" + outTradeNo + "\"}");  //设置业务参数
+            request.setBizContent("{" + "\"out_trade_no\":\"" + outTradeNo + "\"}");  //设置业务参数
             //通过alipayClient调用API，获得对应的response类，在获取action属性，本次撤销触发的交易动作 close：关闭交易，无退款 refund：产生了退款
             return alipayClient.execute(request).getAction();
         } catch (Exception e) {

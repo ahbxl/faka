@@ -22,8 +22,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void orderUpdateById(Order order) {
-        orderDao.orderUpdateById(order);
+    public void orderUpdateById(Long id, Order order) {
+        orderDao.orderUpdateById(id, order);
     }
 
     @Override
@@ -36,5 +36,10 @@ public class OrderServiceImpl implements OrderService {
         QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("state", 0);
         orderDao.delete(queryWrapper);
+    }
+
+    @Override
+    public void orderUpdateStateByOutTradeNo(String outTradeNo, Integer state) {
+        orderDao.orderUpdateStateByOutTradeNo(outTradeNo, state);
     }
 }

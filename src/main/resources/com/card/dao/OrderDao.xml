@@ -10,7 +10,7 @@
         </foreach>
     </delete>
     <update id="orderUpdateById">
-        update order
+        update `order`
         <set>
             <if test="order.productId != null and order.productId!=''">
                 product_id = #{order.productId}
@@ -25,10 +25,13 @@
                 and outTradeNo = #{order.outTradeNo}
             </if>
         </set>
-        where id = #{order.id}
+        where id = #{id}
     </update>
     <insert id="orderInsert">
-        insert into order(product_id,quantity,subject,outTradeNo,create_time) values
-            (#{order.productId},#{order.quantity},#{order.subject},#{order.outTradeNo},#{order.createTime})
+            insert into `order`(product_id,quantity,subject,outTradeNo,state,total_amount,create_time) values
+            (#{order.productId},#{order.quantity},#{order.subject},#{order.outTradeNo},#{order.state},#{order.totalAmount},#{order.createTime})
     </insert>
+    <update id="orderUpdateStateByOutTradeNo">
+        update `order` set state = #{state} where outTradeNo = #{outTradeNo}
+    </update>
 </mapper>

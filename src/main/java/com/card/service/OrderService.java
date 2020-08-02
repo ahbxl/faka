@@ -7,9 +7,11 @@ import java.util.List;
 public interface OrderService {
     void orderDeleteByIds(List<Long> ids);
 
-    void orderUpdateById(Order order);
+    void orderUpdateById(Long id, Order order);
 
     void orderInsert(Order order);
 
     void orderDeleteByState(Integer state);
+
+    void orderUpdateStateByOutTradeNo(String outTradeNo, Integer state);
 }

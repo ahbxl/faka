@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>支付</title>
+    <script type="text/javascript" th:src="@{/qrcode.min.js}"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdn.bootcss.com/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
@@ -19,9 +19,14 @@
         },
         mounted: function () {
             var that = this;
-            axios.post("/card/aliPay/faceToFace").then(function (response) {
+            axios.post("/card/aliPay/faceToFace", {
+                productId: 1,
+                quantity: 1,
+                subject: "测试商品",
+                totalAmount: "0.01"
+            }).then(function (response) {
                 that.url = response.data.data;
-                new QRCode(document.getElementById("qrcode"), response.data.data);  // 设置要生成二维码的链接
+                new QRCode(document.getElementById('qrcode'), response.data.data);  // 设置要生成二维码的链接
             }).catch(function (error) {
                 console.log(error);
             });
