@@ -20,7 +20,7 @@ public class ProductController {
     /**
      * 查看指定产品的信息
      *
-     * @param id 逐渐
+     * @param id 主键
      * @return
      */
     @PostMapping("/findOne/{id}")
@@ -29,7 +29,7 @@ public class ProductController {
     }
 
     /**
-     * 查看知道分类的产品
+     * 查看指定分类的产品
      *
      * @param categoryId 分类的id
      * @return

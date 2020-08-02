@@ -63,7 +63,7 @@ public class AdminServiceImpl implements AdminService {
         Page<Category> categoryPage = new Page<>(pageNum, pageSize);
         QueryWrapper<Category> wrapper = new QueryWrapper<>();
         if (!StringUtils.isBlank(command.getName())) {
-            wrapper.eq("name", command.getName());
+            wrapper.like("name", command.getName());
         }
         if (null != command.getState()) {
             wrapper.eq("state", command.getState());
@@ -109,7 +109,7 @@ public class AdminServiceImpl implements AdminService {
         Page<Product> productPage = new Page<>(pageNum, pageSize);
         QueryWrapper<Product> wrapper = new QueryWrapper<>();
         if (!StringUtils.isBlank(command.getName())) {
-            wrapper.eq("name", command.getName());
+            wrapper.like("name", command.getName());
         }
         if (null != command.getState()) {
             wrapper.eq("state", command.getState());

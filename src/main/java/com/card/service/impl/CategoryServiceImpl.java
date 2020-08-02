@@ -18,6 +18,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> findAll() {
-        return categoryDao.selectList(new QueryWrapper<>());
+        QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id", "name");
+        return categoryDao.selectList(queryWrapper);
     }
 }
