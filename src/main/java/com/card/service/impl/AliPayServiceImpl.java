@@ -52,8 +52,8 @@ public class AliPayServiceImpl implements AliPayService {
 
             // 1. 设置参数（全局只需设置一次）
             Factory.setOptions(config);
-            // 2. 发起API调用（以创建当面付收款二维码为例）// 二维码有效期为2小时
-            return Factory.Payment.FaceToFace().optional("","").preCreate(subject, outTradeNo, totalAmount);
+            // 2. 发起API调用（以创建当面付收款二维码为例）// 二维码有效期为半小时(m：分钟)
+            return Factory.Payment.FaceToFace().optional("timeout_express","30m").preCreate(subject, outTradeNo, totalAmount);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("预支付失败！");
