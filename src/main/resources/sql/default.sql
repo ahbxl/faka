@@ -53,8 +53,18 @@ CREATE TABLE `ali_pay_config` (
   `merchant_private_key` text COMMENT '私钥',
   `ali_pay_public_key` text COMMENT '支付宝公钥',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='支付宝配置';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='支付宝配置';
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ali_pay_config`
+--
+
+LOCK TABLES `ali_pay_config` WRITE;
+/*!40000 ALTER TABLE `ali_pay_config` DISABLE KEYS */;
+INSERT INTO `ali_pay_config` VALUES (1,'appid','merchant_private_key','ali_pay_public_key');
+/*!40000 ALTER TABLE `ali_pay_config` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `card`
@@ -127,7 +137,7 @@ CREATE TABLE `order` (
   `state` int(11) DEFAULT NULL COMMENT '状态 0：未支付 1：已支付',
   `create_time` bigint(20) DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COMMENT='订单';
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='订单';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -136,7 +146,6 @@ CREATE TABLE `order` (
 
 LOCK TABLES `order` WRITE;
 /*!40000 ALTER TABLE `order` DISABLE KEYS */;
-INSERT INTO `order` VALUES (8,1,1,'测试商品','57SII865s204503','0.01',0,1596372304896),(9,1,1,'测试商品','XOwP9Es2n204512','0.01',0,1596372312798),(10,1,1,'测试商品','Z9E4vP62D212209','0.01',0,1596374530363),(11,1,1,'测试商品','333iS8C3d212613','0.01',0,1596374774118),(12,1,1,'测试商品','2nkhP036H213204','0.01',0,1596375125514),(13,1,1,'测试商品','c804JDXg0213239','0.01',1,1596375159893);
 /*!40000 ALTER TABLE `order` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -177,4 +186,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-08-02 22:11:53
+-- Dump completed on 2020-08-03 10:18:24
