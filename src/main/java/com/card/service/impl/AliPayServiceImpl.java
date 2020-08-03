@@ -55,6 +55,7 @@ public class AliPayServiceImpl implements AliPayService {
             // 2. 发起API调用（以创建当面付收款二维码为例）
             return Factory.Payment.FaceToFace().preCreate(subject, outTradeNo, totalAmount);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("预支付失败！");
         }
     }
@@ -86,6 +87,7 @@ public class AliPayServiceImpl implements AliPayService {
             //通过alipayClient调用API，获得对应的response类，在获取action属性，本次撤销触发的交易动作 close：关闭交易，无退款 refund：产生了退款
             return alipayClient.execute(request).getAction();
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("撤销交易失败！");
         }
     }
