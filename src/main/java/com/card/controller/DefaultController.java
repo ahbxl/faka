@@ -39,7 +39,7 @@ public class DefaultController {
             map.put("token", token);
             return ResultVOUtil.success(map);
         } catch (UnknownAccountException e) {
-            return ResultVOUtil.success("登陆失败！用户名或密码不正确");
+            return ResultVOUtil.fail("登陆失败！用户名或密码不正确");
         }
     }
 
