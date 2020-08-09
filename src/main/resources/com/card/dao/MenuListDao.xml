@@ -3,9 +3,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.card.dao.MenuListDao">
     <select id="findByParent" resultType="com.card.command.menulist.MenuListBCommand">
-        select id ,`name` from menu_list where parent = #{parent} order by priority
+        select id ,`name`,path from menu_list where parent = #{parent} order by priority
     </select>
     <select id="findByParentNull" resultType="com.card.command.menulist.MenuListACommand">
-        select id ,`name` from menu_list where parent is null order by priority
+        select id ,`name`,path from menu_list where parent is null order by priority
     </select>
 </mapper>

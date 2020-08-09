@@ -1,6 +1,7 @@
 package com.card.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.card.dao.CategoryDao;
 import com.card.entity.domain.Category;
 import com.card.service.CategoryService;

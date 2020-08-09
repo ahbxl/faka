@@ -20,4 +20,6 @@ public class MenuList {
     private Long parent;
     @TableField("priority")
     private Integer priority;
+    @TableField("path")
+    private String path;
 }

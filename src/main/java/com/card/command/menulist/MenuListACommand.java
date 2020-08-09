@@ -8,5 +8,6 @@ import java.util.List;
 public class MenuListACommand {
     private Long id;
     private String name;
+    private String path;
     private List<MenuListBCommand> menuListBCommands;
 }

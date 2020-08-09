@@ -6,4 +6,5 @@ import lombok.Data;
 public class MenuListBCommand {
     private Long id;
     private String name;
+    private String path;
 }
