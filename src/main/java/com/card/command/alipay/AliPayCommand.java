@@ -19,7 +19,7 @@ public class AliPayCommand {
     // 总金额
     private String totalAmount;
     // 状态
-    private Integer state = 0; // 默认状态为未支付
+    private Boolean state = false; // 默认状态为未支付
 
     public ResultVO<Object> validate() {
         if (productId == null) {

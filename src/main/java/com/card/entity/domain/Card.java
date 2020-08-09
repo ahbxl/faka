@@ -22,7 +22,7 @@ public class Card implements Serializable {
     @TableField("content")
     private String content;
     @TableField("state")
-    private Integer state;
+    private Boolean state;
     @TableField("product_id")
     private Long productId;
     @TableField("create_time")

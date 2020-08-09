@@ -24,7 +24,7 @@ public class Category implements Serializable {
     @TableField("parent")
     private Long parent;
     @TableField("state")
-    private Integer state;
+    private Boolean state;
     @TableField("create_time")
     private Long createTime;
 

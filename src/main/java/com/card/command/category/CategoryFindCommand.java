@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class CategoryFindCommand {
     private String name;
-    private Integer state;
+    private Boolean state;
     private Long startTime;
     private Long endTime;
 }
