@@ -32,6 +32,7 @@ public class ShiroConfig {
         linkedHashMap.put("/card/**", "jwt");
         linkedHashMap.put("/admin/**", "jwt");
         linkedHashMap.put("/aliPayConfig/**", "jwt");
+        linkedHashMap.put("/menuList/**", "jwt");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(linkedHashMap);
         return shiroFilterFactoryBean;
     }
