@@ -33,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> findByCategoryId(Integer categoryId) {
         QueryWrapper<Product> wrapper = new QueryWrapper<>();
         wrapper.eq("category_id", categoryId);
-        wrapper.select("id", "name");
+        wrapper.select("id", "name").orderBy(false,true,"state");
         return productDao.selectList(wrapper);
     }
 

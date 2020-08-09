@@ -16,13 +16,13 @@
                 product_id = #{order.productId}
             </if>
             <if test="order.subject != null and order.subject!=''">
-                and subject = #{order.subject}
+                , subject = #{order.subject}
             </if>
             <if test="order.quantity != null and order.quantity!=''">
-                and quantity = #{order.quantity}
+                , quantity = #{order.quantity}
             </if>
             <if test="order.outTradeNo != null and order.outTradeNo!=''">
-                and outTradeNo = #{order.outTradeNo}
+                , outTradeNo = #{order.outTradeNo}
             </if>
         </set>
         where id = #{id}

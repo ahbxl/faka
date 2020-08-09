@@ -14,11 +14,11 @@
             <if test="card.content != null and card.content != ''">
                 content = #{card.content}
             </if>
-            <if test="card.state != null and card.state != ''">
-                state = #{card.state}
+            <if test="card.state != null">
+                ,state = #{card.state}
             </if>
             <if test="card.productId != null and card.productId != ''">
-                product_id = #{card.productId}
+                ,product_id = #{card.productId}
             </if>
         </set>
         where id = #{id}

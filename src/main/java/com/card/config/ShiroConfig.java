@@ -29,10 +29,11 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setFilters(filterHashMap);
         // 过滤规则
         Map<String, String> linkedHashMap = new LinkedHashMap<>();
-        linkedHashMap.put("/card/**", "jwt");
         linkedHashMap.put("/admin/**", "jwt");
+        linkedHashMap.put("/card/**", "jwt");
         linkedHashMap.put("/aliPayConfig/**", "jwt");
         linkedHashMap.put("/menuList/**", "jwt");
+        linkedHashMap.put("/user/**", "jwt");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(linkedHashMap);
         return shiroFilterFactoryBean;
     }

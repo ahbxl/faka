@@ -9,10 +9,10 @@
                 app_id = #{aliPayConfig.appId}
             </if>
             <if test="aliPayConfig.merchantPrivateKey != null">
-                and merchant_private_key = #{aliPayConfig.merchantPrivateKey}
+                , merchant_private_key = #{aliPayConfig.merchantPrivateKey}
             </if>
             <if test="aliPayConfig.aliPayPublicKey != null">
-                and ali_pay_public_key = #{aliPayConfig.aliPayPublicKey}
+                , ali_pay_public_key = #{aliPayConfig.aliPayPublicKey}
             </if>
         </set>
         where id = #{id}

@@ -20,7 +20,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<Category> findAll() {
         QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id", "name");
+        queryWrapper.select("id", "name").orderBy(false,true,"state");
         return categoryDao.selectList(queryWrapper);
     }
 }

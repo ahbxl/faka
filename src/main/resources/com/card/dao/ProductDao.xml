@@ -27,16 +27,16 @@
                 name = #{product.name}
             </if>
             <if test="product.price != null and product.price!=''">
-                and price = #{product.price}
+                , price = #{product.price}
             </if>
-            <if test="product.state != null and product.state!=''">
-                and state = #{product.state}
+            <if test="product.state != null">
+                , state = #{product.state}
             </if>
             <if test="product.categoryId != null and product.categoryId!=''">
-                and category_id = #{product.categoryId}
+                , category_id = #{product.categoryId}
             </if>
             <if test="product.createTime != null and product.createTime!=''">
-                and create_time = #{product.createTime}
+                , create_time = #{product.createTime}
             </if>
         </set>
         where id = #{id}
