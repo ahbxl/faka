@@ -31,5 +31,5 @@ public interface AdminService {
 
     void productDeleteByIds(IdsCommand command);
 
-    Object productFindByPage(Integer pageNum, Integer pageSize, ProductFindCommand command);
+    IPage<Product> productFindByPage(Integer pageNum, Integer pageSize, ProductFindCommand command);
 }

@@ -105,7 +105,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Object productFindByPage(Integer pageNum, Integer pageSize, ProductFindCommand command) {
+    public IPage<Product> productFindByPage(Integer pageNum, Integer pageSize, ProductFindCommand command) {
         Page<Product> productPage = new Page<>(pageNum, pageSize);
         QueryWrapper<Product> wrapper = new QueryWrapper<>();
         if (!StringUtils.isBlank(command.getName())) {

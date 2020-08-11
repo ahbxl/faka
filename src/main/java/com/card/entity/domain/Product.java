@@ -21,6 +21,7 @@ public class Product implements Serializable {
     @TableId("id")
     private Long id;
     @TableField("name")
+//    @Excel(name = "产品名称")
     private String name;
     @TableField("price")
     private BigDecimal price;

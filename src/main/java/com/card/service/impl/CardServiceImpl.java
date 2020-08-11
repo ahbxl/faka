@@ -1,5 +1,6 @@
 package com.card.service.impl;
 
+import com.card.command.export.CardExport;
 import com.card.dao.CardDao;
 import com.card.entity.domain.Card;
 import com.card.service.CardService;
@@ -15,6 +16,8 @@ public class CardServiceImpl implements CardService {
     @Autowired
     private CardDao cardDao;
 
+//    @Autowired
+//    private CustomMultiThreadingService customMultiThreadingService;
 
     @Override
     public void cardDeleteByIds(List<Long> ids) {
@@ -29,5 +32,10 @@ public class CardServiceImpl implements CardService {
     @Override
     public void cardInsert(Card card) {
         cardDao.cardInsert(card);
+    }
+
+    @Override
+    public List<CardExport> cardExportFindByStateAndTime(Integer state, Long startTime, Long endTime) {
+        return cardDao.cardExportFindByStateAndTime(state, startTime, endTime);
     }
 }
