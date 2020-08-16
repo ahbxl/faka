@@ -24,5 +24,4 @@ public class ExportFile {
     private Integer state;
     @TableField("create_time")
     private Long createTime = System.currentTimeMillis();
-
 }

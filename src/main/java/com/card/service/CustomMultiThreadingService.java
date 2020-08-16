@@ -1,5 +1,7 @@
 package com.card.service;
 
+import com.card.entity.domain.ExportFile;
+
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -9,5 +11,5 @@ public interface CustomMultiThreadingService {
     /**
      * 将卡密导出的异步任务
      */
-    public void executeAysncCardExport(Long startTime, Long endTime);
+    void executeAysncCardExport(Long startTime, Long endTime, ExportFile exportFile);
 }

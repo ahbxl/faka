@@ -7,6 +7,7 @@ import com.card.command.exportfile.ExportFileCommand;
 import com.card.dao.ExportFileDao;
 import com.card.entity.domain.ExportFile;
 import com.card.service.ExportFileService;
+import com.card.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,5 +30,21 @@ public class ExportFileServiceImpl implements ExportFileService {
             wrapper.between("create_time", command.getStartTime(), command.getEndTime());
         }
         return exportFileDao.selectPage(productPage, wrapper);
+    }
+
+    @Override
+    public ExportFile saveExportFile(String fileName, String path, Integer state) {
+        ExportFile exportFile = new ExportFile();
+        exportFile.setFileName(fileName);
+        exportFile.setPath(path);
+        exportFile.setCreator(SecurityUtil.getCurrentUser().getId());
+        exportFile.setState(state);
+        exportFileDao.insert(exportFile);
+        return exportFile;
+    }
+
+    @Override
+    public void downloadExportFile(Long id) {
+
     }
 }
