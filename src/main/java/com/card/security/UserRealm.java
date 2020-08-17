@@ -28,6 +28,7 @@ public class UserRealm extends AuthorizingRealm {
         if (admin == null) {
             return null;
         }
+        usernamePasswordToken.setRememberMe(true);
         return new SimpleAuthenticationInfo(authenticationToken.getPrincipal(), String.valueOf(usernamePasswordToken.getPassword()), getName());
     }
 }

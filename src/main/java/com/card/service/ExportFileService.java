@@ -31,4 +31,6 @@ public interface ExportFileService {
      * @param id 文件的主键
      */
     void downloadExportFile(Long id);
+
+    ExportFile selectById(Long id);
 }

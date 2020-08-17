@@ -26,17 +26,37 @@ public class ExportFileController {
     @Autowired
     private CustomMultiThreadingService customMultiThreadingService;
 
+    /**
+     * 分页展示文件列表
+     *
+     * @param pageNum  页数
+     * @param pageSize 页大小
+     * @param command
+     * @return
+     */
     @PostMapping("/exportFileListByPage/{pageNum}/{pageSize}")
     public ResultVO<Object> exportFileListByPage(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @RequestBody ExportFileCommand command) {
         return ResultVOUtil.success(exportFileService.findByPage(pageNum, pageSize, command));
     }
 
+    /**
+     * 将excel下载到本地
+     *
+     * @param id 文件主键
+     * @return
+     */
     @GetMapping("/downloadExportFile/{id}")
     public ResultVO<Object> downloadExportFile(@PathVariable("id") Long id) {
         exportFileService.downloadExportFile(id);
         return ResultVOUtil.success();
     }
 
+    /**
+     * 在服务器生成excel
+     *
+     * @param exportFileCommand
+     * @return
+     */
     @PostMapping("/generateExportFile")
     public ResultVO<Object> generateExportFile(@RequestBody ExportFileCommand exportFileCommand) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日");

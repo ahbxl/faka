@@ -7,7 +7,6 @@ import com.card.dao.ExportFileDao;
 import com.card.entity.domain.ExportFile;
 import com.card.enu.ExportFileState;
 import com.card.service.CustomMultiThreadingService;
-import com.card.service.ExportFileService;
 import com.card.util.ExcelUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -16,6 +15,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +28,8 @@ import java.util.Map;
 @Service
 @Slf4j
 public class CustomMultiThreadingServiceImpl implements CustomMultiThreadingService {
-    @Value("${}")
+    @Value("${export.file.path}")
+    private String path;
     @Autowired
     private CardDao cardDao;
 
@@ -54,8 +57,21 @@ public class CustomMultiThreadingServiceImpl implements CustomMultiThreadingServ
         mapList.add(oneSheet);
         Workbook workbook = ExcelUtil.mutiSheet(mapList);
         // 输出文件到服务器/data/faka/exportFile文件夹下
-
-
+        // 获取输出流
+        OutputStream os = null;
+        try {
+            os = new FileOutputStream(exportFile.getPath());
+            workbook.write(os);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                assert os != null;
+                os.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         // 修改数据库中的文件状态为未下载
         UpdateWrapper<ExportFile> wrapper = new UpdateWrapper<>();
         wrapper.set("state", ExportFileState.Not_Downloaded.getValue());

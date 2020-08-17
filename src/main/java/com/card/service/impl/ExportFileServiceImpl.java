@@ -47,4 +47,9 @@ public class ExportFileServiceImpl implements ExportFileService {
     public void downloadExportFile(Long id) {
 
     }
+
+    @Override
+    public ExportFile selectById(Long id) {
+        return exportFileDao.selectById(id);
+    }
 }
