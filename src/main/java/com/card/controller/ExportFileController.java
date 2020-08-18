@@ -9,6 +9,7 @@ import com.card.service.CustomMultiThreadingService;
 import com.card.service.ExportFileService;
 import com.card.util.ResultVOUtil;
 import com.card.util.SecurityUtil;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 @RestController
 @Slf4j
@@ -64,31 +66,33 @@ public class ExportFileController {
     /**
      * 删除文件
      *
-     * @param exportFileIds
+     * @param exportFileIds 批量删除的文件id集合
      * @return
      */
     @GetMapping("/downloadExportFile")
     public ResultVO<Object> deleteExportFile(@RequestBody ExportFileIds exportFileIds) {
+        ArrayList<Long> ids = Lists.newArrayList();
         for (Long id : exportFileIds.getIds()) {
             ExportFile exportFile = exportFileService.selectById(id);
             if (exportFile == null) {
-                return ResultVOUtil.success("未查询到文件信息");
-            }
-            if (!SecurityUtil.getCurrentUser().getId().equals(exportFile.getCreator())) {
-                return ResultVOUtil.success("你没有权限删除");
-            }
-            // 从服务器上删除文件
-            try {
-                File f = new File(exportFile.getPath());
-                if (f.exists()) {
-                    f.delete();
+                log.info("未查询到文件信息");
+            } else if (!SecurityUtil.getCurrentUser().getId().equals(exportFile.getCreator())) {
+                log.info("你没有权限删除");
+            } else {
+                ids.add(id);
+                // 从服务器上删除文件
+                try {
+                    File f = new File(exportFile.getPath());
+                    if (f.exists()) {
+                        f.delete();
+                    }
+                } catch (Exception e) {
+                    log.error("文件内容读取异常，文件:" + e.getMessage());
                 }
-            } catch (Exception e) {
-                log.error("文件内容读取异常，文件:" + e.getMessage());
             }
         }
         // 从数据库中删除文件信息
-        exportFileService.deleteExportFile(exportFileIds.getIds());
+        exportFileService.deleteExportFile(ids);
         return ResultVOUtil.success();
     }
 
