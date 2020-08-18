@@ -58,23 +58,18 @@ public class CustomMultiThreadingServiceImpl implements CustomMultiThreadingServ
         Workbook workbook = ExcelUtil.mutiSheet(mapList);
         // 输出文件到服务器/data/faka/exportFile文件夹下
         // 获取输出流
-        OutputStream os = null;
         try {
-            os = new FileOutputStream(exportFile.getPath());
+            long s = System.currentTimeMillis();
+            OutputStream os = new FileOutputStream(exportFile.getPath());
             workbook.write(os);
+            os.close();
+            log.info("导出结束，耗时：" + (System.currentTimeMillis() - s) + "ms");
+            // 修改数据库中的文件状态为未下载
+            UpdateWrapper<ExportFile> wrapper = new UpdateWrapper<>();
+            wrapper.set("state", ExportFileState.Not_Downloaded.getValue());
+            exportFileDao.update(exportFile, wrapper);
         } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                assert os != null;
-                os.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            log.error("导出异常：", e);
         }
-        // 修改数据库中的文件状态为未下载
-        UpdateWrapper<ExportFile> wrapper = new UpdateWrapper<>();
-        wrapper.set("state", ExportFileState.Not_Downloaded.getValue());
-        exportFileDao.update(exportFile, wrapper);
     }
 }
