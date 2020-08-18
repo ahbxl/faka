@@ -3,19 +3,13 @@ package com.card.util;
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
-import com.card.entity.domain.ExportFile;
-import com.card.service.ExportFileService;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ExcelUtil {
-    @Autowired
-    private ExportFileService exportFileService;
-
     /**
      * 创建workbook,
      * 通过maplist填充Excel内容
@@ -46,16 +40,5 @@ public class ExcelUtil {
     public static Map<String, Object> createOneSheet(String sheetName, String title, Class<?> clazz, List<?> data) {
         ExportParams exportParams = new ExportParams(title, sheetName, ExcelType.XSSF);
         return createOneSheet(exportParams, clazz, data);
-    }
-
-    /**
-     * 下载excel
-     *
-     * @param mapListList
-     * @param fileName
-     * @return
-     */
-    public static void downFile(List<Map<String, Object>> mapListList, String fileName) {
-        Workbook workbook = mutiSheet(mapListList);
     }
 }

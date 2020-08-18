@@ -1,5 +1,6 @@
 package com.card.controller;
 
+import com.card.command.export.ExportFileIds;
 import com.card.command.exportfile.ExportFileCommand;
 import com.card.entity.domain.ExportFile;
 import com.card.entity.vo.ResultVO;
@@ -7,11 +8,13 @@ import com.card.enu.ExportFileState;
 import com.card.service.CustomMultiThreadingService;
 import com.card.service.ExportFileService;
 import com.card.util.ResultVOUtil;
+import com.card.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 
 @RestController
@@ -47,7 +50,45 @@ public class ExportFileController {
      */
     @GetMapping("/downloadExportFile/{id}")
     public ResultVO<Object> downloadExportFile(@PathVariable("id") Long id) {
-        exportFileService.downloadExportFile(id);
+        ExportFile exportFile = exportFileService.selectById(id);
+        if (exportFile == null) {
+            return ResultVOUtil.success("未查询到文件信息");
+        }
+        if (!SecurityUtil.getCurrentUser().getId().equals(exportFile.getCreator())) {
+            return ResultVOUtil.success("你没有权限删除");
+        }
+        exportFileService.downloadExportFile(exportFile);
+        return ResultVOUtil.success();
+    }
+
+    /**
+     * 删除文件
+     *
+     * @param exportFileIds
+     * @return
+     */
+    @GetMapping("/downloadExportFile")
+    public ResultVO<Object> deleteExportFile(@RequestBody ExportFileIds exportFileIds) {
+        for (Long id : exportFileIds.getIds()) {
+            ExportFile exportFile = exportFileService.selectById(id);
+            if (exportFile == null) {
+                return ResultVOUtil.success("未查询到文件信息");
+            }
+            if (!SecurityUtil.getCurrentUser().getId().equals(exportFile.getCreator())) {
+                return ResultVOUtil.success("你没有权限删除");
+            }
+            // 从服务器上删除文件
+            try {
+                File f = new File(exportFile.getPath());
+                if (f.exists()) {
+                    f.delete();
+                }
+            } catch (Exception e) {
+                log.error("文件内容读取异常，文件:" + e.getMessage());
+            }
+        }
+        // 从数据库中删除文件信息
+        exportFileService.deleteExportFile(exportFileIds.getIds());
         return ResultVOUtil.success();
     }
 

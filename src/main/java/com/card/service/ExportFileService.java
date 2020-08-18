@@ -1,8 +1,11 @@
 package com.card.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.card.command.export.ExportFileIds;
 import com.card.command.exportfile.ExportFileCommand;
 import com.card.entity.domain.ExportFile;
+
+import java.util.List;
 
 public interface ExportFileService {
     /**
@@ -28,9 +31,16 @@ public interface ExportFileService {
     /**
      * 下载文件
      *
-     * @param id 文件的主键
+     * @param exportFile 需要下载的文件对象
      */
-    void downloadExportFile(Long id);
+    void downloadExportFile(ExportFile exportFile);
+
+    /**
+     * 删除文件
+     *
+     * @param ids 文件的主键
+     */
+    void deleteExportFile(List<Long> ids);
 
     ExportFile selectById(Long id);
 }
