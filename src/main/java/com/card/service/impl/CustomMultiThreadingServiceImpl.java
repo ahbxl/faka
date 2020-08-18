@@ -50,7 +50,7 @@ public class CustomMultiThreadingServiceImpl implements CustomMultiThreadingServ
         // sheet1
         Map<String, Object> zeroSheet = ExcelUtil.createOneSheet("未售出的卡密", "未售出的卡密", CardExport.class, cardExportsZero);
         // sheet2
-        Map<String, Object> oneSheet = ExcelUtil.createOneSheet("已经售出的卡密", "未售出的卡密", CardExport.class, cardExportsOne);
+        Map<String, Object> oneSheet = ExcelUtil.createOneSheet("已经售出的卡密", "已经售出的卡密", CardExport.class, cardExportsOne);
         // 导出多个sheet
         List<Map<String, Object>> mapList = new ArrayList<>();
         mapList.add(zeroSheet);

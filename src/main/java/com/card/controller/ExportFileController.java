@@ -7,6 +7,7 @@ import com.card.entity.vo.ResultVO;
 import com.card.enu.ExportFileState;
 import com.card.service.CustomMultiThreadingService;
 import com.card.service.ExportFileService;
+import com.card.util.RandomUtil;
 import com.card.util.ResultVOUtil;
 import com.card.util.SecurityUtil;
 import com.google.common.collect.Lists;
@@ -107,7 +108,7 @@ public class ExportFileController {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
         String endTime = simpleDateFormat.format(exportFileCommand.getStartTime());
         String startTime = simpleDateFormat.format(exportFileCommand.getEndTime());
-        String fileName = startTime + "至" + endTime + "卡密数据.xlsx";
+        String fileName = startTime + "至" + endTime + "卡密数据" + RandomUtil.getStringRandom(4) + ".xlsx";
         // 插入到数据库，状态值为正在生成
         ExportFile exportFile = exportFileService.saveExportFile(fileName, path + fileName, ExportFileState.Downloading.getValue());
         // 新建线程生成需要导出的文件到服务器/data/faka/exportFile文件夹下

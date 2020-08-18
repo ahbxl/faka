@@ -1,6 +1,6 @@
 package com.card.util;
 
-import com.card.entity.AuthorizedUser;
+import com.card.entity.domain.Admin;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 
@@ -10,10 +10,10 @@ public class SecurityUtil {
      *
      * @return
      */
-    public static AuthorizedUser getCurrentUser() {
+    public static Admin getCurrentUser() {
         Subject subject = SecurityUtils.getSubject();
         if (!subject.isAuthenticated() && !subject.isRemembered())
             throw new RuntimeException("Log current user error: UnAuthenticated subject");
-        return (AuthorizedUser) subject.getPrincipal();
+        return (Admin) subject.getPrincipal();
     }
 }
