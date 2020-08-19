@@ -20,7 +20,7 @@ public class ExcelUtil {
      * workbook.write(fos);
      */
     public static Workbook mutiSheet(List<Map<String, Object>> mapListList) {
-        Workbook workbook = null;
+        Workbook workbook;
         workbook = ExcelExportUtil.exportExcel(mapListList, ExcelType.XSSF);
         return workbook;
     }

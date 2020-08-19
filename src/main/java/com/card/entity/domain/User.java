@@ -24,6 +24,8 @@ public class User {
     private String email;
     @TableField("state")
     private Boolean state;
+    @TableField("grade")
+    private Integer grade; // 用户等级 0/普通用户 1/一级代理 2/二级代理 3/三级代理
 
     public ResultVO<Object> validate() {
         if (username == null) {
