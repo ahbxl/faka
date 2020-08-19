@@ -51,6 +51,8 @@ public class ShiroConfig {
         linkedHashMap.put("/user/**", "jwt");
         linkedHashMap.put("/exportFile/**", "jwt");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(linkedHashMap);
+        // 设置登录请求
+        shiroFilterFactoryBean.setLoginUrl("/login");
         return shiroFilterFactoryBean;
     }
 

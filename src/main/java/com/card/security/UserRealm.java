@@ -1,6 +1,5 @@
 package com.card.security;
 
-import com.card.entity.AuthorizedUser;
 import com.card.entity.domain.Admin;
 import com.card.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +29,6 @@ public class UserRealm extends AuthorizingRealm {
             return null;
         }
         ((UsernamePasswordToken) authenticationToken).setRememberMe(true);
-        return new SimpleAuthenticationInfo(adminService.findByUsername(usernamePasswordToken.getUsername()), String.valueOf(usernamePasswordToken.getPassword()), getName());
+        return new SimpleAuthenticationInfo(admin, String.valueOf(usernamePasswordToken.getPassword()), getName());
     }
 }
