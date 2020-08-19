@@ -42,4 +42,11 @@ public class OrderServiceImpl implements OrderService {
     public void orderUpdateStateByOutTradeNo(String outTradeNo, Integer state) {
         orderDao.orderUpdateStateByOutTradeNo(outTradeNo, state);
     }
+
+    @Override
+    public List<Order> selectByState(Integer state) {
+        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("state", 0);
+        return orderDao.selectList(queryWrapper);
+    }
 }

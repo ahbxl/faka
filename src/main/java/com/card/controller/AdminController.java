@@ -9,6 +9,7 @@ import com.card.entity.vo.ResultVO;
 import com.card.service.AdminService;
 import com.card.util.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,6 +67,17 @@ public class AdminController {
     public ResultVO<Object> productInsert(@RequestBody Product product) {
         product.validate();
         adminService.productInsert(product.doBuild());
+        return ResultVOUtil.success();
+    }
+
+    /**
+     * 注销登录
+     *
+     * @return
+     */
+    @PostMapping("/loginOut")
+    public ResultVO<Object> loginOut() {
+        SecurityUtils.getSubject().logout();
         return ResultVOUtil.success();
     }
 }

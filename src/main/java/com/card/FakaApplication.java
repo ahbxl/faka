@@ -13,6 +13,11 @@ public class FakaApplication implements CommandLineRunner {
         SpringApplication.run(FakaApplication.class, args);
     }
 
+    /**
+     * 项目启动时新建项目文件目录
+     *
+     * @param args
+     */
     @Override
     public void run(String... args) {
         File file = new File("/data/faka/exportFile/");

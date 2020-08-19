@@ -1,10 +1,14 @@
 package com.card.task;
 
+import com.card.entity.domain.Order;
 import com.card.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 @Slf4j
@@ -14,6 +18,9 @@ public class OrderTask {
 
     @Scheduled(cron = "0 0 1 1 * ?")
     public void deleteOrderByState() {
+        List<Order> orders = orderService.selectByState(0);
+        List<String> outTradeNos = orders.stream().map(Order::getOutTradeNo).collect(Collectors.toList());
+        log.info(outTradeNos.toString());
         // 每月的1日的凌晨1点删除数据库中未支付的订单信息
         log.info("开始执行删除数据库中未支付的订单信息");
         orderService.orderDeleteByState(0);

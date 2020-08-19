@@ -14,4 +14,6 @@ public interface OrderService {
     void orderDeleteByState(Integer state);
 
     void orderUpdateStateByOutTradeNo(String outTradeNo, Integer state);
+
+    List<Order> selectByState(Integer state);
 }
