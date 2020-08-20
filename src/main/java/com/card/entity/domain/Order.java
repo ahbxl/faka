@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -32,7 +33,7 @@ public class Order implements Serializable {
     @TableField("state")
     private Boolean state;
     @TableField("create_time")
-    private Long createTime;
+    private Date createTime;
 
     public Order doBuild() {
         Order order = new Order();
@@ -42,8 +43,7 @@ public class Order implements Serializable {
         order.setSubject(subject);
         order.setOutTradeNo(outTradeNo);
         order.setTotalAmount(totalAmount);
-        order.setState(false);
-        order.setCreateTime(System.currentTimeMillis());
+        order.setState(state);
         return order;
     }
 
@@ -51,11 +51,11 @@ public class Order implements Serializable {
         if (productId == null) {
             return ResultVOUtil.success("productId不能为空");
         }
-        if (subject == null) {
-            return ResultVOUtil.success("subject不能为空");
-        }
         if (quantity < 1) {
             return ResultVOUtil.success("quantity不能小于1");
+        }
+        if (subject == null) {
+            return ResultVOUtil.success("subject不能为空");
         }
         if (outTradeNo == null) {
             return ResultVOUtil.success("outTradeNo不能为空");

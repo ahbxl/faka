@@ -9,11 +9,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+import java.util.Date;
+
 @Getter
 @Setter
 @ToString
 @TableName("user")
-public class User {
+public class User implements Serializable {
+    private static final long serialVersionUID = 1192800251115892576L;
     @TableId("id")
     private Long id;
     @TableField("username")
@@ -25,7 +29,13 @@ public class User {
     @TableField("state")
     private Boolean state;
     @TableField("grade")
-    private Integer grade; // 用户等级 0/普通用户 1/一级代理 2/二级代理 3/三级代理
+    private Integer grade; // 用户等级 0/普通用户 1/一级代理 2/二级代理 3/三级代理 默认普通用户
+    @TableField("role_id")
+    private Long roleId; // 角色 0/普通用户 1/管理员 默认普通用户
+    @TableField("create_time")
+    private Date createTime;
+    @TableField("update_time")
+    private Date updateTime;
 
     public ResultVO<Object> validate() {
         if (username == null) {
@@ -36,9 +46,6 @@ public class User {
         }
         if (email == null) {
             return ResultVOUtil.success("email不能为空");
-        }
-        if (state == null) {
-            return ResultVOUtil.success("state不能为空");
         }
         return null;
     }

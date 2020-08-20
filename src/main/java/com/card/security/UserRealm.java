@@ -1,7 +1,7 @@
 package com.card.security;
 
-import com.card.entity.domain.Admin;
-import com.card.service.AdminService;
+import com.card.entity.domain.User;
+import com.card.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Slf4j
 public class UserRealm extends AuthorizingRealm {
     @Autowired
-    private AdminService adminService;
+    private UserService userService;
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
@@ -24,11 +24,11 @@ public class UserRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         log.info("=========执行认证=========");
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) authenticationToken;
-        Admin admin = adminService.findByUsernameAndPassword(usernamePasswordToken.getUsername(), String.valueOf(usernamePasswordToken.getPassword()));
-        if (admin == null) {
+        User user = userService.findByUsernameAndPassword(usernamePasswordToken.getUsername(), String.valueOf(usernamePasswordToken.getPassword()));
+        if (user == null) {
             return null;
         }
         ((UsernamePasswordToken) authenticationToken).setRememberMe(true);
-        return new SimpleAuthenticationInfo(admin, String.valueOf(usernamePasswordToken.getPassword()), getName());
+        return new SimpleAuthenticationInfo(user, String.valueOf(usernamePasswordToken.getPassword()), getName());
     }
 }

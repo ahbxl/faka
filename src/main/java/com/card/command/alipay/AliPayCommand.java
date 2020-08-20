@@ -48,7 +48,6 @@ public class AliPayCommand {
         order.setOutTradeNo(outTradeNo);
         order.setTotalAmount(totalAmount);
         order.setState(state);
-        order.setCreateTime(System.currentTimeMillis());
         return order;
     }
 }

@@ -7,11 +7,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serializable;
+import java.util.Date;
+
 @Getter
 @Setter
 @ToString
 @TableName("export_file")
-public class ExportFile {
+public class ExportFile implements Serializable {
+    private static final long serialVersionUID = -4354740234512411573L;
     @TableId("id")
     private Long id;
     @TableField("file_name")
@@ -23,5 +27,5 @@ public class ExportFile {
     @TableField("state")
     private Integer state;
     @TableField("create_time")
-    private Long createTime = System.currentTimeMillis();
+    private Date createTime;
 }

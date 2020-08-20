@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @Slf4j
-@RequestMapping("menuList")
+@RequestMapping("/menuList")
 public class MenuListController {
     @Autowired
     private MenuListService menuListService;

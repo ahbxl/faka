@@ -11,6 +11,7 @@ import lombok.ToString;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -21,7 +22,6 @@ public class Product implements Serializable {
     @TableId("id")
     private Long id;
     @TableField("name")
-//    @Excel(name = "产品名称")
     private String name;
     @TableField("price")
     private BigDecimal price;
@@ -30,7 +30,9 @@ public class Product implements Serializable {
     @TableField("category_id")
     private Long categoryId;
     @TableField("create_time")
-    private Long createTime;
+    private Date createTime;
+    @TableField("update_time")
+    private Date updateTime;
 
 
     public Product doBuild() {
@@ -39,8 +41,7 @@ public class Product implements Serializable {
         product.setName(name);
         product.setPrice(price);
         product.setState(state);
-        product.setCreateTime(categoryId);
-        product.setCreateTime(System.currentTimeMillis());
+        product.setCategoryId(categoryId);
         return product;
     }
 
@@ -50,9 +51,6 @@ public class Product implements Serializable {
         }
         if (price == null) {
             return ResultVOUtil.success("price不能为空");
-        }
-        if (state == null) {
-            return ResultVOUtil.success("state不能为空");
         }
         if (categoryId == null) {
             return ResultVOUtil.success("categoryId不能为空");

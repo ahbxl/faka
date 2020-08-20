@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -22,11 +23,11 @@ public class Card implements Serializable {
     @TableField("content")
     private String content;
     @TableField("state")
-    private Boolean state;
+    private Boolean state; // 状态 0/未售出 1/已售出 默认未售出
     @TableField("product_id")
     private Long productId;
     @TableField("create_time")
-    private Long createTime;
+    private Date createTime;
 
     public Card doBuild() {
         Card card = new Card();
@@ -34,16 +35,12 @@ public class Card implements Serializable {
         card.setContent(content);
         card.setState(state);
         card.setProductId(productId);
-        card.setCreateTime(System.currentTimeMillis());
         return card;
     }
 
     public ResultVO<Object> validate() {
         if (content == null) {
             return ResultVOUtil.success("content不能为空");
-        }
-        if (state == null) {
-            return ResultVOUtil.success("state不能为空");
         }
         if (productId == null) {
             return ResultVOUtil.success("productId不能为空");

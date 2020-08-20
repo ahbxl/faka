@@ -10,26 +10,26 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @Getter
 @Setter
 @ToString
-@TableName("admin")
-public class Admin implements Serializable {
-    private static final long serialVersionUID = -7912163658901708119L;
+@TableName("role")
+public class Role implements Serializable {
+    private static final long serialVersionUID = 5593937318976491954L;
     @TableId("id")
     private Long id;
-    @TableField("username")
-    private String username;
-    @TableField("password")
-    private String password;
+    @TableField("name")
+    private String name;
+    @TableField("create_time")
+    private Date createTime;
+    @TableField("update_time")
+    private Date updateTime;
 
     public ResultVO<Object> validate() {
-        if (username == null) {
-            return ResultVOUtil.success("username不能为空");
-        }
-        if (password == null) {
-            return ResultVOUtil.success("password不能为空");
+        if (name == null) {
+            return ResultVOUtil.success("name不能为空");
         }
         return null;
     }

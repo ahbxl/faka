@@ -15,32 +15,26 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-@TableName("category")
-public class Category implements Serializable {
-    private static final long serialVersionUID = -5888981197198625157L;
+@TableName("permission")
+public class Permission implements Serializable {
+    private static final long serialVersionUID = 4551749462814959751L;
     @TableId("id")
     private Long id;
     @TableField("name")
     private String name;
-    @TableField("parent")
-    private Long parent;
-    @TableField("state") // 状态 0/下架 1/上架 默认下架
-    private Boolean state;
+    @TableField("description")
+    private String description;
     @TableField("create_time")
     private Date createTime;
-
-    public Category doBuild() {
-        Category category = new Category();
-        category.setId(id);
-        category.setName(name);
-        category.setParent(parent);
-        category.setState(state);
-        return category;
-    }
+    @TableField("update_time")
+    private Date updateTime;
 
     public ResultVO<Object> validate() {
         if (name == null) {
             return ResultVOUtil.success("name不能为空");
+        }
+        if (description == null) {
+            return ResultVOUtil.success("description不能为空");
         }
         return null;
     }
