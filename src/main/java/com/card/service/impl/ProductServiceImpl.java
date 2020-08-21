@@ -27,7 +27,7 @@ public class ProductServiceImpl implements ProductService {
     private CardDao cardDao;
 
     @Override
-    public Product findOne(Integer id) {
+    public Product selectOne(Long id) {
         QueryWrapper<Product> wrapper = new QueryWrapper<>();
         wrapper.eq("id", id);
         wrapper.select("id", "name", "price");
@@ -35,37 +35,32 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> findByCategoryId(Integer categoryId) {
+    public List<Product> selectByCategoryId(Integer categoryId) {
         QueryWrapper<Product> wrapper = new QueryWrapper<>();
         wrapper.eq("category_id", categoryId);
         wrapper.select("id", "name").orderBy(false, true, "state");
         return productDao.selectList(wrapper);
     }
 
-    @Override
-    public Integer countCardByProductId(Long productId) {
-        QueryWrapper<Card> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(Card::getProductId, productId);
-        return cardDao.selectCount(queryWrapper);
-    }
+
 
     @Override
-    public void productInsert(Product product) {
+    public void insert(Product product) {
         productDao.productInsert(product);
     }
 
     @Override
-    public void productUpdateById(Long id, Product product) {
+    public void updateById(Long id, Product product) {
         productDao.productUpdateById(id, product);
     }
 
     @Override
-    public void productDeleteByIds(IdsCommand command) {
+    public void deleteByIds(IdsCommand command) {
         productDao.productDeleteByIds(command.getIds());
     }
 
     @Override
-    public IPage<Product> productFindByPage(Integer pageNum, Integer pageSize, ProductFindCommand command) {
+    public IPage<Product> selectByPage(Integer pageNum, Integer pageSize, ProductFindCommand command) {
         Page<Product> productPage = new Page<>(pageNum, pageSize);
         QueryWrapper<Product> wrapper = new QueryWrapper<>();
         if (!StringUtils.isBlank(command.getName())) {

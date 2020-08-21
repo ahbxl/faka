@@ -44,12 +44,19 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setFilters(filterHashMap);
         // 过滤规则
         Map<String, String> linkedHashMap = new LinkedHashMap<>();
-        linkedHashMap.put("/admin/**", "jwt");
-        linkedHashMap.put("/card/**", "jwt");
+        // 登录之后才可以请求的接口
         linkedHashMap.put("/aliPayConfig/**", "jwt");
-        linkedHashMap.put("/menuList/**", "jwt");
-        linkedHashMap.put("/user/**", "jwt");
+        linkedHashMap.put("/card/**", "jwt");
+        linkedHashMap.put("/category/**", "jwt");
         linkedHashMap.put("/exportFile/**", "jwt");
+        linkedHashMap.put("/menuList/**", "jwt");
+        linkedHashMap.put("/order/**", "jwt");
+        linkedHashMap.put("/permission/**", "jwt");
+        linkedHashMap.put("/product/**", "jwt");
+        linkedHashMap.put("/role/**", "jwt");
+        linkedHashMap.put("/rolePermission/**", "jwt");
+        linkedHashMap.put("/user/**", "jwt");
+        linkedHashMap.put("/userRole/**", "jwt");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(linkedHashMap);
         // 设置登录请求
         shiroFilterFactoryBean.setLoginUrl("/login");

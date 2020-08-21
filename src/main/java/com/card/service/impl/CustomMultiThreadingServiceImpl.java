@@ -1,7 +1,7 @@
 package com.card.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.card.command.export.CardExport;
+import com.card.command.exportfile.CardExport;
 import com.card.dao.CardDao;
 import com.card.dao.ExportFileDao;
 import com.card.entity.domain.ExportFile;

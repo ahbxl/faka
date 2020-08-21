@@ -3,15 +3,8 @@ package com.card.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.card.command.IdsCommand;
-import com.card.command.category.CategoryFindCommand;
-import com.card.command.product.ProductFindCommand;
 import com.card.command.user.UserCommand;
-import com.card.dao.CategoryDao;
-import com.card.dao.ProductDao;
 import com.card.dao.UserDao;
-import com.card.entity.domain.Category;
-import com.card.entity.domain.Product;
 import com.card.entity.domain.User;
 import com.card.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +19,7 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Override
-    public IPage<User> findByPage(Integer pageNum, Integer pageSize, UserCommand userCommand) {
+    public IPage<User> selectByPage(Integer pageNum, Integer pageSize, UserCommand userCommand) {
         Page<User> userPage = new Page<>(pageNum, pageSize);
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         if (StringUtils.isEmpty(userCommand.getUsername())) {
@@ -37,6 +30,9 @@ public class UserServiceImpl implements UserService {
         }
         if (userCommand.getState() != null) {
             wrapper.eq("state", userCommand.getState());
+        }
+        if (userCommand.getRoleId() != null) {
+            wrapper.eq("role_id", userCommand.getRoleId());
         }
         return userDao.selectPage(userPage, wrapper);
     }
@@ -57,7 +53,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByUsernameAndPassword(String username, String password) {
+    public User selectByUsernameAndPassword(String username, String password) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().eq(User::getUsername, username).eq(User::getPassword, password);
         return userDao.selectOne(queryWrapper);
@@ -71,7 +67,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserById(Long id) {
+    public User selectById(Long id) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id", id);
         return userDao.selectOne(queryWrapper);

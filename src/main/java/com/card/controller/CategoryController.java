@@ -27,9 +27,8 @@ public class CategoryController {
      */
     @PostMapping("/findAll")
     public ResultVO<Object> findAll() {
-        return ResultVOUtil.success(categoryService.findAll());
+        return ResultVOUtil.success(categoryService.selectAll());
     }
-
 
     /**
      * 分页查询分类信息
@@ -40,9 +39,9 @@ public class CategoryController {
      * @param command
      * @return
      */
-    @PostMapping("/admin/category/findByPage/{pageNum}/{pageSize}")
+    @PostMapping("/admin/findByPage/{pageNum}/{pageSize}")
     public ResultVO<Object> categoryFindByPage(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @RequestBody CategoryFindCommand command) {
-        return ResultVOUtil.success(categoryService.categoryFindByPage(pageNum, pageSize, command));
+        return ResultVOUtil.success(categoryService.selectByPage(pageNum, pageSize, command));
     }
 
     /**
@@ -52,7 +51,7 @@ public class CategoryController {
      * @param command id的集合
      * @return
      */
-    @PostMapping("/admin/category/deleteByIds")
+    @PostMapping("/admin/deleteByIds")
     public ResultVO<Object> categoryDeleteByIds(@RequestBody IdsCommand command) {
         command.validate();
         ArrayList<Long> ids = Lists.newArrayList();
@@ -64,7 +63,7 @@ public class CategoryController {
                 ids.add(category.getId());
             }
         }
-        categoryService.categoryDeleteByIds(ids);
+        categoryService.deleteByIds(ids);
         return ResultVOUtil.success();
     }
 
@@ -76,10 +75,10 @@ public class CategoryController {
      * @param category
      * @return
      */
-    @PostMapping("/admin/category/updateById/{id}")
+    @PostMapping("/admin/updateById/{id}")
     public ResultVO<Object> categoryUpdateById(@PathVariable("id") Long id, @RequestBody Category category) {
 
-        categoryService.categoryUpdateById(id, category);
+        categoryService.updateById(id, category);
         return ResultVOUtil.success();
     }
 
@@ -90,10 +89,10 @@ public class CategoryController {
      * @param command
      * @return
      */
-    @PostMapping("/admin/category/insert")
+    @PostMapping("/admin/insert")
     public ResultVO<Object> categoryInsert(@RequestBody Category command) {
         command.validate();
-        categoryService.categoryInsert(command.doBuild());
+        categoryService.insert(command.doBuild());
         return ResultVOUtil.success();
     }
 }

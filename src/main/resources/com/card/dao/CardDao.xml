@@ -28,7 +28,7 @@
         (#{card.content},#{card.state},#{card.productId},#{card.createTime})
     </insert>
 
-    <select id="cardExportFindByStateAndTime" resultType="com.card.command.export.CardExport">
+    <select id="cardExportFindByStateAndTime" resultType="com.card.command.exportfile.CardExport">
         select card.id id, card.content content, product.name productName
         from (select card.id, card.content, card.product_id
         from card

@@ -1,6 +1,6 @@
 package com.card.controller;
 
-import com.card.command.export.ExportFileIds;
+import com.card.command.IdsCommand;
 import com.card.command.exportfile.ExportFileCommand;
 import com.card.entity.domain.ExportFile;
 import com.card.entity.vo.ResultVO;
@@ -70,13 +70,13 @@ public class ExportFileController {
      * 删除文件
      * 需要管理员权限
      *
-     * @param exportFileIds 批量删除的文件id集合
+     * @param idsCommand 批量删除的文件id集合
      * @return
      */
     @GetMapping("/downloadExportFile")
-    public ResultVO<Object> deleteExportFile(@RequestBody ExportFileIds exportFileIds) {
+    public ResultVO<Object> deleteExportFile(@RequestBody IdsCommand idsCommand) {
         ArrayList<Long> ids = Lists.newArrayList();
-        for (Long id : exportFileIds.getIds()) {
+        for (Long id : idsCommand.getIds()) {
             ExportFile exportFile = exportFileService.selectById(id);
             if (exportFile == null) {
                 log.info("未查询到文件信息");

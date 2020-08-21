@@ -5,7 +5,6 @@ import com.card.command.product.ProductFindCommand;
 import com.card.entity.domain.Product;
 import com.card.entity.vo.ResultVO;
 import com.card.service.ProductService;
-import com.card.service.UserService;
 import com.card.util.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +17,15 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private UserService userService;
-
     /**
-     * 查看指定产品的信息
+     * 通过id查询产品信息
      *
      * @param id 主键
      * @return
      */
-    @PostMapping("/findOne/{id}")
-    public ResultVO<Object> findOne(@PathVariable("id") Integer id) {
-        return ResultVOUtil.success(productService.findOne(id));
+    @PostMapping("/selectOne/{id}")
+    public ResultVO<Object> selectOne(@PathVariable("id") Long id) {
+        return ResultVOUtil.success(productService.selectOne(id));
     }
 
     /**
@@ -38,44 +34,68 @@ public class ProductController {
      * @param categoryId 分类的id
      * @return
      */
-    @PostMapping("/findByCategoryId/{categoryId}")
-    public ResultVO<Object> findByCategoryId(@PathVariable("categoryId") Integer categoryId) {
-        return ResultVOUtil.success(productService.findByCategoryId(categoryId));
+    @PostMapping("/selectByCategoryId/{categoryId}")
+    public ResultVO<Object> selectByCategoryId(@PathVariable("categoryId") Integer categoryId) {
+        return ResultVOUtil.success(productService.selectByCategoryId(categoryId));
     }
 
     /**
-     * 计算产品的库存
+     * 分页查询产品信息
+     * 需要管理员权限
      *
-     * @param productId 产品的id
+     * @param pageNum  当前页
+     * @param pageSize 页大小
+     * @param command
      * @return
      */
-    @PostMapping("/countCardByProductId/{productId}")
-    public ResultVO<Object> countCardByProductId(@PathVariable("productId") Long productId) {
-        return ResultVOUtil.success(productService.countCardByProductId(productId));
+    @PostMapping("/admin/selectByPage/{pageNum}/{pageSize}")
+    public ResultVO<Object> selectByPage(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @RequestBody ProductFindCommand command) {
+        return ResultVOUtil.success(productService.selectByPage(pageNum, pageSize, command));
     }
 
-    @PostMapping("/product/findByPage/{pageNum}/{pageSize}")
-    public ResultVO<Object> productFindByPage(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @RequestBody ProductFindCommand command) {
-        return ResultVOUtil.success(productService.productFindByPage(pageNum, pageSize, command));
-    }
-
-    @PostMapping("/product/deleteByIds")
-    public ResultVO<Object> productDeleteByIds(@RequestBody IdsCommand command) {
+    /**
+     * 批量删除产品
+     * 需要管理员权限
+     *
+     * @param command ids
+     * @return
+     */
+    @PostMapping("/admin/deleteByIds")
+    public ResultVO<Object> deleteByIds(@RequestBody IdsCommand command) {
         command.validate();
-        productService.productDeleteByIds(command);
+        productService.deleteByIds(command);
         return ResultVOUtil.success();
     }
 
-    @PostMapping("/product/updateById/{id}")
-    public ResultVO<Object> categoryUpdateById(@PathVariable("id") Long id, @RequestBody Product product) {
-        productService.productUpdateById(id, product);
+    /**
+     * 通过id修改产品信息
+     * 需要管理员权限
+     *
+     * @param id      id
+     * @param product 产品对象
+     * @return
+     */
+    @PostMapping("/admin/updateById/{id}")
+    public ResultVO<Object> updateById(@PathVariable("id") Long id, @RequestBody Product product) {
+        Product productById = productService.selectOne(id);
+        if (productById == null) {
+            ResultVOUtil.fail("不存在该产品信息");
+        }
+        productService.updateById(id, product);
         return ResultVOUtil.success();
     }
 
+    /**
+     * 添加产品
+     * 需要管理员权限
+     *
+     * @param product 产品对象
+     * @return
+     */
     @PostMapping("/product/insert")
-    public ResultVO<Object> productInsert(@RequestBody Product product) {
+    public ResultVO<Object> insert(@RequestBody Product product) {
         product.validate();
-        productService.productInsert(product.doBuild());
+        productService.insert(product);
         return ResultVOUtil.success();
     }
 }

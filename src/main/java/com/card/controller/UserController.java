@@ -27,7 +27,7 @@ public class UserController {
      */
     @PostMapping("/admin/findByPage/{pageNum}/{pageSize}")
     public ResultVO<Object> findByPage(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @RequestBody UserCommand command) {
-        return ResultVOUtil.success(userService.findByPage(pageNum, pageSize, command));
+        return ResultVOUtil.success(userService.selectByPage(pageNum, pageSize, command));
     }
 
     /**
@@ -40,7 +40,7 @@ public class UserController {
     @PostMapping("/updateById/{id}")
     public ResultVO<Object> updateById(@PathVariable("id") Long id, @RequestBody User user) {
         user.validate();
-        User userById = userService.findUserById(id);
+        User userById = userService.selectById(id);
         if (userById == null) {
             return ResultVOUtil.fail("不存在该用户");
         }
@@ -50,13 +50,14 @@ public class UserController {
 
     /**
      * 通过id删除用户
+     * 需要管理员权限
      *
      * @param id id
      * @return
      */
-    @PostMapping("/deleteById/{id}")
+    @PostMapping("/admin/deleteById/{id}")
     public ResultVO<Object> deleteById(@PathVariable("id") Long id) {
-        User user = userService.findUserById(id);
+        User user = userService.selectById(id);
         if (user == null) {
             return ResultVOUtil.fail("不存在该用户");
         }
@@ -83,9 +84,9 @@ public class UserController {
      * @param id id
      * @return
      */
-    @PostMapping("/findById/{id}")
-    public ResultVO<Object> findById(@PathVariable("id") Long id) {
-        User user = userService.findUserById(id);
+    @PostMapping("/selectById/{id}")
+    public ResultVO<Object> selectById(@PathVariable("id") Long id) {
+        User user = userService.selectById(id);
         if (user == null) {
             return ResultVOUtil.fail("不存在该用户");
         }

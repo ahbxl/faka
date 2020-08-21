@@ -8,17 +8,15 @@ import com.card.entity.domain.Product;
 import java.util.List;
 
 public interface ProductService {
-    Product findOne(Integer id);
+    Product selectOne(Long id);
 
-    List<Product> findByCategoryId(Integer categoryId);
+    List<Product> selectByCategoryId(Integer categoryId);
 
-    Integer countCardByProductId(Long id);
+    void insert(Product product);
 
-    void productInsert(Product product);
+    void updateById(Long id, Product product);
 
-    void productUpdateById(Long id, Product product);
+    void deleteByIds(IdsCommand command);
 
-    void productDeleteByIds(IdsCommand command);
-
-    IPage<Product> productFindByPage(Integer pageNum, Integer pageSize, ProductFindCommand command);
+    IPage<Product> selectByPage(Integer pageNum, Integer pageSize, ProductFindCommand command);
 }

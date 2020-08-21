@@ -20,7 +20,7 @@ public class MenuListController {
     private MenuListService menuListService;
 
     /**
-     * 查看所有的分类信息
+     * 查看所有的菜单信息（需要考虑到管理员或者用户登录之后所看到的菜单列表）
      *
      * @return
      */

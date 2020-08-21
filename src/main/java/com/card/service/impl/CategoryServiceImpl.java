@@ -3,7 +3,6 @@ package com.card.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.card.command.IdsCommand;
 import com.card.command.category.CategoryFindCommand;
 import com.card.dao.CategoryDao;
 import com.card.entity.domain.Category;
@@ -22,7 +21,7 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryDao categoryDao;
 
     @Override
-    public List<Category> findAll() {
+    public List<Category> selectAll() {
         QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("id", "name").orderBy(false, true, "state");
         return categoryDao.selectList(queryWrapper);
@@ -34,7 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public IPage<Category> categoryFindByPage(Integer pageNum, Integer pageSize, CategoryFindCommand command) {
+    public IPage<Category> selectByPage(Integer pageNum, Integer pageSize, CategoryFindCommand command) {
         Page<Category> categoryPage = new Page<>(pageNum, pageSize);
         QueryWrapper<Category> wrapper = new QueryWrapper<>();
         if (!StringUtils.isBlank(command.getName())) {
@@ -50,17 +49,17 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void categoryDeleteByIds(List<Long> ids) {
-        categoryDao.categoryDeleteByIds( ids);
+    public void deleteByIds(List<Long> ids) {
+        categoryDao.categoryDeleteByIds(ids);
     }
 
     @Override
-    public void categoryUpdateById(Long id, Category category) {
+    public void updateById(Long id, Category category) {
         categoryDao.categoryUpdateById(id, category);
     }
 
     @Override
-    public void categoryInsert(Category category) {
+    public void insert(Category category) {
         categoryDao.categoryInsert(category);
     }
 }

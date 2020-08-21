@@ -1,6 +1,7 @@
 package com.card.service.impl;
 
-import com.card.command.export.CardExport;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.card.command.exportfile.CardExport;
 import com.card.dao.CardDao;
 import com.card.entity.domain.Card;
 import com.card.service.CardService;
@@ -15,9 +16,6 @@ import java.util.List;
 public class CardServiceImpl implements CardService {
     @Autowired
     private CardDao cardDao;
-
-//    @Autowired
-//    private CustomMultiThreadingService customMultiThreadingService;
 
     @Override
     public void cardDeleteByIds(List<Long> ids) {
@@ -37,5 +35,12 @@ public class CardServiceImpl implements CardService {
     @Override
     public List<CardExport> cardExportFindByStateAndTime(Integer state, Long startTime, Long endTime) {
         return cardDao.cardExportFindByStateAndTime(state, startTime, endTime);
+    }
+
+    @Override
+    public Integer countByProductId(Long productId) {
+        QueryWrapper<Card> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(Card::getProductId, productId);
+        return cardDao.selectCount(queryWrapper);
     }
 }

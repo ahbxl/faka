@@ -8,18 +8,12 @@ import lombok.Data;
 
 @Data
 public class AliPayCommand {
-    // 产品id
-    private Integer productId;
-    // 产品数量
-    private Integer quantity;
-    // 主题
-    private String subject;
-    // 订单号
+    private Integer productId; // 产品i
+    private Integer quantity; // 产品数量
+    private String subject; // 主题
     private String outTradeNo = RandomUtil.getStringRandom(9); // 随机订单号
-    // 总金额
-    private String totalAmount;
-    // 状态
-    private Boolean state = false; // 默认状态为未支付
+    private String totalAmount; // 总金额
+    private Boolean state = false; // 状态 默认状态为未支付
 
     public ResultVO<Object> validate() {
         if (productId == null) {

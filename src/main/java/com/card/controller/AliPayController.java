@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
-@RequestMapping("/aliPayConfig")
-public class AliPayConfigController {
+@RequestMapping("/aliPay")
+public class AliPayController {
     @Autowired
     private AliPayService aliPayService;
 
@@ -24,12 +24,13 @@ public class AliPayConfigController {
 
     /**
      * 通过id修改支付配置
+     * 需要管理员权限
      *
      * @param id           id
      * @param aliPayConfig 支付配置对象
      * @return
      */
-    @PostMapping("/updateById/{id}")
+    @PostMapping("/admin/updateById/{id}")
     public ResultVO<Object> updateById(@PathVariable("id") Long id, @RequestBody AliPayConfig aliPayConfig) {
         AliPayConfig aliPayConfigById = aliPayService.selectById(id);
         if (aliPayConfigById == null) {
@@ -41,11 +42,12 @@ public class AliPayConfigController {
 
     /**
      * 通过id查询支付配置
+     * 需要管理员权限
      *
      * @param id id
      * @return
      */
-    @PostMapping("/selectById/{id}")
+    @PostMapping("/admin/selectById/{id}")
     public ResultVO<Object> selectById(@PathVariable("id") Long id) {
         AliPayConfig aliPayConfigById = aliPayService.selectById(id);
         if (aliPayConfigById == null) {

@@ -1,7 +1,7 @@
 package com.card.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.card.command.export.CardExport;
+import com.card.command.exportfile.CardExport;
 import com.card.entity.domain.Card;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
