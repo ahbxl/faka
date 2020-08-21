@@ -22,17 +22,44 @@ public class AliPayConfigController {
     @Autowired
     private OrderService orderService;
 
+    /**
+     * 通过id修改支付配置
+     *
+     * @param id           id
+     * @param aliPayConfig 支付配置对象
+     * @return
+     */
     @PostMapping("/updateById/{id}")
     public ResultVO<Object> updateById(@PathVariable("id") Long id, @RequestBody AliPayConfig aliPayConfig) {
+        AliPayConfig aliPayConfigById = aliPayService.selectById(id);
+        if (aliPayConfigById == null) {
+            return ResultVOUtil.fail("不存在该配置");
+        }
         aliPayService.updateById(id, aliPayConfig);
         return ResultVOUtil.success();
     }
 
+    /**
+     * 通过id查询支付配置
+     *
+     * @param id id
+     * @return
+     */
     @PostMapping("/selectById/{id}")
     public ResultVO<Object> selectById(@PathVariable("id") Long id) {
-        return ResultVOUtil.success(aliPayService.selectById(id));
+        AliPayConfig aliPayConfigById = aliPayService.selectById(id);
+        if (aliPayConfigById == null) {
+            return ResultVOUtil.fail("不存在该配置");
+        }
+        return ResultVOUtil.success(aliPayConfigById);
     }
 
+    /**
+     * 支付宝当面付接口
+     *
+     * @param aliPayCommand
+     * @return
+     */
     @PostMapping("/faceToFace")
     public ResultVO<Object> faceToFace(@RequestBody AliPayCommand aliPayCommand) {
         aliPayCommand.validate();
@@ -46,6 +73,12 @@ public class AliPayConfigController {
         return ResultVOUtil.success("支付调用失败，原因：" + response.msg + "，" + response.subMsg);
     }
 
+    /**
+     * 通过订单号查询订单
+     *
+     * @param outTradeNo 订单号
+     * @return
+     */
     @PostMapping("/queryOutTradeNo/{outTradeNo}")
     public ResultVO<Object> queryOutTradeNo(@PathVariable("outTradeNo") String outTradeNo) {
         String state = aliPayService.queryTrade(outTradeNo);
@@ -55,6 +88,12 @@ public class AliPayConfigController {
         return ResultVOUtil.success(aliPayService.queryTrade(outTradeNo));
     }
 
+    /**
+     * 通过订单号取消交易
+     *
+     * @param outTradeNo 订单号
+     * @return
+     */
     @PostMapping("/cancelTrade/{outTradeNo}")
     public ResultVO<Object> cancelTrade(@PathVariable("outTradeNo") String outTradeNo) {
         return ResultVOUtil.success(aliPayService.cancelTrade(outTradeNo));

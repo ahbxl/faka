@@ -56,26 +56,26 @@ public class ProductController {
 
     @PostMapping("/product/findByPage/{pageNum}/{pageSize}")
     public ResultVO<Object> productFindByPage(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @RequestBody ProductFindCommand command) {
-        return ResultVOUtil.success(userService.productFindByPage(pageNum, pageSize, command));
+        return ResultVOUtil.success(productService.productFindByPage(pageNum, pageSize, command));
     }
 
     @PostMapping("/product/deleteByIds")
     public ResultVO<Object> productDeleteByIds(@RequestBody IdsCommand command) {
         command.validate();
-        userService.productDeleteByIds(command);
+        productService.productDeleteByIds(command);
         return ResultVOUtil.success();
     }
 
     @PostMapping("/product/updateById/{id}")
     public ResultVO<Object> categoryUpdateById(@PathVariable("id") Long id, @RequestBody Product product) {
-        userService.productUpdateById(id, product);
+        productService.productUpdateById(id, product);
         return ResultVOUtil.success();
     }
 
     @PostMapping("/product/insert")
     public ResultVO<Object> productInsert(@RequestBody Product product) {
         product.validate();
-        userService.productInsert(product.doBuild());
+        productService.productInsert(product.doBuild());
         return ResultVOUtil.success();
     }
 }

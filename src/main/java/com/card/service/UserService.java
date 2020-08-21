@@ -25,20 +25,4 @@ public interface UserService {
     User findUserById(Long id);
 
     User findByUsername(String username);
-
-    IPage<Category> categoryFindByPage(Integer pageNum, Integer pageSize, CategoryFindCommand command);
-
-    void categoryDeleteByIds(IdsCommand command);
-
-    void categoryUpdateById(Long id, Category category);
-
-    void categoryInsert(Category category);
-
-    void productInsert(Product product);
-
-    void productUpdateById(Long id, Product product);
-
-    void productDeleteByIds(IdsCommand command);
-
-    IPage<Product> productFindByPage(Integer pageNum, Integer pageSize, ProductFindCommand command);
 }

@@ -1,6 +1,5 @@
-package com.card.entity;
+package com.card.entity.vo;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data

@@ -25,12 +25,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
 
-    @Autowired
-    private CategoryDao categoryDao;
-
-    @Autowired
-    private ProductDao productDao;
-
     @Override
     public IPage<User> findByPage(Integer pageNum, Integer pageSize, UserCommand userCommand) {
         Page<User> userPage = new Page<>(pageNum, pageSize);
@@ -88,70 +82,5 @@ public class UserServiceImpl implements UserService {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().eq(User::getUsername, username);
         return userDao.selectOne(queryWrapper);
-    }
-
-    @Override
-    public IPage<Category> categoryFindByPage(Integer pageNum, Integer pageSize, CategoryFindCommand command) {
-        Page<Category> categoryPage = new Page<>(pageNum, pageSize);
-        QueryWrapper<Category> wrapper = new QueryWrapper<>();
-        if (!StringUtils.isBlank(command.getName())) {
-            wrapper.like("name", command.getName());
-        }
-        if (null != command.getState()) {
-            wrapper.eq("state", command.getState());
-        }
-        if (null != command.getStartTime() && null != command.getEndTime()) {
-            wrapper.between("create_time", command.getStartTime(), command.getEndTime());
-        }
-        return categoryDao.selectPage(categoryPage, wrapper);
-    }
-
-    @Override
-    public void categoryDeleteByIds(IdsCommand command) {
-        categoryDao.categoryDeleteByIds(command.getIds());
-    }
-
-    @Override
-    public void categoryUpdateById(Long id, Category category) {
-        categoryDao.categoryUpdateById(id, category);
-    }
-
-    @Override
-    public void categoryInsert(Category category) {
-        categoryDao.categoryInsert(category);
-    }
-
-    @Override
-    public void productInsert(Product product) {
-        productDao.productInsert(product);
-    }
-
-    @Override
-    public void productUpdateById(Long id, Product product) {
-        productDao.productUpdateById(id, product);
-    }
-
-    @Override
-    public void productDeleteByIds(IdsCommand command) {
-        productDao.productDeleteByIds(command.getIds());
-    }
-
-    @Override
-    public IPage<Product> productFindByPage(Integer pageNum, Integer pageSize, ProductFindCommand command) {
-        Page<Product> productPage = new Page<>(pageNum, pageSize);
-        QueryWrapper<Product> wrapper = new QueryWrapper<>();
-        if (!StringUtils.isBlank(command.getName())) {
-            wrapper.like("name", command.getName());
-        }
-        if (null != command.getState()) {
-            wrapper.eq("state", command.getState());
-        }
-        if (null != command.getCategoryId()) {
-            wrapper.eq("category_id", command.getCategoryId());
-        }
-        if (null != command.getStartTime() && null != command.getEndTime()) {
-            wrapper.between("create_time", command.getStartTime(), command.getEndTime());
-        }
-        return productDao.selectPage(productPage, wrapper);
     }
 }

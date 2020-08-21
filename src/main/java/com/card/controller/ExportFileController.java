@@ -34,6 +34,7 @@ public class ExportFileController {
 
     /**
      * 分页展示文件列表
+     * 需要管理员权限
      *
      * @param pageNum  页数
      * @param pageSize 页大小
@@ -47,8 +48,9 @@ public class ExportFileController {
 
     /**
      * 将excel下载到本地
+     * 需要管理员权限
      *
-     * @param id 文件主键
+     * @param id id
      * @return
      */
     @GetMapping("/downloadExportFile/{id}")
@@ -66,6 +68,7 @@ public class ExportFileController {
 
     /**
      * 删除文件
+     * 需要管理员权限
      *
      * @param exportFileIds 批量删除的文件id集合
      * @return
@@ -99,8 +102,9 @@ public class ExportFileController {
 
     /**
      * 在服务器生成excel
+     * 需要管理员权限
      *
-     * @param exportFileCommand
+     * @param exportFileCommand 查询条件对象
      * @return
      */
     @PostMapping("/generateExportFile")

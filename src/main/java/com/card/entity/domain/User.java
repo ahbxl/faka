@@ -27,11 +27,9 @@ public class User implements Serializable {
     @TableField("email")
     private String email;
     @TableField("state")
-    private Boolean state;
-    @TableField("grade")
-    private Integer grade; // 用户等级 0/普通用户 1/一级代理 2/二级代理 3/三级代理 默认普通用户
+    private Boolean state; // 状态 0/禁止 1/正常
     @TableField("role_id")
-    private Long roleId; // 角色 0/普通用户 1/管理员 默认普通用户
+    private Long roleId; // 角色id
     @TableField("create_time")
     private Date createTime;
     @TableField("update_time")
@@ -46,6 +44,9 @@ public class User implements Serializable {
         }
         if (email == null) {
             return ResultVOUtil.success("email不能为空");
+        }
+        if (roleId == null) {
+            return ResultVOUtil.success("roleId不能为空");
         }
         return null;
     }
