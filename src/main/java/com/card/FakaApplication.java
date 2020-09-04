@@ -14,7 +14,7 @@ public class FakaApplication implements CommandLineRunner {
     }
 
     /**
-     * 项目启动时新建项目文件目录
+     * 项目启动时新建项目导出文件目录
      *
      * @param args
      */
