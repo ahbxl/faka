@@ -18,4 +18,6 @@ public interface CategoryService {
     void updateById(Long id, Category category);
 
     void insert(Category category);
+
+    List<Category> findAllExceptSelf(Long id);
 }

@@ -62,4 +62,9 @@ public class CategoryServiceImpl implements CategoryService {
     public void insert(Category category) {
         categoryDao.categoryInsert(category);
     }
+
+    @Override
+    public List<Category> findAllExceptSelf(Long id) {
+        return categoryDao.findAllExceptSelf(id);
+    }
 }

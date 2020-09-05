@@ -6,6 +6,7 @@ import com.card.entity.domain.Category;
 import com.card.entity.vo.ResultVO;
 import com.card.service.CategoryService;
 import com.card.util.ResultVOUtil;
+import com.fasterxml.jackson.databind.node.LongNode;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,11 @@ public class CategoryController {
     @PostMapping("/findAll")
     public ResultVO<Object> findAll() {
         return ResultVOUtil.success(categoryService.selectAll());
+    }
+
+    @PostMapping("/findAllExceptSelf")
+    public ResultVO<Object> findAllExceptSelf(@RequestBody Category category) {
+        return ResultVOUtil.success(categoryService.findAllExceptSelf(category.getId()));
     }
 
     /**
@@ -77,7 +83,8 @@ public class CategoryController {
      */
     @PostMapping("/admin/updateById/{id}")
     public ResultVO<Object> categoryUpdateById(@PathVariable("id") Long id, @RequestBody Category category) {
-
+        if (null != category.getParent())
+            if (null == categoryService.selectById(category.getParent())) return ResultVOUtil.fail("不存在该父级编号");
         categoryService.updateById(id, category);
         return ResultVOUtil.success();
     }
@@ -94,5 +101,16 @@ public class CategoryController {
         command.validate();
         categoryService.insert(command.doBuild());
         return ResultVOUtil.success();
+    }
+
+    /**
+     * 通过id查询分类信息
+     *
+     * @param id
+     * @return
+     */
+    @PostMapping("/admin/selectById/{id}")
+    public ResultVO<Object> selectById(@PathVariable("id") Long id) {
+        return ResultVOUtil.success(categoryService.selectById(id));
     }
 }

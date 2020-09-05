@@ -16,4 +16,6 @@ public interface CategoryDao extends BaseMapper<Category> {
     void categoryUpdateById(@Param("id") Long id, @Param("category") Category category);
 
     void categoryInsert(@Param("category") Category category);
+
+    List<Category> findAllExceptSelf(@Param("id") Long id);
 }
