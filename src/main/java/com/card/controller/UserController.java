@@ -37,7 +37,7 @@ public class UserController {
      * @param user 用户对象
      * @return
      */
-    @PostMapping("/updateById/{id}")
+    @PostMapping("/admin/updateById/{id}")
     public ResultVO<Object> updateById(@PathVariable("id") Long id, @RequestBody User user) {
         user.validate();
         User userById = userService.selectById(id);
@@ -84,7 +84,7 @@ public class UserController {
      * @param id id
      * @return
      */
-    @PostMapping("/selectById/{id}")
+    @PostMapping("/admin/selectById/{id}")
     public ResultVO<Object> selectById(@PathVariable("id") Long id) {
         User user = userService.selectById(id);
         if (user == null) {

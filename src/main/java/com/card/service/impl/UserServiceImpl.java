@@ -22,10 +22,10 @@ public class UserServiceImpl implements UserService {
     public IPage<User> selectByPage(Integer pageNum, Integer pageSize, UserCommand userCommand) {
         Page<User> userPage = new Page<>(pageNum, pageSize);
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        if (StringUtils.isEmpty(userCommand.getUsername())) {
+        if (StringUtils.isNotBlank(userCommand.getUsername())) {
             wrapper.like("username", userCommand.getUsername());
         }
-        if (StringUtils.isEmpty(userCommand.getEmail())) {
+        if (StringUtils.isNotBlank(userCommand.getEmail())) {
             wrapper.like("email", userCommand.getEmail());
         }
         if (userCommand.getState() != null) {
