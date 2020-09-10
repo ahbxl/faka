@@ -1,5 +1,6 @@
 package com.card.entity.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -15,7 +16,7 @@ import java.io.Serializable;
 @TableName("ali_pay_config")
 public class AliPayConfig implements Serializable {
     private static final long serialVersionUID = -5565956842416722322L;
-    @TableId("id")
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     @TableField("app_id")
     private String appId;

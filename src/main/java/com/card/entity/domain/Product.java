@@ -1,5 +1,6 @@
 package com.card.entity.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -19,7 +20,7 @@ import java.util.Date;
 @TableName("product")
 public class Product implements Serializable {
     private static final long serialVersionUID = -54169886181194401L;
-    @TableId("id")
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     @TableField("name")
     private String name;

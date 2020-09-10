@@ -1,5 +1,6 @@
 package com.card.entity.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -16,7 +17,7 @@ import java.util.Date;
 @TableName("export_file")
 public class ExportFile implements Serializable {
     private static final long serialVersionUID = -4354740234512411573L;
-    @TableId("id")
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     @TableField("file_name")
     private String fileName;

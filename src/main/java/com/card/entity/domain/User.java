@@ -1,5 +1,6 @@
 package com.card.entity.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -18,7 +19,7 @@ import java.util.Date;
 @TableName("user")
 public class User implements Serializable {
     private static final long serialVersionUID = 1192800251115892576L;
-    @TableId("id")
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     @TableField("username")
     private String username;
@@ -49,5 +50,14 @@ public class User implements Serializable {
             return ResultVOUtil.success("roleId不能为空");
         }
         return null;
+    }
+
+    public User doBuild() {
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setEmail(email);
+        user.setState(state);
+        return user;
     }
 }

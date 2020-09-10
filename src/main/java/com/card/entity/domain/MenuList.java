@@ -1,5 +1,6 @@
 package com.card.entity.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -16,7 +17,7 @@ import java.util.Date;
 @TableName("menu_list")
 public class MenuList implements Serializable {
     private static final long serialVersionUID = 6371298069578228652L;
-    @TableId("id")
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     @TableField("name")
     private String name;

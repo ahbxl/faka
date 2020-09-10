@@ -1,5 +1,6 @@
 package com.card.entity.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -18,7 +19,7 @@ import java.util.Date;
 @TableName("category")
 public class Category implements Serializable {
     private static final long serialVersionUID = -5888981197198625157L;
-    @TableId("id")
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     @TableField("name")
     private String name;
@@ -31,7 +32,6 @@ public class Category implements Serializable {
 
     public Category doBuild() {
         Category category = new Category();
-        category.setId(id);
         category.setName(name);
         category.setParent(parent);
         category.setState(state);

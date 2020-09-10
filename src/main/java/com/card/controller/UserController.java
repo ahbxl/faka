@@ -1,13 +1,17 @@
 package com.card.controller;
 
+import com.card.command.IdsCommand;
 import com.card.command.user.UserCommand;
 import com.card.entity.domain.User;
 import com.card.entity.vo.ResultVO;
 import com.card.service.UserService;
 import com.card.util.ResultVOUtil;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -66,6 +70,29 @@ public class UserController {
     }
 
     /**
+     * 通过id批量删除用户
+     * 需要管理员权限
+     *
+     * @param command
+     * @return
+     */
+    @PostMapping("/admin/deleteByIds")
+    public ResultVO<Object> deleteByIds(@RequestBody IdsCommand command) {
+        command.validate();
+        List<Long> ids = Lists.newArrayList();
+        for (Long id : command.getIds()) {
+            User user = userService.selectById(id);
+            if (user == null) {
+                log.info("不存在该用户:" + id);
+            } else {
+                ids.add(user.getId());
+            }
+        }
+        userService.deleteByIds(ids);
+        return ResultVOUtil.success();
+    }
+
+    /**
      * 添加用户
      *
      * @param user 用户对象
@@ -74,7 +101,7 @@ public class UserController {
     @PostMapping("/insert")
     public ResultVO<Object> insert(@RequestBody User user) {
         user.validate();
-        userService.insert(user);
+        userService.insert(user.doBuild());
         return ResultVOUtil.success();
     }
 

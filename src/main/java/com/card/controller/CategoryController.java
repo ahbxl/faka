@@ -93,13 +93,13 @@ public class CategoryController {
      * 添加分类信息
      * 需要管理员权限
      *
-     * @param command
+     * @param category
      * @return
      */
     @PostMapping("/admin/insert")
-    public ResultVO<Object> categoryInsert(@RequestBody Category command) {
-        command.validate();
-        categoryService.insert(command.doBuild());
+    public ResultVO<Object> categoryInsert(@RequestBody Category category) {
+        category.validate();
+        categoryService.insert(category.doBuild());
         return ResultVOUtil.success();
     }
 

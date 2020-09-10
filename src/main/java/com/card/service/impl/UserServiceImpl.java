@@ -12,6 +12,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class UserServiceImpl implements UserService {
@@ -78,5 +80,11 @@ public class UserServiceImpl implements UserService {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().eq(User::getUsername, username);
         return userDao.selectOne(queryWrapper);
+    }
+
+    @Override
+    public void deleteByIds(List<Long> ids) {
+        if (ids.size() != 0)
+            userDao.deleteByIds(ids);
     }
 }
