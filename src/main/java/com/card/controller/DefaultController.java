@@ -37,7 +37,7 @@ public class DefaultController {
     public ResultVO<Object> findByUsernameAndPassword(@RequestBody User user) {
         user.validate();
         Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUsername(), user.getPassword());
+        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUsername(), user.getPassword(),true);
         try {
             subject.login(usernamePasswordToken);
             // 生成token，token有效时间为30分钟

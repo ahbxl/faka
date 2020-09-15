@@ -3,6 +3,7 @@ package com.card.security;
 import com.card.entity.SystemConstant;
 import com.card.entity.vo.CheckResult;
 import com.card.util.JwtUtil;
+import com.card.util.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
@@ -35,12 +36,15 @@ public class NoSessionFilter extends BasicHttpAuthenticationFilter {
         // 验证token
         CheckResult checkResult = JwtUtil.validateJWT(token);
         if (checkResult.isSuccess()) {
+            // 验证通过
             return true;
         } else {
             if (checkResult.getErrCode().equals(SystemConstant.JWT_ERRCODE_EXPIRE)) {
-                throw new RuntimeException("token过期，请重新登录");
+                return false;
+//                throw new RuntimeException("token过期，请重新登录");
             } else if (checkResult.getErrCode().equals(SystemConstant.JWT_ERRCODE_FAIL)) {
-                throw new RuntimeException("token验证失败");
+                return false;
+//                throw new RuntimeException("token验证失败");
             }
             return false;
         }
