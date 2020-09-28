@@ -1,10 +1,15 @@
 package com.card.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.card.command.IdsCommand;
+import com.card.command.order.OrderSelectCommand;
 import com.card.dao.OrderDao;
 import com.card.entity.domain.Order;
 import com.card.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +27,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void orderUpdateById(Long id, Order order) {
+    public void updateById(Long id, Order order) {
         orderDao.orderUpdateById(id, order);
     }
 
@@ -48,5 +53,37 @@ public class OrderServiceImpl implements OrderService {
         QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("state", 0);
         return orderDao.selectList(queryWrapper);
+    }
+
+    @Override
+    public IPage<Order> selectByPage(Integer pageNum, Integer pageSize, OrderSelectCommand command) {
+        Page<Order> orderPage = new Page<>(pageNum, pageSize);
+        QueryWrapper<Order> wrapper = new QueryWrapper<>();
+        if (!StringUtils.isBlank(command.getSubject())) {
+            wrapper.like("subject", command.getSubject());
+        }
+        if (!StringUtils.isBlank(command.getOutTradeNo())) {
+            wrapper.like("outTradeNo", command.getOutTradeNo());
+        }
+        if (null != command.getState()) {
+            wrapper.eq("state", command.getState());
+        }
+        if (null != command.getStartTime() && null != command.getEndTime()) {
+            wrapper.between("create_time", command.getStartTime(), command.getEndTime());
+        }
+        wrapper.orderByDesc("create_time");
+        return orderDao.selectPage(orderPage, wrapper);
+    }
+
+    @Override
+    public Order selectOne(Long id) {
+        QueryWrapper<Order> wrapper = new QueryWrapper<>();
+        wrapper.eq("id", id);
+        return orderDao.selectOne(wrapper);
+    }
+
+    @Override
+    public void deleteByIds(IdsCommand command) {
+        orderDao.orderDeleteByIds(command.getIds());
     }
 }

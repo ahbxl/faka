@@ -16,7 +16,7 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-@TableName("order")
+@TableName("`order`")
 public class Order implements Serializable {
     private static final long serialVersionUID = -6692823745412833806L;
     @TableId(value = "id", type = IdType.AUTO)

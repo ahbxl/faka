@@ -4,7 +4,7 @@
 <mapper namespace="com.card.dao.OrderDao">
 
     <delete id="orderDeleteByIds">
-        delete from order where id in
+        delete from `order` where id in
         <foreach collection="ids" open="(" separator="," close=")" item="item">
             #{item}
         </foreach>
@@ -23,6 +23,9 @@
             </if>
             <if test="order.outTradeNo != null and order.outTradeNo!=''">
                 , outTradeNo = #{order.outTradeNo}
+            </if>
+            <if test="order.state != null">
+                , state = #{order.state}
             </if>
         </set>
         where id = #{id}
