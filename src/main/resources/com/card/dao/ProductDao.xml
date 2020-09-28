@@ -11,8 +11,8 @@
         <result column="create_time" property="createTime"/>
     </resultMap>
     <insert id="productInsert">
-        insert into product(`name`,price,state,category_id,create_time)values
-            (#{product.name},#{product.price},#{product.state},#{product.categoryId},#{product.createTime})
+        insert into product(`name`,price,state,category_id)values
+            (#{product.name},#{product.price},#{product.state},#{product.categoryId})
     </insert>
     <delete id="productDeleteByIds">
         delete from product where id in
@@ -24,18 +24,18 @@
         update product
         <set>
             <if test="product.name != null and product.name!=''">
-                name = #{product.name}
+                `name` = #{product.name}
             </if>
-            <if test="product.price != null and product.price!=''">
+            <if test="product.price != null">
                 , price = #{product.price}
             </if>
             <if test="product.state != null">
                 , state = #{product.state}
             </if>
-            <if test="product.categoryId != null and product.categoryId!=''">
+            <if test="product.categoryId != null">
                 , category_id = #{product.categoryId}
             </if>
-            <if test="product.createTime != null and product.createTime!=''">
+            <if test="product.createTime != null">
                 , create_time = #{product.createTime}
             </if>
         </set>

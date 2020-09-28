@@ -30,7 +30,7 @@ public class ProductServiceImpl implements ProductService {
     public Product selectOne(Long id) {
         QueryWrapper<Product> wrapper = new QueryWrapper<>();
         wrapper.eq("id", id);
-        wrapper.select("id", "name", "price");
+        wrapper.select("id", "name", "price", "category_id", "state");
         return productDao.selectOne(wrapper);
     }
 
@@ -41,7 +41,6 @@ public class ProductServiceImpl implements ProductService {
         wrapper.select("id", "name").orderBy(false, true, "state");
         return productDao.selectList(wrapper);
     }
-
 
 
     @Override
@@ -75,6 +74,7 @@ public class ProductServiceImpl implements ProductService {
         if (null != command.getStartTime() && null != command.getEndTime()) {
             wrapper.between("create_time", command.getStartTime(), command.getEndTime());
         }
+        wrapper.orderByDesc("create_time");
         return productDao.selectPage(productPage, wrapper);
     }
 }

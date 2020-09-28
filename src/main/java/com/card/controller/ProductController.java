@@ -92,7 +92,7 @@ public class ProductController {
      * @param product 产品对象
      * @return
      */
-    @PostMapping("/product/insert")
+    @PostMapping("/admin/insert")
     public ResultVO<Object> insert(@RequestBody Product product) {
         product.validate();
         productService.insert(product);
