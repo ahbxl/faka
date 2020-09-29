@@ -9,9 +9,13 @@ import com.card.util.ResultVOUtil;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -99,8 +103,11 @@ public class UserController {
      * @return
      */
     @PostMapping("/insert")
-    public ResultVO<Object> insert(@RequestBody User user) {
-        user.validate();
+    public ResultVO<Object> insert(@Validated @RequestBody User user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<ObjectError> allErrors = bindingResult.getAllErrors();
+            return ResultVOUtil.fail(allErrors.stream().map(ObjectError::getDefaultMessage).collect(Collectors.toList()));
+        }
         userService.insert(user.doBuild());
         return ResultVOUtil.success();
     }

@@ -10,6 +10,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -22,9 +26,13 @@ public class User implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     @TableField("username")
+    @NotBlank(message = "{user.name.notBlank}")
     private String username;
+    @NotBlank(message = "{user.password.notBlank}")
     @TableField("password")
     private String password;
+    @NotBlank(message = "{user.email.notBlank}")
+    @Email(message = "{user.email.pattern}")
     @TableField("email")
     private String email;
     @TableField("state")
