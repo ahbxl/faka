@@ -24,8 +24,8 @@
         where id = #{id}
     </update>
     <insert id="cardInsert">
-        insert into card(content,state,product_id,create_time) values
-        (#{card.content},#{card.state},#{card.productId},#{card.createTime})
+        insert into card(content,state,product_id) values
+        (#{card.content},#{card.state},#{card.productId})
     </insert>
 
     <select id="cardExportFindByStateAndTime" resultType="com.card.command.exportfile.CardExport">
@@ -44,4 +44,22 @@
         left join product on card.product_id = product.id
         order by product.id
     </select>
+    <update id="updateById">
+        update card
+        <set>
+            <if test="card.content != null and card.content!=''">
+                `content` = #{card.content}
+            </if>
+            <if test="card.state != null">
+                , state = #{card.state}
+            </if>
+            <if test="card.productId != null">
+                , product_id = #{card.productId }
+            </if>
+            <if test="card.createTime != null">
+                , create_time = #{card.createTime}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
 </mapper>

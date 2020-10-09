@@ -98,4 +98,14 @@ public class ProductController {
         productService.insert(product);
         return ResultVOUtil.success();
     }
+
+    /**
+     * 查看所有的产品信息
+     *
+     * @return
+     */
+    @PostMapping("/admin/findAll")
+    public ResultVO<Object> findAll() {
+        return ResultVOUtil.success(productService.selectAll());
+    }
 }

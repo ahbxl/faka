@@ -7,7 +7,6 @@ import com.card.command.IdsCommand;
 import com.card.command.product.ProductFindCommand;
 import com.card.dao.CardDao;
 import com.card.dao.ProductDao;
-import com.card.entity.domain.Card;
 import com.card.entity.domain.Product;
 import com.card.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
@@ -76,5 +75,12 @@ public class ProductServiceImpl implements ProductService {
         }
         wrapper.orderByDesc("create_time");
         return productDao.selectPage(productPage, wrapper);
+    }
+
+    @Override
+    public List<Product> selectAll() {
+        QueryWrapper<Product> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id", "name").orderBy(false, true, "state");
+        return productDao.selectList(queryWrapper);
     }
 }
