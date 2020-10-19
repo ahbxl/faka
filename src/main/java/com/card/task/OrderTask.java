@@ -1,6 +1,6 @@
 package com.card.task;
 
-import com.card.entity.domain.Order;
+import com.card.entity.Order;
 import com.card.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

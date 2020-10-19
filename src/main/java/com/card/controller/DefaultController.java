@@ -1,6 +1,6 @@
 package com.card.controller;
 
-import com.card.entity.domain.User;
+import com.card.entity.User;
 import com.card.entity.vo.ResultVO;
 import com.card.service.UserService;
 import com.card.util.JwtUtil;
@@ -35,9 +35,8 @@ public class DefaultController {
      */
     @PostMapping("/login")
     public ResultVO<Object> findByUsernameAndPassword(@RequestBody User user) {
-        user.validate();
         Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUsername(), user.getPassword(),true);
+        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUsername(), user.getPassword(), true);
         try {
             subject.login(usernamePasswordToken);
             // 生成token，token有效时间为30分钟

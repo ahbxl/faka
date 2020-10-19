@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.card.command.IdsCommand;
 import com.card.command.card.CardFindCommand;
 import com.card.command.exportfile.CardExport;
-import com.card.entity.domain.Card;
-import com.card.entity.domain.Product;
+import com.card.entity.Card;
 
 import java.util.List;
 

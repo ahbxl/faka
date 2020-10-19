@@ -2,7 +2,7 @@ package com.card.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.card.command.exportfile.ExportFileCommand;
-import com.card.entity.domain.ExportFile;
+import com.card.entity.ExportFile;
 
 import java.util.List;
 

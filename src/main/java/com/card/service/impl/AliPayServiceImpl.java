@@ -8,13 +8,11 @@ import com.alipay.easysdk.factory.Factory;
 import com.alipay.easysdk.kernel.Config;
 import com.alipay.easysdk.payment.facetoface.models.AlipayTradePrecreateResponse;
 import com.card.dao.AliPayConfigDao;
-import com.card.entity.domain.AliPayConfig;
+import com.card.entity.AliPayConfig;
 import com.card.service.AliPayService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import static com.alipay.api.AlipayConstants.CHARSET;
 
 @Service
 @Slf4j

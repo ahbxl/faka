@@ -2,7 +2,7 @@ package com.card.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.card.command.category.CategoryFindCommand;
-import com.card.entity.domain.Category;
+import com.card.entity.Category;
 
 import java.util.List;
 

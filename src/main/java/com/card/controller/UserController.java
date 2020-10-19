@@ -2,7 +2,7 @@ package com.card.controller;
 
 import com.card.command.IdsCommand;
 import com.card.command.user.UserCommand;
-import com.card.entity.domain.User;
+import com.card.entity.User;
 import com.card.entity.vo.ResultVO;
 import com.card.service.UserService;
 import com.card.util.ResultVOUtil;
@@ -47,7 +47,6 @@ public class UserController {
      */
     @PostMapping("/admin/updateById/{id}")
     public ResultVO<Object> updateById(@PathVariable("id") Long id, @RequestBody User user) {
-        user.validate();
         User userById = userService.selectById(id);
         if (userById == null) {
             return ResultVOUtil.fail("不存在该用户");

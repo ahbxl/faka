@@ -1,6 +1,6 @@
 package com.card.security;
 
-import com.card.entity.domain.User;
+import com.card.entity.User;
 import com.card.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.*;

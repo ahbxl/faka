@@ -1,8 +1,6 @@
 package com.card.service;
 
-import com.card.entity.domain.ExportFile;
-
-import javax.servlet.http.HttpServletResponse;
+import com.card.entity.ExportFile;
 
 /**
  * 基于Spring创建线程任务服务接口

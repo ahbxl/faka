@@ -1,7 +1,6 @@
 package com.card.controller;
 
 import com.card.command.menulist.MenuListACommand;
-import com.card.entity.vo.ResultVO;
 import com.card.service.MenuListService;
 import com.card.util.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;

@@ -2,11 +2,9 @@ package com.card.controller;
 
 import com.card.command.IdsCommand;
 import com.card.command.category.CategoryFindCommand;
-import com.card.entity.domain.Category;
-import com.card.entity.vo.ResultVO;
+import com.card.entity.Category;
 import com.card.service.CategoryService;
 import com.card.util.ResultVOUtil;
-import com.fasterxml.jackson.databind.node.LongNode;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

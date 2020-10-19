@@ -2,8 +2,7 @@ package com.card.controller;
 
 import com.card.command.IdsCommand;
 import com.card.command.card.CardFindCommand;
-import com.card.entity.domain.Card;
-import com.card.entity.vo.ResultVO;
+import com.card.entity.Card;
 import com.card.service.CardService;
 import com.card.util.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;

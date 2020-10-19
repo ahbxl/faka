@@ -7,7 +7,7 @@ import com.card.command.IdsCommand;
 import com.card.command.card.CardFindCommand;
 import com.card.command.exportfile.CardExport;
 import com.card.dao.CardDao;
-import com.card.entity.domain.Card;
+import com.card.entity.Card;
 import com.card.service.CardService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

@@ -1,6 +1,5 @@
 package com.card.advice;
 
-import com.card.entity.vo.ResultVO;
 import com.card.util.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;

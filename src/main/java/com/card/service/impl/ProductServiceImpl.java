@@ -7,7 +7,7 @@ import com.card.command.IdsCommand;
 import com.card.command.product.ProductFindCommand;
 import com.card.dao.CardDao;
 import com.card.dao.ProductDao;
-import com.card.entity.domain.Product;
+import com.card.entity.Product;
 import com.card.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

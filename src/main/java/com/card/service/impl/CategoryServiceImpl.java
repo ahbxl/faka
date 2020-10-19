@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.card.command.category.CategoryFindCommand;
 import com.card.dao.CategoryDao;
-import com.card.entity.domain.Category;
+import com.card.entity.Category;
 import com.card.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

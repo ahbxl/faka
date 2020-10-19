@@ -1,7 +1,7 @@
 package com.card.service;
 
 import com.alipay.easysdk.payment.facetoface.models.AlipayTradePrecreateResponse;
-import com.card.entity.domain.AliPayConfig;
+import com.card.entity.AliPayConfig;
 
 public interface AliPayService {
     /**

@@ -1,7 +1,7 @@
 package com.card.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.card.entity.domain.Product;
+import com.card.entity.Product;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;

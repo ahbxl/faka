@@ -24,11 +24,11 @@
         where id = #{id}
     </update>
     <insert id="cardInsert">
-        insert into card(content,state,product_id) values
-        (#{card.content},#{card.state},#{card.productId})
+        insert into card(content, state, product_id)
+        values (#{card.content}, #{card.state}, #{card.productId})
     </insert>
 
-    <select id="cardExportFindByStateAndTime" resultType="com.card.command.exportfile.CardExport">
+    <select id="cardExportFindByStateAndTime" resultType="com.card.entity.Card">
         select card.id id, card.content content, product.name productName
         from (select card.id, card.content, card.product_id
         from card

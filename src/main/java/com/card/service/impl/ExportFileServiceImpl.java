@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.card.command.exportfile.ExportFileCommand;
 import com.card.dao.ExportFileDao;
-import com.card.entity.domain.ExportFile;
+import com.card.entity.ExportFile;
 import com.card.enu.ExportFileState;
 import com.card.service.ExportFileService;
 import com.card.util.SecurityUtil;

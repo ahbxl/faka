@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.card.command.IdsCommand;
 import com.card.command.order.OrderSelectCommand;
 import com.card.dao.OrderDao;
-import com.card.entity.domain.Order;
+import com.card.entity.Order;
 import com.card.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

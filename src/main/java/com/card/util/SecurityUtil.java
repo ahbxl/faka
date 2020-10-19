@@ -1,6 +1,6 @@
 package com.card.util;
 
-import com.card.entity.domain.User;
+import com.card.entity.User;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 

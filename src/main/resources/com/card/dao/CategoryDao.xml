@@ -24,7 +24,7 @@
         insert into `category`(`name`,state) values
             (#{category.name},#{category.state})
     </insert>
-    <select id="findAllExceptSelf" resultType="com.card.entity.domain.Category">
+    <select id="findAllExceptSelf" resultType="com.card.entity.Category">
         select id,`name`,parent,state,create_time from category
         <where>
             <if test="id != null ">

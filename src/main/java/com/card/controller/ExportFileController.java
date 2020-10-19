@@ -2,8 +2,7 @@ package com.card.controller;
 
 import com.card.command.IdsCommand;
 import com.card.command.exportfile.ExportFileCommand;
-import com.card.entity.domain.ExportFile;
-import com.card.entity.vo.ResultVO;
+import com.card.entity.ExportFile;
 import com.card.enu.ExportFileState;
 import com.card.service.CustomMultiThreadingService;
 import com.card.service.ExportFileService;

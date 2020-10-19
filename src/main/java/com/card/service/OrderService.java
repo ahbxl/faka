@@ -3,7 +3,7 @@ package com.card.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.card.command.IdsCommand;
 import com.card.command.order.OrderSelectCommand;
-import com.card.entity.domain.Order;
+import com.card.entity.Order;
 
 import java.util.List;
 
