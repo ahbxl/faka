@@ -1,29 +1,23 @@
 package com.card.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.card.command.IdsCommand;
-import com.card.command.card.CardFindCommand;
-import com.card.command.exportfile.CardExport;
 import com.card.entity.Card;
+import com.card.entity.vo.CardVO;
 
 import java.util.List;
 
 public interface CardService {
     void cardDeleteByIds(List<Long> ids);
 
-    void cardUpdateById(Long id, Card card);
+    void insert(Card card);
 
-    void cardInsert(Card card);
+    IPage<Card> selectPage(CardVO cardVO);
 
-    List<CardExport> cardExportFindByStateAndTime(Integer state, Long startTime, Long endTime);
+    Integer countByProductId(Long productId);
 
-    Integer countByProductId(Long id);
-
-    IPage<Card> selectByPage(Integer pageNum, Integer pageSize, CardFindCommand command);
-
-    void updateById(Long id, Card card);
+    void updateById(Card card);
 
     Card selectOne(Long id);
 
-    void deleteByIds(IdsCommand command);
+    void deleteBatchIds(List<Long> ids);
 }

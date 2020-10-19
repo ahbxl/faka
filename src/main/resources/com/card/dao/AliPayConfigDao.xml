@@ -2,19 +2,4 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.card.dao.AliPayConfigDao">
-    <update id="updateById">
-        update ali_pay_config
-        <set>
-            <if test="aliPayConfig.appId != null">
-                app_id = #{aliPayConfig.appId}
-            </if>
-            <if test="aliPayConfig.merchantPrivateKey != null">
-                , merchant_private_key = #{aliPayConfig.merchantPrivateKey}
-            </if>
-            <if test="aliPayConfig.aliPayPublicKey != null">
-                , ali_pay_public_key = #{aliPayConfig.aliPayPublicKey}
-            </if>
-        </set>
-        where id = #{id}
-    </update>
 </mapper>

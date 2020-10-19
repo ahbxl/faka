@@ -8,7 +8,7 @@ import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class RoleVO extends Page implements Serializable {
+public class RoleVO extends PageVO implements Serializable {
     private static final long serialVersionUID = 2147982144935437262L;
     private Long id;
     private String name;

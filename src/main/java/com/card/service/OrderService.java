@@ -1,28 +1,25 @@
 package com.card.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.card.command.IdsCommand;
-import com.card.command.order.OrderSelectCommand;
 import com.card.entity.Order;
+import com.card.entity.vo.OrderVO;
 
 import java.util.List;
 
 public interface OrderService {
-    void orderDeleteByIds(List<Long> ids);
+    void deleteBatchIds(List<Long> ids);
 
-    void updateById(Long id, Order order);
+    void updateById(Order order);
 
-    void orderInsert(Order order);
+    void insert(Order order);
 
-    void orderDeleteByState(Integer state);
+    void deleteByState(Integer state);
 
     void orderUpdateStateByOutTradeNo(String outTradeNo, Integer state);
 
-    List<Order> selectByState(Integer state);
-
-    IPage<Order> selectByPage(Integer pageNum, Integer pageSize, OrderSelectCommand command);
+    IPage<Order> selectPage(OrderVO orderVO);
 
     Order selectOne(Long id);
 
-    void deleteByIds(IdsCommand command);
+    List<Order> selectByState(Integer state);
 }

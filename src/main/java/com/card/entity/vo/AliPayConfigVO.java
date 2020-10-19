@@ -8,7 +8,7 @@ import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class AliPayConfigVO extends Page implements Serializable {
+public class AliPayConfigVO extends PageVO implements Serializable {
     private static final long serialVersionUID = -21865525976214117L;
     private Long id;
     private Long userId;

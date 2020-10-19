@@ -17,8 +17,8 @@ public class Category implements Serializable {
     private Long id;
     @TableField("name")
     private String name;
-    @TableField("parent")
-    private Long parent;
+    @TableField("parent_id")
+    private Long parentId;
     @TableField("state") // 状态 0/下架 1/上架 默认上架
     private Integer state;
     @TableField("create_time")

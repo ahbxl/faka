@@ -3,11 +3,9 @@ package com.card.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.card.command.IdsCommand;
-import com.card.command.card.CardFindCommand;
-import com.card.command.exportfile.CardExport;
 import com.card.dao.CardDao;
 import com.card.entity.Card;
+import com.card.entity.vo.CardVO;
 import com.card.service.CardService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -24,50 +22,44 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public void cardDeleteByIds(List<Long> ids) {
-        cardDao.cardDeleteByIds(ids);
+        cardDao.deleteBatchIds(ids);
     }
 
     @Override
-    public void cardUpdateById(Long id, Card card) {
-        cardDao.cardUpdateById(id, card);
+    public void insert(Card card) {
+        cardDao.insert(card);
     }
 
     @Override
-    public void cardInsert(Card card) {
-        cardDao.cardInsert(card);
-    }
-
-    @Override
-    public List<CardExport> cardExportFindByStateAndTime(Integer state, Long startTime, Long endTime) {
-        return cardDao.cardExportFindByStateAndTime(state, startTime, endTime);
+    public IPage<Card> selectPage(CardVO cardVO) {
+        Page<Card> cardPage = new Page<>(cardVO.getPageNum(), cardVO.getPageSize());
+        QueryWrapper<Card> queryWrapper = new QueryWrapper<>();
+        if (null != cardVO.getProductId()) {
+            queryWrapper.eq("product_id", cardVO.getProductId());
+        }
+        if (StringUtils.isNotBlank(cardVO.getContent())) {
+            queryWrapper.like("content", cardVO.getContent());
+        }
+        if (null != cardVO.getState()) {
+            queryWrapper.eq("state", cardVO.getState());
+        }
+        if (null != cardVO.getStartTime() && null != cardVO.getEndTime()) {
+            queryWrapper.between("create_time", cardVO.getStartTime(), cardVO.getEndTime());
+        }
+        queryWrapper.orderByDesc("create_time");
+        return cardDao.selectPage(cardPage, queryWrapper);
     }
 
     @Override
     public Integer countByProductId(Long productId) {
         QueryWrapper<Card> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(Card::getProductId, productId);
+        queryWrapper.eq("product_id", productId);
         return cardDao.selectCount(queryWrapper);
     }
 
     @Override
-    public IPage<Card> selectByPage(Integer pageNum, Integer pageSize, CardFindCommand command) {
-        Page<Card> categoryPage = new Page<>(pageNum, pageSize);
-        QueryWrapper<Card> wrapper = new QueryWrapper<>();
-        if (!StringUtils.isBlank(command.getContent())) {
-            wrapper.like("content", command.getContent());
-        }
-        if (null != command.getState()) {
-            wrapper.eq("state", command.getState());
-        }
-        if (null != command.getStartTime() && null != command.getEndTime()) {
-            wrapper.between("create_time", command.getStartTime(), command.getEndTime());
-        }
-        return cardDao.selectPage(categoryPage, wrapper);
-    }
-
-    @Override
-    public void updateById(Long id, Card card) {
-        cardDao.updateById(id, card);
+    public void updateById(Card card) {
+        cardDao.updateById(card);
     }
 
     @Override
@@ -79,7 +71,7 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public void deleteByIds(IdsCommand command) {
-        cardDao.cardDeleteByIds(command.getIds());
+    public void deleteBatchIds(List<Long> ids) {
+        cardDao.deleteBatchIds(ids);
     }
 }

@@ -10,9 +10,10 @@ import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class UserVO extends Page implements Serializable {
+public class UserVO extends PageVO implements Serializable {
     private static final long serialVersionUID = 7021223076084300328L;
     private Long id;
+    private Long parentId; // 上级id
     private Long roleId; // 角色id
     @NotBlank(message = "{user.name.notBlank}")
     private String username;

@@ -2,33 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.card.dao.CardDao">
-    <delete id="cardDeleteByIds">
-        delete from card where id in
-        <foreach collection="ids" open="(" separator="," close=")" item="item">
-            #{item}
-        </foreach>
-    </delete>
-    <update id="cardUpdateById">
-        update card
-        <set>
-            <if test="card.content != null and card.content != ''">
-                content = #{card.content}
-            </if>
-            <if test="card.state != null">
-                ,state = #{card.state}
-            </if>
-            <if test="card.productId != null and card.productId != ''">
-                ,product_id = #{card.productId}
-            </if>
-        </set>
-        where id = #{id}
-    </update>
-    <insert id="cardInsert">
-        insert into card(content, state, product_id)
-        values (#{card.content}, #{card.state}, #{card.productId})
-    </insert>
-
-    <select id="cardExportFindByStateAndTime" resultType="com.card.entity.Card">
+    <select id="selectByStateAndTime" resultType="com.card.entity.Card">
         select card.id id, card.content content, product.name productName
         from (select card.id, card.content, card.product_id
         from card
@@ -44,22 +18,4 @@
         left join product on card.product_id = product.id
         order by product.id
     </select>
-    <update id="updateById">
-        update card
-        <set>
-            <if test="card.content != null and card.content!=''">
-                `content` = #{card.content}
-            </if>
-            <if test="card.state != null">
-                , state = #{card.state}
-            </if>
-            <if test="card.productId != null">
-                , product_id = #{card.productId }
-            </if>
-            <if test="card.createTime != null">
-                , create_time = #{card.createTime}
-            </if>
-        </set>
-        where id = #{id}
-    </update>
 </mapper>

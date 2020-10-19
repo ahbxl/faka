@@ -1,10 +1,11 @@
 package com.card.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.card.command.exportfile.CardExport;
 import com.card.dao.CardDao;
 import com.card.dao.ExportFileDao;
+import com.card.entity.Card;
 import com.card.entity.ExportFile;
+import com.card.entity.export.CardExport;
 import com.card.enu.ExportFileState;
 import com.card.service.CustomMultiThreadingService;
 import com.card.util.ExcelUtil;
@@ -44,9 +45,9 @@ public class CustomMultiThreadingServiceImpl implements CustomMultiThreadingServ
     @Async
     public void executeAysncCardExport(Long startTime, Long endTime, ExportFile exportFile) {
         // sheet1 数据
-        List<CardExport> cardExportsZero = cardDao.cardExportFindByStateAndTime(0, startTime, endTime);
+        List<Card> cardExportsZero = cardDao.selectByStateAndTime(0, startTime, endTime);
         // sheet2 数据
-        List<CardExport> cardExportsOne = cardDao.cardExportFindByStateAndTime(1, startTime, endTime);
+        List<Card> cardExportsOne = cardDao.selectByStateAndTime(1, startTime, endTime);
         // sheet1
         Map<String, Object> zeroSheet = ExcelUtil.createOneSheet("未售出的卡密", "未售出的卡密", CardExport.class, cardExportsZero);
         // sheet2

@@ -1,8 +1,7 @@
 package com.card.controller;
 
-import com.card.command.IdsCommand;
-import com.card.command.category.CategoryFindCommand;
 import com.card.entity.Category;
+import com.card.entity.vo.ResultVO;
 import com.card.service.CategoryService;
 import com.card.util.ResultVOUtil;
 import com.google.common.collect.Lists;
@@ -57,7 +56,6 @@ public class CategoryController {
      */
     @PostMapping("/admin/deleteByIds")
     public ResultVO<Object> categoryDeleteByIds(@RequestBody IdsCommand command) {
-        command.validate();
         ArrayList<Long> ids = Lists.newArrayList();
         for (Long id : command.getIds()) {
             Category category = categoryService.selectById(id);

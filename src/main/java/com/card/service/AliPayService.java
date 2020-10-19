@@ -2,6 +2,7 @@ package com.card.service;
 
 import com.alipay.easysdk.payment.facetoface.models.AlipayTradePrecreateResponse;
 import com.card.entity.AliPayConfig;
+import com.card.entity.vo.AliPayConfigVO;
 
 public interface AliPayService {
     /**
@@ -14,11 +15,11 @@ public interface AliPayService {
      */
     AlipayTradePrecreateResponse faceToFace(String subject, String outTradeNo, String totalAmount);
 
-    String queryTrade(String outTradeNo);
+    String selectByOutTradeNo(String outTradeNo);
 
     String cancelTrade(String outTradeNo);
 
-    void updateById(Long id, AliPayConfig aliPayConfig);
+    void updateById(AliPayConfig aliPayConfig);
 
     AliPayConfig selectById(Long id);
 }

@@ -17,6 +17,8 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1192800251115892576L;
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
+    @TableField("parent_id")
+    private Long parentId; // 上级id
     @TableField("role_id")
     private Long roleId; // 角色id
     @TableField("username")

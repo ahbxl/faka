@@ -20,10 +20,10 @@ public class MenuList implements Serializable {
     private Long id;
     @TableField("role_id")
     private Long roleId;
+    @TableField("parent_id")
+    private Long parentId;
     @TableField("name")
     private String name;
-    @TableField("parent")
-    private Long parent;
     @TableField("priority")
     private Integer priority;
     @TableField("path")

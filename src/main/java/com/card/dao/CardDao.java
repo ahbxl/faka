@@ -11,13 +11,5 @@ import java.util.List;
 @Mapper
 @Repository
 public interface CardDao extends BaseMapper<Card> {
-    void cardDeleteByIds(@Param("ids") List<Long> ids);
-
-    void cardUpdateById(@Param("id") Long id, @Param("card") Card card);
-
-    void cardInsert(@Param("card") Card card);
-
-    List<Card> cardExportFindByStateAndTime(@Param("state") Integer state, @Param("startTime") Long startTime, @Param("endTime") Long endTime);
-
-    void updateById(@Param("id") Long id, @Param("card") Card card);
+    List<Card> selectByStateAndTime(@Param("state") Integer state, @Param("startTime") Long startTime, @Param("endTime") Long endTime);
 }

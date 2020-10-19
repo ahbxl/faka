@@ -24,6 +24,6 @@ public class OrderTask {
         log.info(outTradeNos.toString());
         // 每月的1日的凌晨1点删除数据库中未支付的订单信息
         log.info("开始执行删除数据库中未支付的订单信息");
-        orderService.orderDeleteByState(0);
+        orderService.deleteByState(0);
     }
 }

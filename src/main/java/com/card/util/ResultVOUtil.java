@@ -1,5 +1,7 @@
 package com.card.util;
 
+import com.card.entity.vo.ResultVO;
+
 public class ResultVOUtil {
     public static ResultVO<Object> success(Object object) {
         ResultVO<Object> resultVO = new ResultVO<>();

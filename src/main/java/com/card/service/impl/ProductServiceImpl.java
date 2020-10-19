@@ -3,11 +3,9 @@ package com.card.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.card.command.IdsCommand;
-import com.card.command.product.ProductFindCommand;
-import com.card.dao.CardDao;
 import com.card.dao.ProductDao;
 import com.card.entity.Product;
+import com.card.entity.vo.ProductVO;
 import com.card.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -21,9 +19,6 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductDao productDao;
-
-    @Autowired
-    private CardDao cardDao;
 
     @Override
     public Product selectOne(Long id) {
@@ -44,43 +39,36 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void insert(Product product) {
-        productDao.productInsert(product);
+        productDao.insert(product);
     }
 
     @Override
-    public void updateById(Long id, Product product) {
-        productDao.productUpdateById(id, product);
+    public void updateById(Product product) {
+        productDao.updateById(product);
     }
 
     @Override
-    public void deleteByIds(IdsCommand command) {
-        productDao.productDeleteByIds(command.getIds());
+    public void deleteBatchIds(List<Long> ids) {
+        productDao.deleteBatchIds(ids);
     }
 
     @Override
-    public IPage<Product> selectByPage(Integer pageNum, Integer pageSize, ProductFindCommand command) {
-        Page<Product> productPage = new Page<>(pageNum, pageSize);
+    public IPage<Product> selectPage(ProductVO productVO) {
+        Page<Product> productPage = new Page<>(productVO.getPageNum(), productVO.getPageSize());
         QueryWrapper<Product> wrapper = new QueryWrapper<>();
-        if (!StringUtils.isBlank(command.getName())) {
-            wrapper.like("name", command.getName());
+        if (!StringUtils.isBlank(productVO.getName())) {
+            wrapper.like("name", productVO.getName());
         }
-        if (null != command.getState()) {
-            wrapper.eq("state", command.getState());
+        if (null != productVO.getState()) {
+            wrapper.eq("state", productVO.getState());
         }
-        if (null != command.getCategoryId()) {
-            wrapper.eq("category_id", command.getCategoryId());
+        if (null != productVO.getCategoryId()) {
+            wrapper.eq("category_id", productVO.getCategoryId());
         }
-        if (null != command.getStartTime() && null != command.getEndTime()) {
-            wrapper.between("create_time", command.getStartTime(), command.getEndTime());
+        if (null != productVO.getStartTime() && null != productVO.getEndTime()) {
+            wrapper.between("create_time", productVO.getStartTime(), productVO.getEndTime());
         }
         wrapper.orderByDesc("create_time");
         return productDao.selectPage(productPage, wrapper);
-    }
-
-    @Override
-    public List<Product> selectAll() {
-        QueryWrapper<Product> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id", "name").orderBy(false, true, "state");
-        return productDao.selectList(queryWrapper);
     }
 }

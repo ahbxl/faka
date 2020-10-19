@@ -3,10 +3,9 @@ package com.card.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.card.command.IdsCommand;
-import com.card.command.order.OrderSelectCommand;
 import com.card.dao.OrderDao;
 import com.card.entity.Order;
+import com.card.entity.vo.OrderVO;
 import com.card.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -22,22 +21,22 @@ public class OrderServiceImpl implements OrderService {
     private OrderDao orderDao;
 
     @Override
-    public void orderDeleteByIds(List<Long> ids) {
-        orderDao.orderDeleteByIds(ids);
+    public void deleteBatchIds(List<Long> ids) {
+        orderDao.deleteBatchIds(ids);
     }
 
     @Override
-    public void updateById(Long id, Order order) {
-        orderDao.orderUpdateById(id, order);
+    public void updateById(Order order) {
+        orderDao.updateById(order);
     }
 
     @Override
-    public void orderInsert(Order order) {
-        orderDao.orderInsert(order);
+    public void insert(Order order) {
+        orderDao.insert(order);
     }
 
     @Override
-    public void orderDeleteByState(Integer state) {
+    public void deleteByState(Integer state) {
         QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("state", 0);
         orderDao.delete(queryWrapper);
@@ -49,27 +48,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> selectByState(Integer state) {
-        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("state", 0);
-        return orderDao.selectList(queryWrapper);
-    }
-
-    @Override
-    public IPage<Order> selectByPage(Integer pageNum, Integer pageSize, OrderSelectCommand command) {
-        Page<Order> orderPage = new Page<>(pageNum, pageSize);
+    public IPage<Order> selectPage(OrderVO orderVO) {
+        Page<Order> orderPage = new Page<>(orderVO.getPageNum(), orderVO.getPageSize());
         QueryWrapper<Order> wrapper = new QueryWrapper<>();
-        if (!StringUtils.isBlank(command.getSubject())) {
-            wrapper.like("subject", command.getSubject());
+        if (!StringUtils.isBlank(orderVO.getSubject())) {
+            wrapper.like("subject", orderVO.getSubject());
         }
-        if (!StringUtils.isBlank(command.getOutTradeNo())) {
-            wrapper.like("outTradeNo", command.getOutTradeNo());
+        if (!StringUtils.isBlank(orderVO.getOutTradeNo())) {
+            wrapper.like("outTradeNo", orderVO.getOutTradeNo());
         }
-        if (null != command.getState()) {
-            wrapper.eq("state", command.getState());
+        if (null != orderVO.getState()) {
+            wrapper.eq("state", orderVO.getState());
         }
-        if (null != command.getStartTime() && null != command.getEndTime()) {
-            wrapper.between("create_time", command.getStartTime(), command.getEndTime());
+        if (null != orderVO.getStartTime() && null != orderVO.getEndTime()) {
+            wrapper.between("create_time", orderVO.getStartTime(), orderVO.getEndTime());
         }
         wrapper.orderByDesc("create_time");
         return orderDao.selectPage(orderPage, wrapper);
@@ -83,7 +75,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void deleteByIds(IdsCommand command) {
-        orderDao.orderDeleteByIds(command.getIds());
+    public List<Order> selectByState(Integer state) {
+        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("state",state);
+        return orderDao.selectList(queryWrapper);
     }
 }

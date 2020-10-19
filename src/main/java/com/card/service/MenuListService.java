@@ -1,12 +1,9 @@
 package com.card.service;
 
-import com.card.command.menulist.MenuListACommand;
-import com.card.command.menulist.MenuListBCommand;
-
-import java.util.List;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.card.entity.MenuList;
+import com.card.entity.vo.MenuListVO;
 
 public interface MenuListService {
-    List<MenuListBCommand> findByParent(Long parent);
-
-    List<MenuListACommand> findByParentNull();
+    IPage<MenuList> selectPage(MenuListVO menuListVO);
 }

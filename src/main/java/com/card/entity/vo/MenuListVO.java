@@ -8,12 +8,12 @@ import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class MenuListVO extends Page implements Serializable {
+public class MenuListVO extends PageVO implements Serializable {
     private static final long serialVersionUID = 3086526136023139210L;
     private Long id;
     private Long roleId;
+    private Long parentId;
     private String name;
-    private Long parent;
     private Integer priority;
     private String path;
     private Integer state;

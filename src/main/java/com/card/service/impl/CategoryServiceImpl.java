@@ -3,9 +3,9 @@ package com.card.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.card.command.category.CategoryFindCommand;
 import com.card.dao.CategoryDao;
 import com.card.entity.Category;
+import com.card.entity.vo.CategoryVO;
 import com.card.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -21,50 +21,42 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryDao categoryDao;
 
     @Override
-    public List<Category> selectAll() {
-        QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("id", "name").orderBy(false, true, "state");
-        return categoryDao.selectList(queryWrapper);
-    }
-
-    @Override
     public Category selectById(Long id) {
         return categoryDao.selectById(id);
     }
 
     @Override
-    public IPage<Category> selectByPage(Integer pageNum, Integer pageSize, CategoryFindCommand command) {
-        Page<Category> categoryPage = new Page<>(pageNum, pageSize);
+    public IPage<Category> selectPage(CategoryVO categoryVO) {
+        Page<Category> categoryPage = new Page<>(categoryVO.getPageNum(), categoryVO.getPageSize());
         QueryWrapper<Category> wrapper = new QueryWrapper<>();
-        if (!StringUtils.isBlank(command.getName())) {
-            wrapper.like("name", command.getName());
+        if (!StringUtils.isBlank(categoryVO.getName())) {
+            wrapper.like("name", categoryVO.getName());
         }
-        if (null != command.getState()) {
-            wrapper.eq("state", command.getState());
+        if (null != categoryVO.getState()) {
+            wrapper.eq("state", categoryVO.getState());
         }
-        if (null != command.getStartTime() && null != command.getEndTime()) {
-            wrapper.between("create_time", command.getStartTime(), command.getEndTime());
+        if (null != categoryVO.getParentId()) {
+            wrapper.eq("parent_id", categoryVO.getParentId());
         }
+        if (null != categoryVO.getStartTime() && null != categoryVO.getEndTime()) {
+            wrapper.between("create_time", categoryVO.getStartTime(), categoryVO.getEndTime());
+        }
+        wrapper.orderByDesc("create_time");
         return categoryDao.selectPage(categoryPage, wrapper);
     }
 
     @Override
-    public void deleteByIds(List<Long> ids) {
-        categoryDao.categoryDeleteByIds(ids);
+    public void deleteBatchIds(List<Long> ids) {
+        categoryDao.deleteBatchIds(ids);
     }
 
     @Override
-    public void updateById(Long id, Category category) {
-        categoryDao.categoryUpdateById(id, category);
+    public void updateById(Category category) {
+        categoryDao.updateById(category);
     }
 
     @Override
     public void insert(Category category) {
-        categoryDao.categoryInsert(category);
-    }
-
-    @Override
-    public List<Category> findAllExceptSelf(Long id) {
-        return categoryDao.findAllExceptSelf(id);
+        categoryDao.insert(category);
     }
 }

@@ -17,6 +17,8 @@ public class Card implements Serializable {
     private Long id;
     @TableField("product_id")
     private Long productId;
+    @TableField(exist = false)
+    private String productName;
     @TableField("content")
     private String content;
     @TableField("state")

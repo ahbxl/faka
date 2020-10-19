@@ -7,9 +7,12 @@ import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.easysdk.factory.Factory;
 import com.alipay.easysdk.kernel.Config;
 import com.alipay.easysdk.payment.facetoface.models.AlipayTradePrecreateResponse;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.card.dao.AliPayConfigDao;
+import com.card.dao.UserDao;
 import com.card.entity.AliPayConfig;
 import com.card.service.AliPayService;
+import com.card.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,10 +22,13 @@ import org.springframework.stereotype.Service;
 public class AliPayServiceImpl implements AliPayService {
     @Autowired
     private AliPayConfigDao aliPayConfigDao;
+    @Autowired
+    private UserDao userDao;
 
     @Override
     public AlipayTradePrecreateResponse faceToFace(String subject, String outTradeNo, String totalAmount) {
         try {
+
             AliPayConfig aliPayConfig = aliPayConfigDao.selectById(1);
             Config config = new Config();
             config.protocol = "https";
@@ -51,7 +57,7 @@ public class AliPayServiceImpl implements AliPayService {
             // 1. 设置参数（全局只需设置一次）
             Factory.setOptions(config);
             // 2. 发起API调用（以创建当面付收款二维码为例）// 二维码有效期为半小时(m：分钟)
-            return Factory.Payment.FaceToFace().optional("timeout_express","30m").preCreate(subject, outTradeNo, totalAmount);
+            return Factory.Payment.FaceToFace().optional("timeout_express", "30m").preCreate(subject, outTradeNo, totalAmount);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("预支付失败！");
@@ -59,9 +65,12 @@ public class AliPayServiceImpl implements AliPayService {
     }
 
     @Override
-    public String queryTrade(String outTradeNo) {
+    public String selectByOutTradeNo(String outTradeNo) {
         try {
-            AliPayConfig aliPayConfig = aliPayConfigDao.selectById(1);
+            // 获取当前用户上级的支付配置
+            QueryWrapper<AliPayConfig> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("parent_id", userDao.selectById(SecurityUtil.getCurrentUser().getId()).getParentId());
+            AliPayConfig aliPayConfig = aliPayConfigDao.selectOne(queryWrapper);
             //获得初始化的AlipayClient
             AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", aliPayConfig.getAppId(), aliPayConfig.getMerchantPrivateKey(), "json", "GBK", aliPayConfig.getAliPayPublicKey(), "RSA2");
             AlipayTradeQueryRequest request = new AlipayTradeQueryRequest(); //创建API对应的request类
@@ -77,7 +86,10 @@ public class AliPayServiceImpl implements AliPayService {
     @Override
     public String cancelTrade(String outTradeNo) {
         try {
-            AliPayConfig aliPayConfig = aliPayConfigDao.selectById(1);
+            // 获取当前用户上级的支付配置
+            QueryWrapper<AliPayConfig> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("parent_id", userDao.selectById(SecurityUtil.getCurrentUser().getId()).getParentId());
+            AliPayConfig aliPayConfig = aliPayConfigDao.selectOne(queryWrapper);
             //获得初始化的AlipayClient
             AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", aliPayConfig.getAppId(), aliPayConfig.getMerchantPrivateKey(), "json", "GBK", aliPayConfig.getAliPayPublicKey(), "RSA2");
             AlipayTradeCancelRequest request = new AlipayTradeCancelRequest(); //创建API对应的request类
@@ -91,12 +103,12 @@ public class AliPayServiceImpl implements AliPayService {
     }
 
     @Override
-    public void updateById(Long id, AliPayConfig aliPayConfig) {
-        aliPayConfigDao.updateById(id, aliPayConfig);
+    public void updateById(AliPayConfig aliPayConfig) {
+        aliPayConfigDao.updateById(aliPayConfig);
     }
 
     @Override
     public AliPayConfig selectById(Long id) {
-        return aliPayConfigDao.selectById(1);
+        return aliPayConfigDao.selectById(id);
     }
 }

@@ -9,5 +9,4 @@ import org.springframework.stereotype.Repository;
 @Mapper
 @Repository
 public interface AliPayConfigDao extends BaseMapper<AliPayConfig> {
-    void updateById(@Param("id") Long id, @Param("aliPayConfig") AliPayConfig aliPayConfig);
 }
