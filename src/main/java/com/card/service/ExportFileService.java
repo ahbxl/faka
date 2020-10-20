@@ -20,7 +20,7 @@ public interface ExportFileService {
      *
      * @param exportFile
      */
-    void insert(ExportFile exportFile);
+    Integer insert(ExportFile exportFile);
 
     /**
      * 下载文件

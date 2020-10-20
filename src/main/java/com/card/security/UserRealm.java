@@ -1,6 +1,7 @@
 package com.card.security;
 
 import com.card.entity.User;
+import com.card.entity.vo.UserVO;
 import com.card.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.*;
@@ -24,7 +25,10 @@ public class UserRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         log.info("=========执行认证=========");
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) authenticationToken;
-        User user = userService.selectByUsernameAndPassword(usernamePasswordToken.getUsername(), String.valueOf(usernamePasswordToken.getPassword()));
+        UserVO userVO = new UserVO();
+        userVO.setUsername(usernamePasswordToken.getUsername());
+        userVO.setPassword(String.valueOf(usernamePasswordToken.getPassword()));
+        User user = userService.selectByUsernameAndPassword(userVO);
         if (user == null) {
             return null;
         }

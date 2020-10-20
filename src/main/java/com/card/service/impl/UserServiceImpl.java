@@ -3,6 +3,7 @@ package com.card.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.card.dao.UserDao;
 import com.card.entity.User;
 import com.card.entity.vo.UserVO;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserDao,User> implements UserService {
     @Autowired
     private UserDao userDao;
 
@@ -53,16 +54,6 @@ public class UserServiceImpl implements UserService {
         }
         wrapper.orderByDesc("create_time");
         return userDao.selectPage(userPage, wrapper);
-    }
-
-    @Override
-    public void updateById(User user) {
-        userDao.updateById(user);
-    }
-
-    @Override
-    public void deleteById(Long id) {
-        userDao.deleteById(id);
     }
 
     @Override

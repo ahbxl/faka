@@ -1,19 +1,25 @@
 package com.card.controller;
 
-import com.card.command.IdsCommand;
-import com.card.command.user.UserCommand;
 import com.card.entity.User;
 import com.card.entity.vo.ResultVO;
+import com.card.entity.vo.UserVO;
 import com.card.service.UserService;
+import com.card.util.JwtUtil;
 import com.card.util.ResultVOUtil;
-import com.google.common.collect.Lists;
+import com.card.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,30 +34,27 @@ public class UserController {
      * 分页查询用户
      * 需要管理员权限
      *
-     * @param pageNum  当前页
-     * @param pageSize 页大小
-     * @param command  查询对象
+     * @param userVO
      * @return
      */
-    @PostMapping("/admin/findByPage/{pageNum}/{pageSize}")
-    public ResultVO<Object> findByPage(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @RequestBody UserCommand command) {
-        return ResultVOUtil.success(userService.selectByPage(pageNum, pageSize, command));
+    @PostMapping("/admin/selectPage")
+    public ResultVO<Object> selectPage(@RequestBody UserVO userVO) {
+        return ResultVOUtil.success(userService.selectPage(userVO));
     }
 
     /**
      * 通过id修改用户
      *
-     * @param id   id
-     * @param user 用户对象
+     * @param user
      * @return
      */
-    @PostMapping("/admin/updateById/{id}")
-    public ResultVO<Object> updateById(@PathVariable("id") Long id, @RequestBody User user) {
-        User userById = userService.selectById(id);
+    @PostMapping("/admin/updateById")
+    public ResultVO<Object> updateById(@RequestBody User user) {
+        User userById = userService.selectById(user.getId());
         if (userById == null) {
             return ResultVOUtil.fail("不存在该用户");
         }
-        userService.updateById(id, user);
+        userService.updateById(user);
         return ResultVOUtil.success();
     }
 
@@ -59,39 +62,12 @@ public class UserController {
      * 通过id删除用户
      * 需要管理员权限
      *
-     * @param id id
+     * @param userVO
      * @return
      */
-    @PostMapping("/admin/deleteById/{id}")
-    public ResultVO<Object> deleteById(@PathVariable("id") Long id) {
-        User user = userService.selectById(id);
-        if (user == null) {
-            return ResultVOUtil.fail("不存在该用户");
-        }
-        userService.deleteById(id);
-        return ResultVOUtil.success();
-    }
-
-    /**
-     * 通过id批量删除用户
-     * 需要管理员权限
-     *
-     * @param command
-     * @return
-     */
-    @PostMapping("/admin/deleteByIds")
-    public ResultVO<Object> deleteByIds(@RequestBody IdsCommand command) {
-        command.validate();
-        List<Long> ids = Lists.newArrayList();
-        for (Long id : command.getIds()) {
-            User user = userService.selectById(id);
-            if (user == null) {
-                log.info("不存在该用户:" + id);
-            } else {
-                ids.add(user.getId());
-            }
-        }
-        userService.deleteByIds(ids);
+    @PostMapping("/admin/deleteBatchIds")
+    public ResultVO<Object> deleteBatchIds(@RequestBody UserVO userVO) {
+        userService.deleteBatchIds(userVO.getIds());
         return ResultVOUtil.success();
     }
 
@@ -107,22 +83,69 @@ public class UserController {
             List<ObjectError> allErrors = bindingResult.getAllErrors();
             return ResultVOUtil.fail(allErrors.stream().map(ObjectError::getDefaultMessage).collect(Collectors.toList()));
         }
-        userService.insert(user.doBuild());
+        userService.insert(user);
         return ResultVOUtil.success();
     }
 
     /**
      * 通过id查询用户
      *
-     * @param id id
+     * @param userVO
      * @return
      */
-    @PostMapping("/admin/selectById/{id}")
-    public ResultVO<Object> selectById(@PathVariable("id") Long id) {
-        User user = userService.selectById(id);
-        if (user == null) {
-            return ResultVOUtil.fail("不存在该用户");
+    @PostMapping("/admin/selectById")
+    public ResultVO<Object> selectById(@RequestBody UserVO userVO) {
+        return ResultVOUtil.success(userService.selectById(userVO.getId()));
+    }
+
+    /**
+     * 登录
+     *
+     * @param user 登录的用户对象
+     * @return
+     */
+    @PostMapping("/login")
+    public ResultVO<Object> findByUsernameAndPassword(@RequestBody User user) {
+        Subject subject = SecurityUtils.getSubject();
+        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUsername(), user.getPassword(), true);
+        try {
+            subject.login(usernamePasswordToken);
+            // 生成token，token有效时间为30分钟
+            String token = JwtUtil.createJWT(String.valueOf(new Date()), user.getUsername(), 3600000L);
+            // 将用户户名和token返回
+            HashMap<String, String> map = new HashMap<>();
+            map.put("username", user.getUsername());
+            map.put("token", token);
+            return ResultVOUtil.success(map);
+        } catch (UnknownAccountException e) {
+            return ResultVOUtil.fail("登陆失败！用户名或密码不正确");
         }
-        return ResultVOUtil.success(user);
+    }
+
+    /**
+     * 注册时校验用户名是否存在
+     *
+     * @param username 用户名
+     * @return
+     */
+    @PostMapping("/countUsername/{username}")
+    public ResultVO<Object> countUsername(@PathVariable String username) {
+        return ResultVOUtil.success(userService.countByUsername(username));
+    }
+
+    /**
+     * 注销登录
+     * 前提是在登录状态
+     *
+     * @return
+     */
+    @PostMapping("/loginOut")
+    public ResultVO<Object> loginOut() {
+        User currentUser = SecurityUtil.getCurrentUser();
+        if (currentUser == null) {
+            return ResultVOUtil.fail("您暂未登录");
+        }
+        SecurityUtils.getSubject().logout();
+        return ResultVOUtil.success("注销成功");
     }
 }

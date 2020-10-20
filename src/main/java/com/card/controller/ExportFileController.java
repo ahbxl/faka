@@ -1,15 +1,14 @@
 package com.card.controller;
 
-import com.card.command.IdsCommand;
-import com.card.command.exportfile.ExportFileCommand;
 import com.card.entity.ExportFile;
+import com.card.entity.vo.ExportFileVO;
+import com.card.entity.vo.ResultVO;
 import com.card.enu.ExportFileState;
 import com.card.service.CustomMultiThreadingService;
 import com.card.service.ExportFileService;
 import com.card.util.RandomUtil;
 import com.card.util.ResultVOUtil;
 import com.card.util.SecurityUtil;
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 @RestController
 @Slf4j
@@ -35,26 +33,24 @@ public class ExportFileController {
      * 分页展示文件列表
      * 需要管理员权限
      *
-     * @param pageNum  页数
-     * @param pageSize 页大小
-     * @param command
+     * @param exportFileVO
      * @return
      */
-    @PostMapping("/exportFileListByPage/{pageNum}/{pageSize}")
-    public ResultVO<Object> exportFileListByPage(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @RequestBody ExportFileCommand command) {
-        return ResultVOUtil.success(exportFileService.findByPage(pageNum, pageSize, command));
+    @PostMapping("/admin/selectPage")
+    public ResultVO<Object> selectPage(@RequestBody ExportFileVO exportFileVO) {
+        return ResultVOUtil.success(exportFileService.selectPage(exportFileVO));
     }
 
     /**
      * 将excel下载到本地
      * 需要管理员权限
      *
-     * @param id id
+     * @param exportFileVO
      * @return
      */
-    @GetMapping("/downloadExportFile/{id}")
-    public ResultVO<Object> downloadExportFile(@PathVariable("id") Long id) {
-        ExportFile exportFile = exportFileService.selectById(id);
+    @GetMapping("/downloadExportFile}")
+    public ResultVO<Object> downloadExportFile(@RequestBody ExportFileVO exportFileVO) {
+        ExportFile exportFile = exportFileService.selectById(exportFileVO.getId());
         if (exportFile == null) {
             return ResultVOUtil.success("未查询到文件信息");
         }
@@ -69,20 +65,18 @@ public class ExportFileController {
      * 删除文件
      * 需要管理员权限
      *
-     * @param idsCommand 批量删除的文件id集合
+     * @param exportFileVO
      * @return
      */
-    @GetMapping("/downloadExportFile")
-    public ResultVO<Object> deleteExportFile(@RequestBody IdsCommand idsCommand) {
-        ArrayList<Long> ids = Lists.newArrayList();
-        for (Long id : idsCommand.getIds()) {
+    @GetMapping("/admin/deleteBatchIds")
+    public ResultVO<Object> deleteBatchIds(@RequestBody ExportFileVO exportFileVO) {
+        for (Long id : exportFileVO.getIds()) {
             ExportFile exportFile = exportFileService.selectById(id);
             if (exportFile == null) {
                 log.info("未查询到文件信息");
             } else if (!SecurityUtil.getCurrentUser().getId().equals(exportFile.getCreator())) {
                 log.info("你没有权限删除");
             } else {
-                ids.add(id);
                 // 从服务器上删除文件
                 try {
                     File f = new File(exportFile.getPath());
@@ -95,7 +89,7 @@ public class ExportFileController {
             }
         }
         // 从数据库中删除文件信息
-        exportFileService.deleteExportFile(ids);
+        exportFileService.deleteBatchIds(exportFileVO.getIds());
         return ResultVOUtil.success();
     }
 
@@ -103,19 +97,23 @@ public class ExportFileController {
      * 在服务器生成excel
      * 需要管理员权限
      *
-     * @param exportFileCommand 查询条件对象
+     * @param exportFileVO
      * @return
      */
     @PostMapping("/generateExportFile")
-    public ResultVO<Object> generateExportFile(@RequestBody ExportFileCommand exportFileCommand) {
+    public ResultVO<Object> generateExportFile(@RequestBody ExportFileVO exportFileVO) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
-        String endTime = simpleDateFormat.format(exportFileCommand.getStartTime());
-        String startTime = simpleDateFormat.format(exportFileCommand.getEndTime());
+        String endTime = simpleDateFormat.format(exportFileVO.getStartTime());
+        String startTime = simpleDateFormat.format(exportFileVO.getEndTime());
         String fileName = startTime + "至" + endTime + "卡密数据" + RandomUtil.getStringRandom(4) + ".xlsx";
         // 插入到数据库，状态值为正在生成
-        ExportFile exportFile = exportFileService.saveExportFile(fileName, path + fileName, ExportFileState.Downloading.getValue());
+        ExportFile exportFile = new ExportFile();
+        exportFile.setName(fileName);
+        exportFile.setPath(path);
+        exportFile.setState(ExportFileState.Downloading.getValue());
+        Integer insert = exportFileService.insert(exportFile);
         // 新建线程生成需要导出的文件到服务器/data/faka/exportFile文件夹下
-        customMultiThreadingService.executeAysncCardExport(exportFileCommand.getStartTime(), exportFileCommand.getEndTime(), exportFile);
+        customMultiThreadingService.executeAysncCardExport(exportFileVO.getStartTime(), exportFileVO.getEndTime(), exportFileService.selectById(Long.valueOf(insert)));
         return ResultVOUtil.success();
     }
 }

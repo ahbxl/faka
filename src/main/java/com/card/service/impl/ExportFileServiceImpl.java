@@ -54,9 +54,9 @@ public class ExportFileServiceImpl implements ExportFileService {
     }
 
     @Override
-    public void insert(ExportFile exportFile) {
+    public Integer insert(ExportFile exportFile) {
         exportFile.setCreator(SecurityUtil.getCurrentUser().getId());
-        exportFileDao.insert(exportFile);
+        return exportFileDao.insert(exportFile);
     }
 
     @Override

@@ -2,9 +2,8 @@ package com.card.controller;
 
 import com.alipay.easysdk.kernel.util.ResponseChecker;
 import com.alipay.easysdk.payment.facetoface.models.AlipayTradePrecreateResponse;
-import com.card.command.IdsCommand;
-import com.card.command.order.OrderSelectCommand;
 import com.card.entity.Order;
+import com.card.entity.vo.OrderVO;
 import com.card.entity.vo.ResultVO;
 import com.card.service.AliPayService;
 import com.card.service.OrderService;
@@ -23,9 +22,9 @@ public class OrderController {
     @Autowired
     private AliPayService aliPayService;
 
-    @PostMapping("/admin/selectByPage/{pageNum}/{pageSize}")
-    public ResultVO<Object> selectByPage(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize, @RequestBody OrderSelectCommand command) {
-        return ResultVOUtil.success(orderService.selectByPage(pageNum, pageSize, command));
+    @PostMapping("/admin/selectPage")
+    public ResultVO<Object> selectPage(@RequestBody OrderVO orderVO) {
+        return ResultVOUtil.success(orderService.selectPage(orderVO));
     }
 
     @PostMapping("/admin/selectOne/{id}")
@@ -37,23 +36,22 @@ public class OrderController {
      * 批量删除订单
      * 需要管理员权限
      *
-     * @param command ids
+     * @param orderVO
      * @return
      */
     @PostMapping("/admin/deleteByIds")
-    public ResultVO<Object> deleteByIds(@RequestBody IdsCommand command) {
-        command.validate();
-        orderService.deleteByIds(command);
+    public ResultVO<Object> deleteByIds(@RequestBody OrderVO orderVO) {
+        orderService.deleteBatchIds(orderVO.getIds());
         return ResultVOUtil.success();
     }
 
-    @PostMapping("/admin/updateById/{id}")
-    public ResultVO<Object> updateById(@PathVariable("id") Long id, @RequestBody Order order) {
-        Order orderById = orderService.selectOne(id);
+    @PostMapping("/admin/updateById")
+    public ResultVO<Object> updateById(@RequestBody Order order) {
+        Order orderById = orderService.selectOne(order.getId());
         if (orderById == null) {
             ResultVOUtil.fail("不存在该订单信息");
         }
-        orderService.updateById(id, order);
+        orderService.updateById(order);
         return ResultVOUtil.success();
     }
 
