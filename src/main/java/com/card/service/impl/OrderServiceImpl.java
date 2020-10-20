@@ -3,7 +3,10 @@ package com.card.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.card.dao.CardDao;
 import com.card.dao.OrderDao;
+import com.card.entity.Card;
 import com.card.entity.Order;
 import com.card.entity.vo.OrderVO;
 import com.card.service.OrderService;
@@ -16,18 +19,13 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class OrderServiceImpl implements OrderService {
+public class OrderServiceImpl extends ServiceImpl<OrderDao, Order> implements OrderService {
     @Autowired
     private OrderDao orderDao;
 
     @Override
     public void deleteBatchIds(List<Long> ids) {
         orderDao.deleteBatchIds(ids);
-    }
-
-    @Override
-    public void updateById(Order order) {
-        orderDao.updateById(order);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.card.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.card.dao.CategoryDao;
 import com.card.entity.Category;
 import com.card.entity.vo.CategoryVO;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class CategoryServiceImpl implements CategoryService {
+public class CategoryServiceImpl extends ServiceImpl<CategoryDao,Category> implements CategoryService {
     @Autowired
     private CategoryDao categoryDao;
 
@@ -48,11 +49,6 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteBatchIds(List<Long> ids) {
         categoryDao.deleteBatchIds(ids);
-    }
-
-    @Override
-    public void updateById(Category category) {
-        categoryDao.updateById(category);
     }
 
     @Override

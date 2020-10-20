@@ -3,6 +3,7 @@ package com.card.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.card.dao.CardDao;
 import com.card.entity.Card;
 import com.card.entity.vo.CardVO;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class CardServiceImpl implements CardService {
+public class CardServiceImpl extends ServiceImpl<CardDao,Card> implements CardService {
     @Autowired
     private CardDao cardDao;
 
@@ -55,11 +56,6 @@ public class CardServiceImpl implements CardService {
         QueryWrapper<Card> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("product_id", productId);
         return cardDao.selectCount(queryWrapper);
-    }
-
-    @Override
-    public void updateById(Card card) {
-        cardDao.updateById(card);
     }
 
     @Override

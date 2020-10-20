@@ -8,9 +8,12 @@ import com.alipay.easysdk.factory.Factory;
 import com.alipay.easysdk.kernel.Config;
 import com.alipay.easysdk.payment.facetoface.models.AlipayTradePrecreateResponse;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.card.dao.AliPayConfigDao;
+import com.card.dao.CardDao;
 import com.card.dao.UserDao;
 import com.card.entity.AliPayConfig;
+import com.card.entity.Card;
 import com.card.service.AliPayService;
 import com.card.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +22,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class AliPayServiceImpl implements AliPayService {
+public class AliPayServiceImpl extends ServiceImpl<AliPayConfigDao, AliPayConfig>  implements AliPayService {
     @Autowired
     private AliPayConfigDao aliPayConfigDao;
     @Autowired
@@ -100,11 +103,6 @@ public class AliPayServiceImpl implements AliPayService {
             e.printStackTrace();
             throw new RuntimeException("撤销交易失败！");
         }
-    }
-
-    @Override
-    public void updateById(AliPayConfig aliPayConfig) {
-        aliPayConfigDao.updateById(aliPayConfig);
     }
 
     @Override

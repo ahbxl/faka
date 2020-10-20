@@ -3,7 +3,10 @@ package com.card.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.card.dao.CardDao;
 import com.card.dao.MenuListDao;
+import com.card.entity.Card;
 import com.card.entity.MenuList;
 import com.card.entity.vo.MenuListVO;
 import com.card.service.MenuListService;
@@ -14,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class MenuListServiceImpl implements MenuListService {
+public class MenuListServiceImpl extends ServiceImpl<MenuListDao, MenuList> implements MenuListService {
     @Autowired
     private MenuListDao menuListDao;
 

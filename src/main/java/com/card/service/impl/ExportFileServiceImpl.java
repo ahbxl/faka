@@ -4,7 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.card.dao.CardDao;
 import com.card.dao.ExportFileDao;
+import com.card.entity.Card;
 import com.card.entity.ExportFile;
 import com.card.entity.vo.ExportFileVO;
 import com.card.enu.ExportFileState;
@@ -26,7 +29,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class ExportFileServiceImpl implements ExportFileService {
+public class ExportFileServiceImpl extends ServiceImpl<ExportFileDao, ExportFile> implements ExportFileService {
     @Autowired
     private ExportFileDao exportFileDao;
 

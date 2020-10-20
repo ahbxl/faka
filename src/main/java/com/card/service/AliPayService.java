@@ -1,10 +1,12 @@
 package com.card.service;
 
 import com.alipay.easysdk.payment.facetoface.models.AlipayTradePrecreateResponse;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.card.entity.AliPayConfig;
+import com.card.entity.User;
 import com.card.entity.vo.AliPayConfigVO;
 
-public interface AliPayService {
+public interface AliPayService extends IService<AliPayConfig> {
     /**
      * 当面付电脑网站支付
      *
@@ -18,8 +20,6 @@ public interface AliPayService {
     String selectByOutTradeNo(String outTradeNo);
 
     String cancelTrade(String outTradeNo);
-
-    void updateById(AliPayConfig aliPayConfig);
 
     AliPayConfig selectById(Long id);
 }
