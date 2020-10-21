@@ -7,10 +7,17 @@ import com.card.entity.vo.OrderVO;
 import com.card.entity.vo.ResultVO;
 import com.card.service.AliPayService;
 import com.card.service.OrderService;
+import com.card.service.UserService;
 import com.card.util.ResultVOUtil;
+import com.card.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -22,6 +29,9 @@ public class AliPayController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private UserService userService;
+
     /**
      * 通过id修改支付配置
      * 需要管理员权限
@@ -31,11 +41,16 @@ public class AliPayController {
      */
     @PostMapping("/admin/updateById")
     public ResultVO<Object> updateById(@RequestBody AliPayConfig aliPayConfig) {
-        AliPayConfig aliPayConfigById = aliPayService.selectById(aliPayConfig.getId());
-        if (aliPayConfigById == null) {
+        AliPayConfig aliPayConfig1 = aliPayService.selectById(aliPayConfig.getId());
+        if (aliPayConfig1 == null) {
             return ResultVOUtil.fail("不存在该配置");
         }
+        List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
+        if (!longs.contains(aliPayConfig1.getUserId())) {
+            return ResultVOUtil.fail("您暂无权限");
+        }
         aliPayService.updateById(aliPayConfig);
+        log.info("用户{}更新了{}", SecurityUtil.getCurrentUser().getId(), aliPayConfig);
         return ResultVOUtil.success();
     }
 
@@ -48,22 +63,34 @@ public class AliPayController {
      */
     @PostMapping("/admin/selectById")
     public ResultVO<Object> selectById(@RequestBody AliPayConfigVO aliPayConfigVO) {
-        return ResultVOUtil.success(aliPayService.selectById(aliPayConfigVO.getId()));
+        AliPayConfig aliPayConfig = aliPayService.selectById(aliPayConfigVO.getId());
+        if (aliPayConfig == null) {
+            return ResultVOUtil.fail("不存在该配置");
+        }
+        List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
+        if (!longs.contains(aliPayConfig.getUserId())) {
+            return ResultVOUtil.fail("您暂无权限");
+        }
+        return ResultVOUtil.success(aliPayConfig);
     }
 
     /**
      * 通过订单号查询订单
      *
-     * @param order 订单
+     * @param orderVO
      * @return
      */
     @PostMapping("/selectByOutTradeNo")
-    public ResultVO<Object> selectByOutTradeNo(@RequestBody Order order) {
-        String state = aliPayService.selectByOutTradeNo(order.getOutTradeNo());
-        if ("TRADE_SUCCESS".equalsIgnoreCase(state)) {
-            orderService.orderUpdateStateByOutTradeNo(order.getOutTradeNo(), 1);
+    public ResultVO<Object> selectByOutTradeNo(@RequestBody OrderVO orderVO) {
+        Order order = orderService.selectByOutTradeNo(orderVO.getOutTradeNo());
+        if (order == null) {
+            return ResultVOUtil.fail("不存在该订单");
         }
-        return ResultVOUtil.success(state);
+        List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
+        if (!longs.contains(order.getCreator())) {
+            return ResultVOUtil.fail("您暂无权限");
+        }
+        return ResultVOUtil.success(aliPayService.selectByOutTradeNo(orderVO.getOutTradeNo()));
     }
 
     /**
@@ -74,6 +101,15 @@ public class AliPayController {
      */
     @PostMapping("/cancelTrade")
     public ResultVO<Object> cancelTrade(@RequestBody OrderVO orderVO) {
+        Order order = orderService.selectByOutTradeNo(orderVO.getOutTradeNo());
+        if (order == null) {
+            return ResultVOUtil.fail("不存在该订单");
+        }
+        List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
+        if (!longs.contains(order.getCreator())) {
+            return ResultVOUtil.fail("您暂无权限");
+        }
+        log.info("用户{}取消了订单，订单号号为{}", SecurityUtil.getCurrentUser().getId(), orderVO.getOutTradeNo());
         return ResultVOUtil.success(aliPayService.cancelTrade(orderVO.getOutTradeNo()));
     }
 }

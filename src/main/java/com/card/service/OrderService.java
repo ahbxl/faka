@@ -19,7 +19,9 @@ public interface OrderService extends IService<Order> {
 
     IPage<Order> selectPage(OrderVO orderVO);
 
-    Order selectOne(Long id);
+    Order selectById(Long id);
 
     List<Order> selectByState(Integer state);
+
+    Order selectByOutTradeNo(String outTradeNo);
 }

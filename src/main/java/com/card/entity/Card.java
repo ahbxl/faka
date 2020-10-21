@@ -15,8 +15,12 @@ public class Card implements Serializable {
     private static final long serialVersionUID = 8632318572265851654L;
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
+    @TableField("user_id")
+    private Long userId;
     @TableField("product_id")
     private Long productId;
+    @TableField("creator")
+    private Long creator;
     @TableField(exist = false)
     private String productName;
     @TableField("content")

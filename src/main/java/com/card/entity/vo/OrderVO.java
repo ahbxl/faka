@@ -12,6 +12,7 @@ public class OrderVO extends PageVO implements Serializable {
     private static final long serialVersionUID = -3640807116600926284L;
     private Long id;
     private Long productId;
+    private Long creator;
     private Long quantity;
     private String subject;
     private String outTradeNo;

@@ -18,6 +18,8 @@ public class Order implements Serializable {
     private Long id;
     @TableField("product_id")
     private Long productId;
+    @TableField("creator")
+    private Long creator;
     @TableField("quantity")
     private Long quantity;
     @TableField("subject")

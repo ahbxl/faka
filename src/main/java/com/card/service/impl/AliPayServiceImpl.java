@@ -10,10 +10,8 @@ import com.alipay.easysdk.payment.facetoface.models.AlipayTradePrecreateResponse
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.card.dao.AliPayConfigDao;
-import com.card.dao.CardDao;
 import com.card.dao.UserDao;
 import com.card.entity.AliPayConfig;
-import com.card.entity.Card;
 import com.card.service.AliPayService;
 import com.card.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class AliPayServiceImpl extends ServiceImpl<AliPayConfigDao, AliPayConfig>  implements AliPayService {
+public class AliPayServiceImpl extends ServiceImpl<AliPayConfigDao, AliPayConfig> implements AliPayService {
     @Autowired
     private AliPayConfigDao aliPayConfigDao;
     @Autowired
@@ -31,8 +29,12 @@ public class AliPayServiceImpl extends ServiceImpl<AliPayConfigDao, AliPayConfig
     @Override
     public AlipayTradePrecreateResponse faceToFace(String subject, String outTradeNo, String totalAmount) {
         try {
-
-            AliPayConfig aliPayConfig = aliPayConfigDao.selectById(1);
+            QueryWrapper<AliPayConfig> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("parent_id", userDao.selectById(SecurityUtil.getCurrentUser().getId()).getParentId());
+            AliPayConfig aliPayConfig = aliPayConfigDao.selectOne(queryWrapper);
+            if (aliPayConfig == null) {
+                throw new RuntimeException("不存在该支付配置");
+            }
             Config config = new Config();
             config.protocol = "https";
             config.gatewayHost = "openapi.alipay.com";
@@ -74,6 +76,9 @@ public class AliPayServiceImpl extends ServiceImpl<AliPayConfigDao, AliPayConfig
             QueryWrapper<AliPayConfig> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("parent_id", userDao.selectById(SecurityUtil.getCurrentUser().getId()).getParentId());
             AliPayConfig aliPayConfig = aliPayConfigDao.selectOne(queryWrapper);
+            if (aliPayConfig == null) {
+                throw new RuntimeException("不存在该支付配置");
+            }
             //获得初始化的AlipayClient
             AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", aliPayConfig.getAppId(), aliPayConfig.getMerchantPrivateKey(), "json", "GBK", aliPayConfig.getAliPayPublicKey(), "RSA2");
             AlipayTradeQueryRequest request = new AlipayTradeQueryRequest(); //创建API对应的request类
@@ -93,6 +98,9 @@ public class AliPayServiceImpl extends ServiceImpl<AliPayConfigDao, AliPayConfig
             QueryWrapper<AliPayConfig> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("parent_id", userDao.selectById(SecurityUtil.getCurrentUser().getId()).getParentId());
             AliPayConfig aliPayConfig = aliPayConfigDao.selectOne(queryWrapper);
+            if (aliPayConfig == null) {
+                throw new RuntimeException("不存在该支付配置");
+            }
             //获得初始化的AlipayClient
             AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", aliPayConfig.getAppId(), aliPayConfig.getMerchantPrivateKey(), "json", "GBK", aliPayConfig.getAliPayPublicKey(), "RSA2");
             AlipayTradeCancelRequest request = new AlipayTradeCancelRequest(); //创建API对应的request类

@@ -66,10 +66,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, Order> implements Or
     }
 
     @Override
-    public Order selectOne(Long id) {
-        QueryWrapper<Order> wrapper = new QueryWrapper<>();
-        wrapper.eq("id", id);
-        return orderDao.selectOne(wrapper);
+    public Order selectById(Long id) {
+        return orderDao.selectById(id);
     }
 
     @Override
@@ -77,5 +75,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, Order> implements Or
         QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("state",state);
         return orderDao.selectList(queryWrapper);
+    }
+
+    @Override
+    public Order selectByOutTradeNo(String outTradeNo) {
+        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("outTradeNo",outTradeNo);
+        return orderDao.selectOne(queryWrapper);
     }
 }

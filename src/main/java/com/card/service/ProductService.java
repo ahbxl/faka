@@ -18,4 +18,6 @@ public interface ProductService extends IService<Product> {
     void deleteBatchIds(List<Long> ids);
 
     IPage<Product> selectPage(ProductVO productVO);
+
+    Product selectById(Long id);
 }

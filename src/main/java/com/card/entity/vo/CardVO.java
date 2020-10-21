@@ -11,7 +11,9 @@ import java.util.Date;
 public class CardVO extends PageVO implements Serializable {
     private static final long serialVersionUID = 6332860721283726482L;
     private Long id;
+    private Long userId;
     private Long productId;
+    private Long creator;
     private String content;
     private Integer state; // 状态 0/未售出 1/已售出 默认未售出
     private Date createTime;

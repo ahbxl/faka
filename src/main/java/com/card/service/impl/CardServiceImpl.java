@@ -21,9 +21,10 @@ public class CardServiceImpl extends ServiceImpl<CardDao,Card> implements CardSe
     @Autowired
     private CardDao cardDao;
 
+
     @Override
-    public void cardDeleteByIds(List<Long> ids) {
-        cardDao.deleteBatchIds(ids);
+    public Card selectById(Long id) {
+        return cardDao.selectById(id);
     }
 
     @Override
@@ -62,7 +63,7 @@ public class CardServiceImpl extends ServiceImpl<CardDao,Card> implements CardSe
     public Card selectOne(Long id) {
         QueryWrapper<Card> wrapper = new QueryWrapper<>();
         wrapper.eq("id", id);
-        wrapper.select("id", "content", "state", "product_id");
+        wrapper.select("id", "content", "state", "product_id","creator");
         return cardDao.selectOne(wrapper);
     }
 

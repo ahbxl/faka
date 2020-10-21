@@ -6,6 +6,7 @@ import com.card.entity.vo.ResultVO;
 import com.card.enu.ExportFileState;
 import com.card.service.CustomMultiThreadingService;
 import com.card.service.ExportFileService;
+import com.card.service.UserService;
 import com.card.util.RandomUtil;
 import com.card.util.ResultVOUtil;
 import com.card.util.SecurityUtil;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -28,6 +31,9 @@ public class ExportFileController {
 
     @Autowired
     private CustomMultiThreadingService customMultiThreadingService;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * 分页展示文件列表
@@ -54,7 +60,8 @@ public class ExportFileController {
         if (exportFile == null) {
             return ResultVOUtil.success("未查询到文件信息");
         }
-        if (!SecurityUtil.getCurrentUser().getId().equals(exportFile.getCreator())) {
+        List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
+        if (!longs.contains(exportFile.getCreator())) {
             return ResultVOUtil.success("你没有权限删除");
         }
         exportFileService.downloadExportFile(exportFile);
@@ -70,18 +77,17 @@ public class ExportFileController {
      */
     @GetMapping("/admin/deleteBatchIds")
     public ResultVO<Object> deleteBatchIds(@RequestBody ExportFileVO exportFileVO) {
+        List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
+        ArrayList<Long> list = new ArrayList<>();
         for (Long id : exportFileVO.getIds()) {
             ExportFile exportFile = exportFileService.selectById(id);
-            if (exportFile == null) {
-                log.info("未查询到文件信息");
-            } else if (!SecurityUtil.getCurrentUser().getId().equals(exportFile.getCreator())) {
-                log.info("你没有权限删除");
-            } else {
+            if (exportFile != null && !longs.contains(exportFile.getCreator())) {
                 // 从服务器上删除文件
                 try {
                     File f = new File(exportFile.getPath());
                     if (f.exists()) {
                         f.delete();
+                        list.add(id);
                     }
                 } catch (Exception e) {
                     log.error("文件内容读取异常，文件:" + e.getMessage());
@@ -89,7 +95,8 @@ public class ExportFileController {
             }
         }
         // 从数据库中删除文件信息
-        exportFileService.deleteBatchIds(exportFileVO.getIds());
+        exportFileService.deleteBatchIds(list);
+        log.info("用户{}删除了{}", SecurityUtil.getCurrentUser().getId(), list);
         return ResultVOUtil.success();
     }
 

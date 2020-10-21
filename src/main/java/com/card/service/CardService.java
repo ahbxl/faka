@@ -9,7 +9,7 @@ import com.card.entity.vo.CardVO;
 import java.util.List;
 
 public interface CardService extends IService<Card> {
-    void cardDeleteByIds(List<Long> ids);
+    Card selectById(Long id);
 
     void insert(Card card);
 

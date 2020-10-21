@@ -69,4 +69,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductDao, Product> impleme
         wrapper.orderByDesc("create_time");
         return productDao.selectPage(productPage, wrapper);
     }
+
+    @Override
+    public Product selectById(Long id) {
+        return productDao.selectById(id);
+    }
 }

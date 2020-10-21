@@ -13,6 +13,7 @@ public class CategoryVO extends PageVO implements Serializable {
     private Long id;
     private String name;
     private Long parentId;
+    private Long creator;
     private Integer state;
     private Date createTime;
     private Date updateTime;

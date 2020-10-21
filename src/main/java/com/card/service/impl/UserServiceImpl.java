@@ -13,11 +13,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class UserServiceImpl extends ServiceImpl<UserDao,User> implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserService {
     @Autowired
     private UserDao userDao;
 
@@ -83,5 +85,29 @@ public class UserServiceImpl extends ServiceImpl<UserDao,User> implements UserSe
     @Override
     public void deleteBatchIds(List<Long> ids) {
         userDao.deleteBatchIds(ids);
+    }
+
+    @Override
+    public List<Long> selectIdsByParentId(Long parentId) {
+        return selectByParentId(parentId);
+    }
+
+    /**
+     * 查询用户及下级用户的id集合
+     *
+     * @param parentId
+     * @return
+     */
+    List<Long> selectByParentId(Long parentId) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("parent_id", parentId);
+        List<User> users = userDao.selectList(queryWrapper);
+        List<Long> collect = users.stream().map(User::getId).collect(Collectors.toList());
+        ArrayList<Long> list = new ArrayList<>(collect);
+        list.add(parentId);
+        for (Long aLong : collect) {
+            list.addAll(selectByParentId(aLong));
+        }
+        return list;
     }
 }

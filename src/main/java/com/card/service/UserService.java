@@ -19,4 +19,6 @@ public interface UserService extends IService<User> {
     User selectById(Long id);
 
     void deleteBatchIds(List<Long> ids);
+
+    List<Long> selectIdsByParentId(Long parentId);
 }
