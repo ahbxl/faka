@@ -27,33 +27,15 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements UserS
     public IPage<User> selectPage(UserVO userVO) {
         Page<User> userPage = new Page<>(userVO.getPageNum(), userVO.getPageSize());
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        if (StringUtils.isNotBlank(userVO.getUsername())) {
-            wrapper.like("username", userVO.getUsername());
-        }
-        if (StringUtils.isNotBlank(userVO.getEmail())) {
-            wrapper.like("email", userVO.getEmail());
-        }
-        if (StringUtils.isNotBlank(userVO.getQq())) {
-            wrapper.like("qq", userVO.getQq());
-        }
-        if (StringUtils.isNotBlank(userVO.getPhone())) {
-            wrapper.like("phone", userVO.getPhone());
-        }
-        if (StringUtils.isNotBlank(userVO.getEmail())) {
-            wrapper.like("email", userVO.getEmail());
-        }
-        if (null != userVO.getState()) {
-            wrapper.eq("state", userVO.getState());
-        }
-        if (null != userVO.getRoleId()) {
-            wrapper.eq("role_id", userVO.getRoleId());
-        }
-        if (null != userVO.getParentId()) {
-            wrapper.eq("parent_id", userVO.getParentId());
-        }
-        if (null != userVO.getStartTime() && null != userVO.getEndTime()) {
-            wrapper.between("create_time", userVO.getStartTime(), userVO.getEndTime());
-        }
+        wrapper.like(StringUtils.isNotBlank(userVO.getUsername()), "username", userVO.getUsername());
+        wrapper.like(StringUtils.isNotBlank(userVO.getEmail()), "email", userVO.getEmail());
+        wrapper.like(StringUtils.isNotBlank(userVO.getQq()), "qq", userVO.getQq());
+        wrapper.like(StringUtils.isNotBlank(userVO.getPhone()), "phone", userVO.getPhone());
+        wrapper.like(StringUtils.isNotBlank(userVO.getEmail()), "email", userVO.getEmail());
+        wrapper.eq(null != userVO.getState(), "state", userVO.getState());
+        wrapper.eq(null != userVO.getRoleId(), "role_id", userVO.getRoleId());
+        wrapper.eq(null != userVO.getParentId(), "parent_id", userVO.getParentId());
+        wrapper.between(null != userVO.getStartTime() && null != userVO.getEndTime(), "create_time", userVO.getStartTime(), userVO.getEndTime());
         wrapper.orderByDesc("create_time");
         return userDao.selectPage(userPage, wrapper);
     }

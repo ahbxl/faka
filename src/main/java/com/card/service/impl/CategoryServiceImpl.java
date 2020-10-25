@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class CategoryServiceImpl extends ServiceImpl<CategoryDao,Category> implements CategoryService {
+public class CategoryServiceImpl extends ServiceImpl<CategoryDao, Category> implements CategoryService {
     @Autowired
     private CategoryDao categoryDao;
 
@@ -30,18 +30,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao,Category> imple
     public IPage<Category> selectPage(CategoryVO categoryVO) {
         Page<Category> categoryPage = new Page<>(categoryVO.getPageNum(), categoryVO.getPageSize());
         QueryWrapper<Category> wrapper = new QueryWrapper<>();
-        if (!StringUtils.isBlank(categoryVO.getName())) {
-            wrapper.like("name", categoryVO.getName());
-        }
-        if (null != categoryVO.getState()) {
-            wrapper.eq("state", categoryVO.getState());
-        }
-        if (null != categoryVO.getParentId()) {
-            wrapper.eq("parent_id", categoryVO.getParentId());
-        }
-        if (null != categoryVO.getStartTime() && null != categoryVO.getEndTime()) {
-            wrapper.between("create_time", categoryVO.getStartTime(), categoryVO.getEndTime());
-        }
+        wrapper.like(!StringUtils.isBlank(categoryVO.getName()), "name", categoryVO.getName());
+        wrapper.eq(null != categoryVO.getState(), "state", categoryVO.getState());
+        wrapper.eq(null != categoryVO.getParentId(), "parent_id", categoryVO.getParentId());
+        wrapper.between(null != categoryVO.getStartTime() && null != categoryVO.getEndTime(), "create_time", categoryVO.getStartTime(), categoryVO.getEndTime());
         wrapper.orderByDesc("create_time");
         return categoryDao.selectPage(categoryPage, wrapper);
     }

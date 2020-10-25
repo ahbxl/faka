@@ -54,18 +54,10 @@ public class ProductServiceImpl extends ServiceImpl<ProductDao, Product> impleme
     public IPage<Product> selectPage(ProductVO productVO) {
         Page<Product> productPage = new Page<>(productVO.getPageNum(), productVO.getPageSize());
         QueryWrapper<Product> wrapper = new QueryWrapper<>();
-        if (!StringUtils.isBlank(productVO.getName())) {
-            wrapper.like("name", productVO.getName());
-        }
-        if (null != productVO.getState()) {
-            wrapper.eq("state", productVO.getState());
-        }
-        if (null != productVO.getCategoryId()) {
-            wrapper.eq("category_id", productVO.getCategoryId());
-        }
-        if (null != productVO.getStartTime() && null != productVO.getEndTime()) {
-            wrapper.between("create_time", productVO.getStartTime(), productVO.getEndTime());
-        }
+        wrapper.like(!StringUtils.isBlank(productVO.getName()), "name", productVO.getName());
+        wrapper.eq(null != productVO.getState(), "state", productVO.getState());
+        wrapper.eq(null != productVO.getCategoryId(), "category_id", productVO.getCategoryId());
+        wrapper.between(null != productVO.getStartTime() && null != productVO.getEndTime(), "create_time", productVO.getStartTime(), productVO.getEndTime());
         wrapper.orderByDesc("create_time");
         return productDao.selectPage(productPage, wrapper);
     }

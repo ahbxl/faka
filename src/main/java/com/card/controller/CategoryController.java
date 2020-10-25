@@ -34,7 +34,7 @@ public class CategoryController {
      * @param categoryVO
      * @return
      */
-    @PostMapping("/admin/selectPage")
+    @PostMapping("/token/selectPage")
     public ResultVO<Object> selectPage(@RequestBody CategoryVO categoryVO) {
         return ResultVOUtil.success(categoryService.selectPage(categoryVO));
     }
@@ -46,7 +46,7 @@ public class CategoryController {
      * @param categoryVO
      * @return
      */
-    @PostMapping("/admin/deleteBatchIds")
+    @PostMapping("/token/deleteBatchIds")
     public ResultVO<Object> deleteBatchIds(@RequestBody CategoryVO categoryVO) {
         List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
         ArrayList<Long> list = new ArrayList<>();
@@ -68,7 +68,7 @@ public class CategoryController {
      * @param category
      * @return
      */
-    @PostMapping("/admin/updateById")
+    @PostMapping("/token/updateById")
     public ResultVO<Object> updateById(@RequestBody Category category) {
         Category category1 = categoryService.selectById(category.getId());
         if (category1 == null) {
@@ -89,7 +89,7 @@ public class CategoryController {
      * @param category
      * @return
      */
-    @PostMapping("/admin/insert")
+    @PostMapping("/token/insert")
     public ResultVO<Object> insert(@RequestBody Category category) {
         categoryService.insert(category);
         return ResultVOUtil.success();

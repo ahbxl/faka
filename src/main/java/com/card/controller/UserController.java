@@ -37,7 +37,7 @@ public class UserController {
      * @param userVO
      * @return
      */
-    @PostMapping("/admin/selectPage")
+    @PostMapping("/token/selectPage")
     public ResultVO<Object> selectPage(@RequestBody UserVO userVO) {
         return ResultVOUtil.success(userService.selectPage(userVO));
     }
@@ -48,7 +48,7 @@ public class UserController {
      * @param user
      * @return
      */
-    @PostMapping("/admin/updateById")
+    @PostMapping("/token/updateById")
     public ResultVO<Object> updateById(@RequestBody User user) {
         User userById = userService.selectById(user.getId());
         if (userById == null) {
@@ -65,7 +65,7 @@ public class UserController {
      * @param userVO
      * @return
      */
-    @PostMapping("/admin/deleteBatchIds")
+    @PostMapping("/token/deleteBatchIds")
     public ResultVO<Object> deleteBatchIds(@RequestBody UserVO userVO) {
         userService.deleteBatchIds(userVO.getIds());
         return ResultVOUtil.success();
@@ -93,7 +93,7 @@ public class UserController {
      * @param userVO
      * @return
      */
-    @PostMapping("/admin/selectById")
+    @PostMapping("/token/selectById")
     public ResultVO<Object> selectById(@RequestBody UserVO userVO) {
         return ResultVOUtil.success(userService.selectById(userVO.getId()));
     }

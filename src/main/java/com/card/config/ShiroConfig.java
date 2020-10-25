@@ -45,18 +45,17 @@ public class ShiroConfig {
         // 过滤规则
         Map<String, String> linkedHashMap = new LinkedHashMap<>();
         // 登录之后才可以请求的接口
-        linkedHashMap.put("/aliPayConfig/**", "jwt");
-        linkedHashMap.put("/card/**", "jwt");
-        linkedHashMap.put("/category/**", "jwt");
-        linkedHashMap.put("/exportFile/**", "jwt");
-        linkedHashMap.put("/menuList/**", "jwt");
-        linkedHashMap.put("/order/**", "jwt");
-        linkedHashMap.put("/permission/**", "jwt");
-        linkedHashMap.put("/product/**", "jwt");
-        linkedHashMap.put("/role/**", "jwt");
-        linkedHashMap.put("/rolePermission/**", "jwt");
-        linkedHashMap.put("/user/**", "jwt");
-        linkedHashMap.put("/userRole/**", "jwt");
+        linkedHashMap.put("/aliPayConfig/token/**", "jwt");
+        linkedHashMap.put("/card/token/**", "jwt");
+        linkedHashMap.put("/category/token/**", "jwt");
+        linkedHashMap.put("/exportFile/token/**", "jwt");
+        linkedHashMap.put("/menuList/token/**", "jwt");
+        linkedHashMap.put("/order/token/**", "jwt");
+        linkedHashMap.put("/permission/token/**", "jwt");
+        linkedHashMap.put("/product/token/**", "jwt");
+        linkedHashMap.put("/role/token/**", "jwt");
+        linkedHashMap.put("/rolePermission/token/**", "jwt");
+        linkedHashMap.put("/user/token/**", "jwt");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(linkedHashMap);
         // 设置登录请求
         shiroFilterFactoryBean.setLoginUrl("/login");

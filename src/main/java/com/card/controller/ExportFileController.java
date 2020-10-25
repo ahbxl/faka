@@ -42,7 +42,7 @@ public class ExportFileController {
      * @param exportFileVO
      * @return
      */
-    @PostMapping("/admin/selectPage")
+    @PostMapping("/token/selectPage")
     public ResultVO<Object> selectPage(@RequestBody ExportFileVO exportFileVO) {
         return ResultVOUtil.success(exportFileService.selectPage(exportFileVO));
     }
@@ -54,7 +54,7 @@ public class ExportFileController {
      * @param exportFileVO
      * @return
      */
-    @GetMapping("/downloadExportFile}")
+    @GetMapping("/token/downloadExportFile}")
     public ResultVO<Object> downloadExportFile(@RequestBody ExportFileVO exportFileVO) {
         ExportFile exportFile = exportFileService.selectById(exportFileVO.getId());
         if (exportFile == null) {
@@ -75,7 +75,7 @@ public class ExportFileController {
      * @param exportFileVO
      * @return
      */
-    @GetMapping("/admin/deleteBatchIds")
+    @GetMapping("/token/deleteBatchIds")
     public ResultVO<Object> deleteBatchIds(@RequestBody ExportFileVO exportFileVO) {
         List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
         ArrayList<Long> list = new ArrayList<>();
@@ -107,7 +107,7 @@ public class ExportFileController {
      * @param exportFileVO
      * @return
      */
-    @PostMapping("/generateExportFile")
+    @PostMapping("/token/generateExportFile")
     public ResultVO<Object> generateExportFile(@RequestBody ExportFileVO exportFileVO) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
         String endTime = simpleDateFormat.format(exportFileVO.getStartTime());

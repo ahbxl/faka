@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class CardServiceImpl extends ServiceImpl<CardDao,Card> implements CardService {
+public class CardServiceImpl extends ServiceImpl<CardDao, Card> implements CardService {
     @Autowired
     private CardDao cardDao;
 
@@ -36,18 +36,10 @@ public class CardServiceImpl extends ServiceImpl<CardDao,Card> implements CardSe
     public IPage<Card> selectPage(CardVO cardVO) {
         Page<Card> cardPage = new Page<>(cardVO.getPageNum(), cardVO.getPageSize());
         QueryWrapper<Card> queryWrapper = new QueryWrapper<>();
-        if (null != cardVO.getProductId()) {
-            queryWrapper.eq("product_id", cardVO.getProductId());
-        }
-        if (StringUtils.isNotBlank(cardVO.getContent())) {
-            queryWrapper.like("content", cardVO.getContent());
-        }
-        if (null != cardVO.getState()) {
-            queryWrapper.eq("state", cardVO.getState());
-        }
-        if (null != cardVO.getStartTime() && null != cardVO.getEndTime()) {
-            queryWrapper.between("create_time", cardVO.getStartTime(), cardVO.getEndTime());
-        }
+        queryWrapper.eq(null != cardVO.getProductId(), "product_id", cardVO.getProductId());
+        queryWrapper.like(StringUtils.isNotBlank(cardVO.getContent()), "content", cardVO.getContent());
+        queryWrapper.eq(null != cardVO.getState(), "state", cardVO.getState());
+        queryWrapper.between(null != cardVO.getStartTime() && null != cardVO.getEndTime(), "create_time", cardVO.getStartTime(), cardVO.getEndTime());
         queryWrapper.orderByDesc("create_time");
         return cardDao.selectPage(cardPage, queryWrapper);
     }
@@ -63,7 +55,7 @@ public class CardServiceImpl extends ServiceImpl<CardDao,Card> implements CardSe
     public Card selectOne(Long id) {
         QueryWrapper<Card> wrapper = new QueryWrapper<>();
         wrapper.eq("id", id);
-        wrapper.select("id", "content", "state", "product_id","creator");
+        wrapper.select("id", "content", "state", "product_id", "creator");
         return cardDao.selectOne(wrapper);
     }
 

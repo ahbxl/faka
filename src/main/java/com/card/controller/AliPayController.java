@@ -39,7 +39,7 @@ public class AliPayController {
      * @param aliPayConfig
      * @return
      */
-    @PostMapping("/admin/updateById")
+    @PostMapping("/token/updateById")
     public ResultVO<Object> updateById(@RequestBody AliPayConfig aliPayConfig) {
         AliPayConfig aliPayConfig1 = aliPayService.selectById(aliPayConfig.getId());
         if (aliPayConfig1 == null) {
@@ -61,7 +61,7 @@ public class AliPayController {
      * @param aliPayConfigVO
      * @return
      */
-    @PostMapping("/admin/selectById")
+    @PostMapping("/token/selectById")
     public ResultVO<Object> selectById(@RequestBody AliPayConfigVO aliPayConfigVO) {
         AliPayConfig aliPayConfig = aliPayService.selectById(aliPayConfigVO.getId());
         if (aliPayConfig == null) {
@@ -80,7 +80,7 @@ public class AliPayController {
      * @param orderVO
      * @return
      */
-    @PostMapping("/selectByOutTradeNo")
+    @PostMapping("/token/selectByOutTradeNo")
     public ResultVO<Object> selectByOutTradeNo(@RequestBody OrderVO orderVO) {
         Order order = orderService.selectByOutTradeNo(orderVO.getOutTradeNo());
         if (order == null) {
@@ -99,7 +99,7 @@ public class AliPayController {
      * @param orderVO
      * @return
      */
-    @PostMapping("/cancelTrade")
+    @PostMapping("/token/cancelTrade")
     public ResultVO<Object> cancelTrade(@RequestBody OrderVO orderVO) {
         Order order = orderService.selectByOutTradeNo(orderVO.getOutTradeNo());
         if (order == null) {

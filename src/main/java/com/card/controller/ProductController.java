@@ -23,7 +23,7 @@ public class ProductController {
      * @param id 主键
      * @return
      */
-    @PostMapping("/selectOne/{id}")
+    @PostMapping("/token/selectOne/{id}")
     public ResultVO<Object> selectOne(@PathVariable("id") Long id) {
         return ResultVOUtil.success(productService.selectOne(id));
     }
@@ -34,7 +34,7 @@ public class ProductController {
      * @param categoryId 分类的id
      * @return
      */
-    @PostMapping("/selectByCategoryId/{categoryId}")
+    @PostMapping("/token/selectByCategoryId/{categoryId}")
     public ResultVO<Object> selectByCategoryId(@PathVariable("categoryId") Integer categoryId) {
         return ResultVOUtil.success(productService.selectByCategoryId(categoryId));
     }
@@ -46,7 +46,7 @@ public class ProductController {
      * @param productVO
      * @return
      */
-    @PostMapping("/admin/selectPage")
+    @PostMapping("/token/selectPage")
     public ResultVO<Object> selectPage(@RequestBody ProductVO productVO) {
         return ResultVOUtil.success(productService.selectPage(productVO));
     }
@@ -58,7 +58,7 @@ public class ProductController {
      * @param productVO
      * @return
      */
-    @PostMapping("/admin/deleteBatchIds")
+    @PostMapping("/token/deleteBatchIds")
     public ResultVO<Object> deleteBatchIds(@RequestBody ProductVO productVO) {
         productService.deleteBatchIds(productVO.getIds());
         return ResultVOUtil.success();
@@ -71,7 +71,7 @@ public class ProductController {
      * @param product
      * @return
      */
-    @PostMapping("/admin/updateById")
+    @PostMapping("/token/updateById")
     public ResultVO<Object> updateById(@RequestBody Product product) {
         Product productById = productService.selectOne(product.getId());
         if (productById == null) {
@@ -88,7 +88,7 @@ public class ProductController {
      * @param product 产品对象
      * @return
      */
-    @PostMapping("/admin/insert")
+    @PostMapping("/token/insert")
     public ResultVO<Object> insert(@RequestBody Product product) {
         productService.insert(product);
         return ResultVOUtil.success();

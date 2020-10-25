@@ -25,21 +25,11 @@ public class MenuListServiceImpl extends ServiceImpl<MenuListDao, MenuList> impl
     public IPage<MenuList> selectPage(MenuListVO menuListVO) {
         Page<MenuList> menuListPage = new Page<>(menuListVO.getPageNum(), menuListVO.getPageSize());
         QueryWrapper<MenuList> queryWrapper = new QueryWrapper<>();
-        if (null != menuListVO.getRoleId()) {
-            queryWrapper.eq("role_id", menuListVO.getRoleId());
-        }
-        if (null != menuListVO.getParentId()) {
-            queryWrapper.eq("parent_id", menuListVO.getParentId());
-        }
-        if (StringUtils.isNotBlank(menuListVO.getName())) {
-            queryWrapper.like("name", menuListVO.getName());
-        }
-        if (null != menuListVO.getState()) {
-            queryWrapper.eq("state", menuListVO.getState());
-        }
-        if (null != menuListVO.getStartTime() && null != menuListVO.getEndTime()) {
-            queryWrapper.between("create_time", menuListVO.getStartTime(), menuListVO.getEndTime());
-        }
+        queryWrapper.eq(null != menuListVO.getRoleId(), "role_id", menuListVO.getRoleId());
+        queryWrapper.eq(null != menuListVO.getParentId(), "parent_id", menuListVO.getParentId());
+        queryWrapper.like(StringUtils.isNotBlank(menuListVO.getName()), "name", menuListVO.getName());
+        queryWrapper.eq(null != menuListVO.getState(), "state", menuListVO.getState());
+        queryWrapper.between(null != menuListVO.getStartTime() && null != menuListVO.getEndTime(), "create_time", menuListVO.getStartTime(), menuListVO.getEndTime());
         queryWrapper.orderByDesc("create_time");
         return menuListDao.selectPage(menuListPage, queryWrapper);
     }

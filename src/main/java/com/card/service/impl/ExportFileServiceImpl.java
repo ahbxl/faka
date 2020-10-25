@@ -40,18 +40,10 @@ public class ExportFileServiceImpl extends ServiceImpl<ExportFileDao, ExportFile
     public IPage<ExportFile> selectPage(ExportFileVO exportFileVO) {
         Page<ExportFile> productPage = new Page<>(exportFileVO.getPageNum(), exportFileVO.getPageSize());
         QueryWrapper<ExportFile> wrapper = new QueryWrapper<>();
-        if (StringUtils.isNotEmpty(exportFileVO.getName())) {
-            wrapper.like("name", exportFileVO.getName());
-        }
-        if (null != exportFileVO.getCreator()) {
-            wrapper.eq("creator", exportFileVO.getCreator());
-        }
-        if (null != exportFileVO.getState()) {
-            wrapper.eq("state", exportFileVO.getState());
-        }
-        if (null != exportFileVO.getStartTime() && null != exportFileVO.getEndTime()) {
-            wrapper.between("create_time", exportFileVO.getStartTime(), exportFileVO.getEndTime());
-        }
+        wrapper.like(StringUtils.isNotEmpty(exportFileVO.getName()), "name", exportFileVO.getName());
+        wrapper.eq(null != exportFileVO.getCreator(), "creator", exportFileVO.getCreator());
+        wrapper.eq(null != exportFileVO.getState(), "state", exportFileVO.getState());
+        wrapper.between(null != exportFileVO.getStartTime() && null != exportFileVO.getEndTime(), "create_time", exportFileVO.getStartTime(), exportFileVO.getEndTime());
         wrapper.orderByDesc("create_time");
         return exportFileDao.selectPage(productPage, wrapper);
     }

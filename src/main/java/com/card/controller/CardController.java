@@ -38,7 +38,7 @@ public class CardController {
      * @param cardVO
      * @return
      */
-    @PostMapping("/countByProductId")
+    @PostMapping("/token/countByProductId")
     public ResultVO<Object> countByProductId(@RequestBody CardVO cardVO) {
         Product product = productService.selectById(cardVO.getProductId());
         if (null == product) {
@@ -54,7 +54,7 @@ public class CardController {
      * @param cardVO
      * @return
      */
-    @PostMapping("/admin/selectPage")
+    @PostMapping("/token/selectPage")
     public ResultVO<Object> selectPage(@RequestBody CardVO cardVO) {
         return ResultVOUtil.success(cardService.selectPage(cardVO));
     }
@@ -66,7 +66,7 @@ public class CardController {
      * @param card
      * @return
      */
-    @PostMapping("/admin/updateById")
+    @PostMapping("/token/updateById")
     public ResultVO<Object> updateById(@RequestBody Card card) {
         Card cardById = cardService.selectOne(card.getId());
         if (cardById == null) {
@@ -88,7 +88,7 @@ public class CardController {
      * @param card 卡密对象
      * @return
      */
-    @PostMapping("/admin/insert")
+    @PostMapping("/token/insert")
     public ResultVO<Object> insert(@RequestBody Card card) {
         cardService.insert(card);
         log.info("用户{}添加了卡密{}", SecurityUtil.getCurrentUser().getId(), card);
@@ -101,7 +101,7 @@ public class CardController {
      * @param cardVO
      * @return
      */
-    @PostMapping("/admin/selectOne")
+    @PostMapping("/token/selectOne")
     public ResultVO<Object> selectOne(@RequestBody CardVO cardVO) {
         Card cardById = cardService.selectById(cardVO.getId());
         if (cardById == null) {
@@ -121,7 +121,7 @@ public class CardController {
      * @param cardVO
      * @return
      */
-    @PostMapping("/admin/deleteBatchIds")
+    @PostMapping("/token/deleteBatchIds")
     public ResultVO<Object> deleteBatchIds(@RequestBody CardVO cardVO) {
         ArrayList<Long> list = new ArrayList<>();
         List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());

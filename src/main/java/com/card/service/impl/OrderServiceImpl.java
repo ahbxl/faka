@@ -9,6 +9,7 @@ import com.card.dao.OrderDao;
 import com.card.entity.Card;
 import com.card.entity.Order;
 import com.card.entity.vo.OrderVO;
+import com.card.enu.OrderState;
 import com.card.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +37,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, Order> implements Or
     @Override
     public void deleteByState(Integer state) {
         QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("state", 0);
+        queryWrapper.eq("state", OrderState.Not_Pay.getValue());
         orderDao.delete(queryWrapper);
     }
 
@@ -49,18 +50,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, Order> implements Or
     public IPage<Order> selectPage(OrderVO orderVO) {
         Page<Order> orderPage = new Page<>(orderVO.getPageNum(), orderVO.getPageSize());
         QueryWrapper<Order> wrapper = new QueryWrapper<>();
-        if (!StringUtils.isBlank(orderVO.getSubject())) {
-            wrapper.like("subject", orderVO.getSubject());
-        }
-        if (!StringUtils.isBlank(orderVO.getOutTradeNo())) {
-            wrapper.like("outTradeNo", orderVO.getOutTradeNo());
-        }
-        if (null != orderVO.getState()) {
-            wrapper.eq("state", orderVO.getState());
-        }
-        if (null != orderVO.getStartTime() && null != orderVO.getEndTime()) {
-            wrapper.between("create_time", orderVO.getStartTime(), orderVO.getEndTime());
-        }
+        wrapper.like(!StringUtils.isBlank(orderVO.getSubject()), "subject", orderVO.getSubject());
+        wrapper.like(!StringUtils.isBlank(orderVO.getOutTradeNo()), "outTradeNo", orderVO.getOutTradeNo());
+        wrapper.eq(null != orderVO.getState(), "state", orderVO.getState());
+        wrapper.between(null != orderVO.getStartTime() && null != orderVO.getEndTime(), "create_time", orderVO.getStartTime(), orderVO.getEndTime());
         wrapper.orderByDesc("create_time");
         return orderDao.selectPage(orderPage, wrapper);
     }
@@ -73,14 +66,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, Order> implements Or
     @Override
     public List<Order> selectByState(Integer state) {
         QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("state",state);
+        queryWrapper.eq("state", state);
         return orderDao.selectList(queryWrapper);
     }
 
     @Override
     public Order selectByOutTradeNo(String outTradeNo) {
         QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("outTradeNo",outTradeNo);
+        queryWrapper.eq("outTradeNo", outTradeNo);
         return orderDao.selectOne(queryWrapper);
     }
 }
