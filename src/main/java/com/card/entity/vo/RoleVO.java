@@ -11,6 +11,7 @@ import java.util.Date;
 public class RoleVO extends PageVO implements Serializable {
     private static final long serialVersionUID = 2147982144935437262L;
     private Long id;
+    private String parentId;
     private String name;
     private Integer state;
     private Date createTime;

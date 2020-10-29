@@ -16,6 +16,8 @@ public class Role implements Serializable {
     private static final long serialVersionUID = 5593937318976491954L;
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
+    @TableField("parent_id")
+    private String parentId;
     @TableField("name")
     private String name;
     @TableField("state")

@@ -1,5 +1,7 @@
 package com.card.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.card.entity.MenuList;
 import com.card.entity.vo.ExportFileVO;
 import com.card.entity.vo.MenuListVO;
 import com.card.entity.vo.ResultVO;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @Slf4j
 @RequestMapping("/menuList")
@@ -21,6 +25,6 @@ public class MenuListController {
 
     @PostMapping("/token/selectPage")
     public ResultVO<Object> selectPage(@RequestBody MenuListVO MenuListVO) {
-        return ResultVOUtil.success(menuListService.selectPage(MenuListVO));
+        return ResultVOUtil.success(menuListService.menuList(MenuListVO));
     }
 }

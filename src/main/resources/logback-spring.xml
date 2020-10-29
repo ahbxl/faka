@@ -8,12 +8,12 @@
     <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
         <!--对输出日志进行格式化-->
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <charset>UTF-8</charset><!--此处设置字符集-->
+            <!--此处设置字符集-->
+            <charset>UTF-8</charset>
             <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} (%file:%line\) [%thread] %-5level %logger{50} - %msg%n</pattern>
         </encoder>
     </appender>
-
 
     <!--日志文件配置info-->
     <appender name="fileInfoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -74,11 +74,10 @@
         </encoder>
     </appender>
 
-
     <root level="INFO">
         <appender-ref ref="consoleLog"/>
     </root>
-    <logger name="com.jincloud" level="INFO">
+    <logger name="com.card" level="INFO">
         <appender-ref ref="fileInfoLog"/>
         <appender-ref ref="fileErrorLog"/>
     </logger>

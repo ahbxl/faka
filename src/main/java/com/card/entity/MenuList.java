@@ -11,6 +11,7 @@ import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @TableName("menu_list")
@@ -34,4 +35,7 @@ public class MenuList implements Serializable {
     private Date createTime;
     @TableField("update_time")
     private Date updateTime;
+
+    @TableField(exist = false)
+    private List<MenuList> menuListList;
 }
