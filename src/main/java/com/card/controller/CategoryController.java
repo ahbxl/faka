@@ -2,10 +2,9 @@ package com.card.controller;
 
 import com.card.entity.Category;
 import com.card.entity.vo.CategoryVO;
-import com.card.entity.vo.ResultVO;
+import com.card.entity.vo.Result;
 import com.card.service.CategoryService;
 import com.card.service.UserService;
-import com.card.util.ResultVOUtil;
 import com.card.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +34,8 @@ public class CategoryController {
      * @return
      */
     @PostMapping("/token/selectPage")
-    public ResultVO<Object> selectPage(@RequestBody CategoryVO categoryVO) {
-        return ResultVOUtil.success(categoryService.selectPage(categoryVO));
+    public Result<Object> selectPage(@RequestBody CategoryVO categoryVO) {
+        return Result.success(categoryService.selectPage(categoryVO));
     }
 
     /**
@@ -47,7 +46,7 @@ public class CategoryController {
      * @return
      */
     @PostMapping("/token/deleteBatchIds")
-    public ResultVO<Object> deleteBatchIds(@RequestBody CategoryVO categoryVO) {
+    public Result<Object> deleteBatchIds(@RequestBody CategoryVO categoryVO) {
         List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
         ArrayList<Long> list = new ArrayList<>();
         for (Long id : categoryVO.getIds()) {
@@ -58,7 +57,7 @@ public class CategoryController {
         }
         categoryService.deleteBatchIds(list);
         log.info("用户{}删除了{}", SecurityUtil.getCurrentUser().getId(), list);
-        return ResultVOUtil.success();
+        return Result.success();
     }
 
     /**
@@ -69,17 +68,17 @@ public class CategoryController {
      * @return
      */
     @PostMapping("/token/updateById")
-    public ResultVO<Object> updateById(@RequestBody Category category) {
+    public Result<Object> updateById(@RequestBody Category category) {
         Category category1 = categoryService.selectById(category.getId());
         if (category1 == null) {
-            ResultVOUtil.fail("不存在该卡密信息");
+            Result.fail("不存在该卡密信息");
         }
         List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
         if (!longs.contains(category.getCreator())) {
-            ResultVOUtil.fail("你暂无权限查看");
+            Result.fail("你暂无权限查看");
         }
         categoryService.updateById(category);
-        return ResultVOUtil.success();
+        return Result.success();
     }
 
     /**
@@ -90,8 +89,8 @@ public class CategoryController {
      * @return
      */
     @PostMapping("/token/insert")
-    public ResultVO<Object> insert(@RequestBody Category category) {
+    public Result<Object> insert(@RequestBody Category category) {
         categoryService.insert(category);
-        return ResultVOUtil.success();
+        return Result.success();
     }
 }

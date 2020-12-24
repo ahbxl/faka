@@ -3,11 +3,10 @@ package com.card.controller;
 import com.card.entity.Card;
 import com.card.entity.Product;
 import com.card.entity.vo.CardVO;
-import com.card.entity.vo.ResultVO;
+import com.card.entity.vo.Result;
 import com.card.service.CardService;
 import com.card.service.ProductService;
 import com.card.service.UserService;
-import com.card.util.ResultVOUtil;
 import com.card.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +38,12 @@ public class CardController {
      * @return
      */
     @PostMapping("/token/countByProductId")
-    public ResultVO<Object> countByProductId(@RequestBody CardVO cardVO) {
+    public Result<Object> countByProductId(@RequestBody CardVO cardVO) {
         Product product = productService.selectById(cardVO.getProductId());
         if (null == product) {
-            return ResultVOUtil.fail("不存在该产品");
+            return Result.fail("不存在该产品");
         }
-        return ResultVOUtil.success(cardService.countByProductId(cardVO.getProductId()));
+        return Result.success(cardService.countByProductId(cardVO.getProductId()));
     }
 
     /**
@@ -55,8 +54,8 @@ public class CardController {
      * @return
      */
     @PostMapping("/token/selectPage")
-    public ResultVO<Object> selectPage(@RequestBody CardVO cardVO) {
-        return ResultVOUtil.success(cardService.selectPage(cardVO));
+    public Result<Object> selectPage(@RequestBody CardVO cardVO) {
+        return Result.success(cardService.selectPage(cardVO));
     }
 
     /**
@@ -67,18 +66,18 @@ public class CardController {
      * @return
      */
     @PostMapping("/token/updateById")
-    public ResultVO<Object> updateById(@RequestBody Card card) {
+    public Result<Object> updateById(@RequestBody Card card) {
         Card cardById = cardService.selectOne(card.getId());
         if (cardById == null) {
-            ResultVOUtil.fail("不存在该卡密信息");
+            Result.fail("不存在该卡密信息");
         }
         List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
         if (!longs.contains(card.getCreator())) {
-            ResultVOUtil.fail("你暂无权限");
+            Result.fail("你暂无权限");
         }
         cardService.updateById(card);
         log.info("用户{}更新了卡密{}", SecurityUtil.getCurrentUser().getId(), card);
-        return ResultVOUtil.success();
+        return Result.success();
     }
 
     /**
@@ -89,10 +88,10 @@ public class CardController {
      * @return
      */
     @PostMapping("/token/insert")
-    public ResultVO<Object> insert(@RequestBody Card card) {
+    public Result<Object> insert(@RequestBody Card card) {
         cardService.insert(card);
         log.info("用户{}添加了卡密{}", SecurityUtil.getCurrentUser().getId(), card);
-        return ResultVOUtil.success();
+        return Result.success();
     }
 
     /**
@@ -102,16 +101,16 @@ public class CardController {
      * @return
      */
     @PostMapping("/token/selectOne")
-    public ResultVO<Object> selectOne(@RequestBody CardVO cardVO) {
+    public Result<Object> selectOne(@RequestBody CardVO cardVO) {
         Card cardById = cardService.selectById(cardVO.getId());
         if (cardById == null) {
-            ResultVOUtil.fail("不存在该卡密信息");
+            Result.fail("不存在该卡密信息");
         }
         List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
         if (!longs.contains(cardVO.getCreator())) {
-            ResultVOUtil.fail("你暂无权限查看");
+            Result.fail("你暂无权限查看");
         }
-        return ResultVOUtil.success(cardById);
+        return Result.success(cardById);
     }
 
     /**
@@ -122,7 +121,7 @@ public class CardController {
      * @return
      */
     @PostMapping("/token/deleteBatchIds")
-    public ResultVO<Object> deleteBatchIds(@RequestBody CardVO cardVO) {
+    public Result<Object> deleteBatchIds(@RequestBody CardVO cardVO) {
         ArrayList<Long> list = new ArrayList<>();
         List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
         for (Long id : cardVO.getIds()) {
@@ -133,6 +132,6 @@ public class CardController {
         }
         cardService.deleteBatchIds(list);
         log.info("用户{}删除了{}", SecurityUtil.getCurrentUser().getId(), list);
-        return ResultVOUtil.success();
+        return Result.success();
     }
 }

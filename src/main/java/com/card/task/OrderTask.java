@@ -16,7 +16,10 @@ public class OrderTask {
     @Autowired
     private OrderService orderService;
 
-    @Scheduled(cron = "0 0 1 1 * ?")
+    /**
+     * 每天凌晨2点删除未支付的订单
+     */
+    @Scheduled(cron = "0 0 2 1 * ?")
     public void deleteOrderByState() {
         List<Order> orders = orderService.selectByState(0);
         List<String> outTradeNos = orders.stream().map(Order::getOutTradeNo).collect(Collectors.toList());

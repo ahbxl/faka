@@ -3,9 +3,8 @@ package com.card.controller;
 
 import com.card.entity.Product;
 import com.card.entity.vo.ProductVO;
-import com.card.entity.vo.ResultVO;
+import com.card.entity.vo.Result;
 import com.card.service.ProductService;
-import com.card.util.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +23,8 @@ public class ProductController {
      * @return
      */
     @PostMapping("/token/selectOne/{id}")
-    public ResultVO<Object> selectOne(@PathVariable("id") Long id) {
-        return ResultVOUtil.success(productService.selectOne(id));
+    public Result<Object> selectOne(@PathVariable("id") Long id) {
+        return Result.success(productService.selectOne(id));
     }
 
     /**
@@ -35,8 +34,8 @@ public class ProductController {
      * @return
      */
     @PostMapping("/token/selectByCategoryId/{categoryId}")
-    public ResultVO<Object> selectByCategoryId(@PathVariable("categoryId") Integer categoryId) {
-        return ResultVOUtil.success(productService.selectByCategoryId(categoryId));
+    public Result<Object> selectByCategoryId(@PathVariable("categoryId") Integer categoryId) {
+        return Result.success(productService.selectByCategoryId(categoryId));
     }
 
     /**
@@ -47,8 +46,8 @@ public class ProductController {
      * @return
      */
     @PostMapping("/token/selectPage")
-    public ResultVO<Object> selectPage(@RequestBody ProductVO productVO) {
-        return ResultVOUtil.success(productService.selectPage(productVO));
+    public Result<Object> selectPage(@RequestBody ProductVO productVO) {
+        return Result.success(productService.selectPage(productVO));
     }
 
     /**
@@ -59,9 +58,9 @@ public class ProductController {
      * @return
      */
     @PostMapping("/token/deleteBatchIds")
-    public ResultVO<Object> deleteBatchIds(@RequestBody ProductVO productVO) {
+    public Result<Object> deleteBatchIds(@RequestBody ProductVO productVO) {
         productService.deleteBatchIds(productVO.getIds());
-        return ResultVOUtil.success();
+        return Result.success();
     }
 
     /**
@@ -72,13 +71,13 @@ public class ProductController {
      * @return
      */
     @PostMapping("/token/updateById")
-    public ResultVO<Object> updateById(@RequestBody Product product) {
+    public Result<Object> updateById(@RequestBody Product product) {
         Product productById = productService.selectOne(product.getId());
         if (productById == null) {
-            ResultVOUtil.fail("不存在该产品信息");
+            Result.fail("不存在该产品信息");
         }
         productService.updateById(product);
-        return ResultVOUtil.success();
+        return Result.success();
     }
 
     /**
@@ -89,8 +88,8 @@ public class ProductController {
      * @return
      */
     @PostMapping("/token/insert")
-    public ResultVO<Object> insert(@RequestBody Product product) {
+    public Result<Object> insert(@RequestBody Product product) {
         productService.insert(product);
-        return ResultVOUtil.success();
+        return Result.success();
     }
 }

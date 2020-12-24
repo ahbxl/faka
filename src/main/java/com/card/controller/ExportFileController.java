@@ -2,13 +2,12 @@ package com.card.controller;
 
 import com.card.entity.ExportFile;
 import com.card.entity.vo.ExportFileVO;
-import com.card.entity.vo.ResultVO;
+import com.card.entity.vo.Result;
 import com.card.enu.ExportFileState;
 import com.card.service.CustomMultiThreadingService;
 import com.card.service.ExportFileService;
 import com.card.service.UserService;
 import com.card.util.RandomUtil;
-import com.card.util.ResultVOUtil;
 import com.card.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +42,8 @@ public class ExportFileController {
      * @return
      */
     @PostMapping("/token/selectPage")
-    public ResultVO<Object> selectPage(@RequestBody ExportFileVO exportFileVO) {
-        return ResultVOUtil.success(exportFileService.selectPage(exportFileVO));
+    public Result<Object> selectPage(@RequestBody ExportFileVO exportFileVO) {
+        return Result.success(exportFileService.selectPage(exportFileVO));
     }
 
     /**
@@ -55,17 +54,17 @@ public class ExportFileController {
      * @return
      */
     @GetMapping("/token/downloadExportFile}")
-    public ResultVO<Object> downloadExportFile(@RequestBody ExportFileVO exportFileVO) {
+    public Result<Object> downloadExportFile(@RequestBody ExportFileVO exportFileVO) {
         ExportFile exportFile = exportFileService.selectById(exportFileVO.getId());
         if (exportFile == null) {
-            return ResultVOUtil.success("未查询到文件信息");
+            return Result.success("未查询到文件信息");
         }
         List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
         if (!longs.contains(exportFile.getCreator())) {
-            return ResultVOUtil.success("你没有权限删除");
+            return Result.success("你没有权限删除");
         }
         exportFileService.downloadExportFile(exportFile);
-        return ResultVOUtil.success();
+        return Result.success();
     }
 
     /**
@@ -76,7 +75,7 @@ public class ExportFileController {
      * @return
      */
     @GetMapping("/token/deleteBatchIds")
-    public ResultVO<Object> deleteBatchIds(@RequestBody ExportFileVO exportFileVO) {
+    public Result<Object> deleteBatchIds(@RequestBody ExportFileVO exportFileVO) {
         List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
         ArrayList<Long> list = new ArrayList<>();
         for (Long id : exportFileVO.getIds()) {
@@ -97,7 +96,7 @@ public class ExportFileController {
         // 从数据库中删除文件信息
         exportFileService.deleteBatchIds(list);
         log.info("用户{}删除了{}", SecurityUtil.getCurrentUser().getId(), list);
-        return ResultVOUtil.success();
+        return Result.success();
     }
 
     /**
@@ -108,7 +107,7 @@ public class ExportFileController {
      * @return
      */
     @PostMapping("/token/generateExportFile")
-    public ResultVO<Object> generateExportFile(@RequestBody ExportFileVO exportFileVO) {
+    public Result<Object> generateExportFile(@RequestBody ExportFileVO exportFileVO) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
         String endTime = simpleDateFormat.format(exportFileVO.getStartTime());
         String startTime = simpleDateFormat.format(exportFileVO.getEndTime());
@@ -121,6 +120,6 @@ public class ExportFileController {
         Integer insert = exportFileService.insert(exportFile);
         // 新建线程生成需要导出的文件到服务器/data/faka/exportFile文件夹下
         customMultiThreadingService.executeAysncCardExport(exportFileVO.getStartTime(), exportFileVO.getEndTime(), exportFileService.selectById(Long.valueOf(insert)));
-        return ResultVOUtil.success();
+        return Result.success();
     }
 }

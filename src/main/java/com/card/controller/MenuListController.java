@@ -1,20 +1,14 @@
 package com.card.controller;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.card.entity.MenuList;
-import com.card.entity.vo.ExportFileVO;
 import com.card.entity.vo.MenuListVO;
-import com.card.entity.vo.ResultVO;
+import com.card.entity.vo.Result;
 import com.card.service.MenuListService;
-import com.card.util.ResultVOUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -24,7 +18,7 @@ public class MenuListController {
     private MenuListService menuListService;
 
     @PostMapping("/token/selectPage")
-    public ResultVO<Object> selectPage(@RequestBody MenuListVO MenuListVO) {
-        return ResultVOUtil.success(menuListService.menuList(MenuListVO));
+    public Result<Object> selectPage(@RequestBody MenuListVO MenuListVO) {
+        return Result.success(menuListService.menuList(MenuListVO));
     }
 }

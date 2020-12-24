@@ -40,10 +40,8 @@ public class NoSessionFilter extends BasicHttpAuthenticationFilter {
         } else {
             if (checkResult.getErrCode().equals(SystemConstant.JWT_ERRCODE_EXPIRE)) {
                 return false;
-//                throw new RuntimeException("token过期，请重新登录");
             } else if (checkResult.getErrCode().equals(SystemConstant.JWT_ERRCODE_FAIL)) {
                 return false;
-//                throw new RuntimeException("token验证失败");
             }
             return false;
         }

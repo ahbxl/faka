@@ -4,12 +4,11 @@ import com.alipay.easysdk.kernel.util.ResponseChecker;
 import com.alipay.easysdk.payment.facetoface.models.AlipayTradePrecreateResponse;
 import com.card.entity.Order;
 import com.card.entity.vo.OrderVO;
-import com.card.entity.vo.ResultVO;
+import com.card.entity.vo.Result;
 import com.card.enu.OrderState;
 import com.card.service.AliPayService;
 import com.card.service.OrderService;
 import com.card.service.UserService;
-import com.card.util.ResultVOUtil;
 import com.card.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,13 +34,13 @@ public class OrderController {
     private UserService userService;
 
     @PostMapping("/token/selectPage")
-    public ResultVO<Object> selectPage(@RequestBody OrderVO orderVO) {
-        return ResultVOUtil.success(orderService.selectPage(orderVO));
+    public Result<Object> selectPage(@RequestBody OrderVO orderVO) {
+        return Result.success(orderService.selectPage(orderVO));
     }
 
     @PostMapping("/token/selectById")
-    public ResultVO<Object> selectById(@RequestBody OrderVO orderVO) {
-        return ResultVOUtil.success(orderService.selectById(orderVO.getId()));
+    public Result<Object> selectById(@RequestBody OrderVO orderVO) {
+        return Result.success(orderService.selectById(orderVO.getId()));
     }
 
     /**
@@ -52,7 +51,7 @@ public class OrderController {
      * @return
      */
     @PostMapping("/token/deleteBatchIds")
-    public ResultVO<Object> deleteBatchIds(@RequestBody OrderVO orderVO) {
+    public Result<Object> deleteBatchIds(@RequestBody OrderVO orderVO) {
         ArrayList<Long> list = new ArrayList<>();
         List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
         for (Long id : orderVO.getIds()) {
@@ -63,18 +62,18 @@ public class OrderController {
         }
         orderService.deleteBatchIds(list);
         log.info("用户{}删除了订单，订单号为{}", SecurityUtil.getCurrentUser().getId(), list);
-        return ResultVOUtil.success();
+        return Result.success();
     }
 
     @PostMapping("/token/updateById")
-    public ResultVO<Object> updateById(@RequestBody Order order) {
+    public Result<Object> updateById(@RequestBody Order order) {
         Order orderById = orderService.selectById(order.getId());
         if (orderById == null) {
-            ResultVOUtil.fail("不存在该订单");
+            Result.fail("不存在该订单");
         }
         orderService.updateById(order);
         log.info("用户{}更新了订单{}", SecurityUtil.getCurrentUser().getId(), order);
-        return ResultVOUtil.success();
+        return Result.success();
     }
 
     /**
@@ -84,7 +83,7 @@ public class OrderController {
      * @return
      */
     @PostMapping("/token/faceToFace")
-    public ResultVO<Object> faceToFace(@RequestBody Order order) {
+    public Result<Object> faceToFace(@RequestBody Order order) {
         log.info("当面付支付调用");
         AlipayTradePrecreateResponse response = aliPayService.faceToFace(order.getSubject(), order.getOutTradeNo(), order.getTotalAmount());
         if (ResponseChecker.success(response)) {
@@ -92,8 +91,8 @@ public class OrderController {
             order.setCreator(SecurityUtil.getCurrentUser().getId());
             orderService.insert(order);
             log.info("生成支付二维码链接");
-            return ResultVOUtil.success(response.qrCode);
+            return Result.success(response.qrCode);
         }
-        return ResultVOUtil.success("支付调用失败，原因：" + response.msg + "，" + response.subMsg);
+        return Result.success("支付调用失败，原因：" + response.msg + "，" + response.subMsg);
     }
 }
