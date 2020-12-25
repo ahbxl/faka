@@ -1,8 +1,13 @@
 package com.card.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.card.dao.PermissionDao;
 import com.card.entity.Permission;
-import com.card.entity.User;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
-public interface PermissionService extends IService<Permission> {
+@Service
+@Slf4j
+public class PermissionService extends ServiceImpl<PermissionDao, Permission>  {
 }

@@ -1,42 +1,81 @@
 package com.card.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.card.dao.ExportFileDao;
 import com.card.entity.ExportFile;
-import com.card.entity.User;
 import com.card.entity.vo.ExportFileVO;
+import com.card.enu.ExportFileState;
+import com.card.util.SecurityUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public interface ExportFileService extends IService<ExportFile> {
-    /**
-     * 分页查询文件列表
-     *
-     * @param exportFileVO
-     * @return
-     */
-    IPage<ExportFile> selectPage(ExportFileVO exportFileVO);
+@Service
+@Slf4j
+public class ExportFileService extends ServiceImpl<ExportFileDao, ExportFile>  {
+    @Autowired
+    private ExportFileDao exportFileDao;
 
-    /**
-     * 保存excel到数据库
-     *
-     * @param exportFile
-     */
-    Integer insert(ExportFile exportFile);
+    @Autowired
+    private HttpServletResponse response;
 
-    /**
-     * 下载文件
-     *
-     * @param exportFile 需要下载的文件对象
-     */
-    void downloadExportFile(ExportFile exportFile);
+    public IPage<ExportFile> selectPage(ExportFileVO exportFileVO) {
+        Page<ExportFile> productPage = new Page<>(exportFileVO.getPageNum(), exportFileVO.getPageSize());
+        QueryWrapper<ExportFile> wrapper = new QueryWrapper<>();
+        wrapper.like(StringUtils.isNotEmpty(exportFileVO.getName()), "name", exportFileVO.getName());
+        wrapper.eq(null != exportFileVO.getCreator(), "creator", exportFileVO.getCreator());
+        wrapper.eq(null != exportFileVO.getState(), "state", exportFileVO.getState());
+        wrapper.between(null != exportFileVO.getStartTime() && null != exportFileVO.getEndTime(), "create_time", exportFileVO.getStartTime(), exportFileVO.getEndTime());
+        wrapper.orderByDesc("create_time");
+        return exportFileDao.selectPage(productPage, wrapper);
+    }
 
-    /**
-     * 删除文件
-     *
-     * @param ids 文件的主键
-     */
-    void deleteBatchIds(List<Long> ids);
+    public Integer insert(ExportFile exportFile) {
+        exportFile.setCreator(SecurityUtil.getCurrentUser().getId());
+        return exportFileDao.insert(exportFile);
+    }
 
-    ExportFile selectById(Long id);
+    public void downloadExportFile(ExportFile exportFile) {
+        try {
+            File file = new File(exportFile.getPath());
+            String fileName = file.getName();
+            FileInputStream fis = new FileInputStream(exportFile.getPath());
+            // 设置头部信息
+            response.setContentType("application/octet-stream;charset=utf-8");
+            response.setHeader("Content-Disposition", "attachment;filename="
+                    + new String(fileName.getBytes(), StandardCharsets.ISO_8859_1));
+            response.setCharacterEncoding("UTF-8");
+            OutputStream os = response.getOutputStream();
+            FileCopyUtils.copy(fis, os);
+        } catch (IOException e) {
+            log.error("文件内容读取异常，文件:" + e.getMessage());
+        } finally {
+            // 修改数据库中的文件状态为已下载
+            UpdateWrapper<ExportFile> wrapper = new UpdateWrapper<>();
+            wrapper.set("state", ExportFileState.Downloaded.getValue());
+            exportFileDao.update(exportFile, wrapper);
+        }
+    }
+
+    public void deleteBatchIds(List<Long> ids) {
+        exportFileDao.deleteBatchIds(ids);
+    }
+
+    public ExportFile selectById(Long id) {
+        return exportFileDao.selectById(id);
+    }
 }
