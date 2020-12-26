@@ -1,14 +1,8 @@
 package com.card.security;
 
-import com.card.entity.Permission;
-import com.card.entity.Role;
-import com.card.entity.RolePermission;
-import com.card.entity.User;
+import com.card.entity.*;
 import com.card.entity.vo.UserVO;
-import com.card.service.PermissionService;
-import com.card.service.RolePermissionService;
-import com.card.service.RoleService;
-import com.card.service.UserService;
+import com.card.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -32,6 +26,8 @@ public class UserRealm extends AuthorizingRealm {
     private PermissionService permissionService;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private MenuListService menuListService;
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
@@ -60,6 +56,9 @@ public class UserRealm extends AuthorizingRealm {
         if (user == null) {
             return null;
         }
+        List<Role> roles = roleService.selectRoles(user.getId(), true);
+        List<MenuList> menuLists = menuListService.lambdaQuery().in(MenuList::getRoleId, roles).list();
+        user.setMenuLists(menuLists);
         ((UsernamePasswordToken) authenticationToken).setRememberMe(true);
         return new SimpleAuthenticationInfo(user, String.valueOf(usernamePasswordToken.getPassword()), getName());
     }

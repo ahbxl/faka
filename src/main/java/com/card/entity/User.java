@@ -42,6 +42,11 @@ public class User implements Serializable {
     private Date createTime;
     @TableField("update_time")
     private Date updateTime;
+
+    // 用户角色，字段可能用不到
     @TableField(exist = false)
     private List<Role> roles;
+    // 用户的菜单列表，不同用户通过权限控制拥有不同的菜单
+    @TableField(exist = false)
+    private List<MenuList> menuLists;
 }
