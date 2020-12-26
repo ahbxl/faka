@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Slf4j
-@RequestMapping("/menuList")
+@RequestMapping("/api/menuList")
 public class MenuListController {
     @Autowired
     private MenuListService menuListService;
 
-    @PostMapping("/token/selectPage")
+    @PostMapping("/selectPage")
     public Result<Object> selectPage(@RequestBody MenuListVO MenuListVO) {
         return Result.success(menuListService.menuList(MenuListVO));
     }

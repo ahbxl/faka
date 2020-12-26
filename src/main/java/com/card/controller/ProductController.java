@@ -7,11 +7,14 @@ import com.card.entity.vo.Result;
 import com.card.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Slf4j
-@RequestMapping("/product")
+@RequestMapping("/api/product")
 public class ProductController {
     @Autowired
     private ProductService productService;
@@ -19,23 +22,23 @@ public class ProductController {
     /**
      * 通过id查询产品信息
      *
-     * @param id 主键
+     * @param productVO
      * @return
      */
-    @PostMapping("/token/selectOne/{id}")
-    public Result<Object> selectOne(@PathVariable("id") Long id) {
-        return Result.success(productService.selectOne(id));
+    @PostMapping("/selectOne")
+    public Result<Object> selectOne(@RequestBody ProductVO productVO) {
+        return Result.success(productService.selectOne(productVO.getId()));
     }
 
     /**
      * 查看指定分类的产品
      *
-     * @param categoryId 分类的id
+     * @param productVO
      * @return
      */
-    @PostMapping("/token/selectByCategoryId/{categoryId}")
-    public Result<Object> selectByCategoryId(@PathVariable("categoryId") Integer categoryId) {
-        return Result.success(productService.selectByCategoryId(categoryId));
+    @PostMapping("/selectByCategoryId")
+    public Result<Object> selectByCategoryId(@RequestBody ProductVO productVO) {
+        return Result.success(productService.selectByCategoryId(productVO.getCategoryId()));
     }
 
     /**
@@ -45,7 +48,7 @@ public class ProductController {
      * @param productVO
      * @return
      */
-    @PostMapping("/token/selectPage")
+    @PostMapping("/selectPage")
     public Result<Object> selectPage(@RequestBody ProductVO productVO) {
         return Result.success(productService.selectPage(productVO));
     }
@@ -57,7 +60,7 @@ public class ProductController {
      * @param productVO
      * @return
      */
-    @PostMapping("/token/deleteBatchIds")
+    @PostMapping("/deleteBatchIds")
     public Result<Object> deleteBatchIds(@RequestBody ProductVO productVO) {
         productService.deleteBatchIds(productVO.getIds());
         return Result.success();
@@ -70,7 +73,7 @@ public class ProductController {
      * @param product
      * @return
      */
-    @PostMapping("/token/updateById")
+    @PostMapping("/updateById")
     public Result<Object> updateById(@RequestBody Product product) {
         Product productById = productService.selectOne(product.getId());
         if (productById == null) {
@@ -87,7 +90,7 @@ public class ProductController {
      * @param product 产品对象
      * @return
      */
-    @PostMapping("/token/insert")
+    @PostMapping("/insert")
     public Result<Object> insert(@RequestBody Product product) {
         productService.insert(product);
         return Result.success();

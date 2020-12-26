@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Slf4j
-@RequestMapping("/rolePermission")
+@RequestMapping("/api/rolePermission")
 public class RolePermissionController {
 }

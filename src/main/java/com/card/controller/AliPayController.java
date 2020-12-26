@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @Slf4j
-@RequestMapping("/aliPay")
+@RequestMapping("/api/aliPay")
 public class AliPayController {
     @Autowired
     private AliPayService aliPayService;
@@ -38,7 +38,7 @@ public class AliPayController {
      * @param aliPayConfig
      * @return
      */
-    @PostMapping("/token/updateById")
+    @PostMapping("/updateById")
     public Result<Object> updateById(@RequestBody AliPayConfig aliPayConfig) {
         AliPayConfig aliPayConfig1 = aliPayService.selectById(aliPayConfig.getId());
         if (aliPayConfig1 == null) {
@@ -60,7 +60,7 @@ public class AliPayController {
      * @param aliPayConfigVO
      * @return
      */
-    @PostMapping("/token/selectById")
+    @PostMapping("/selectById")
     public Result<Object> selectById(@RequestBody AliPayConfigVO aliPayConfigVO) {
         AliPayConfig aliPayConfig = aliPayService.selectById(aliPayConfigVO.getId());
         if (aliPayConfig == null) {
@@ -79,7 +79,7 @@ public class AliPayController {
      * @param orderVO
      * @return
      */
-    @PostMapping("/token/selectByOutTradeNo")
+    @PostMapping("/selectByOutTradeNo")
     public Result<Object> selectByOutTradeNo(@RequestBody OrderVO orderVO) {
         Order order = orderService.selectByOutTradeNo(orderVO.getOutTradeNo());
         if (order == null) {
@@ -98,7 +98,7 @@ public class AliPayController {
      * @param orderVO
      * @return
      */
-    @PostMapping("/token/cancelTrade")
+    @PostMapping("/cancelTrade")
     public Result<Object> cancelTrade(@RequestBody OrderVO orderVO) {
         Order order = orderService.selectByOutTradeNo(orderVO.getOutTradeNo());
         if (order == null) {

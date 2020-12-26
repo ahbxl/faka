@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @Slf4j
-@RequestMapping("/card")
+@RequestMapping("/api/card")
 public class CardController {
     @Autowired
     private CardService cardService;
@@ -37,7 +37,7 @@ public class CardController {
      * @param cardVO
      * @return
      */
-    @PostMapping("/token/countByProductId")
+    @PostMapping("/countByProductId")
     public Result<Object> countByProductId(@RequestBody CardVO cardVO) {
         Product product = productService.selectById(cardVO.getProductId());
         if (null == product) {
@@ -53,7 +53,7 @@ public class CardController {
      * @param cardVO
      * @return
      */
-    @PostMapping("/token/selectPage")
+    @PostMapping("/selectPage")
     public Result<Object> selectPage(@RequestBody CardVO cardVO) {
         return Result.success(cardService.selectPage(cardVO));
     }
@@ -65,7 +65,7 @@ public class CardController {
      * @param card
      * @return
      */
-    @PostMapping("/token/updateById")
+    @PostMapping("/updateById")
     public Result<Object> updateById(@RequestBody Card card) {
         Card cardById = cardService.selectOne(card.getId());
         if (cardById == null) {
@@ -87,7 +87,7 @@ public class CardController {
      * @param card 卡密对象
      * @return
      */
-    @PostMapping("/token/insert")
+    @PostMapping("/insert")
     public Result<Object> insert(@RequestBody Card card) {
         cardService.insert(card);
         log.info("用户{}添加了卡密{}", SecurityUtil.getCurrentUser().getId(), card);
@@ -100,7 +100,7 @@ public class CardController {
      * @param cardVO
      * @return
      */
-    @PostMapping("/token/selectOne")
+    @PostMapping("/selectOne")
     public Result<Object> selectOne(@RequestBody CardVO cardVO) {
         Card cardById = cardService.selectById(cardVO.getId());
         if (cardById == null) {
@@ -120,7 +120,7 @@ public class CardController {
      * @param cardVO
      * @return
      */
-    @PostMapping("/token/deleteBatchIds")
+    @PostMapping("/deleteBatchIds")
     public Result<Object> deleteBatchIds(@RequestBody CardVO cardVO) {
         ArrayList<Long> list = new ArrayList<>();
         List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());

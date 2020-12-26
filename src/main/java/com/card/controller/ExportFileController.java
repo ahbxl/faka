@@ -21,7 +21,7 @@ import java.util.List;
 
 @RestController
 @Slf4j
-@RequestMapping("/exportFile")
+@RequestMapping("/api/exportFile")
 public class ExportFileController {
     @Value("${export.file.path}")
     private String path;
@@ -41,7 +41,7 @@ public class ExportFileController {
      * @param exportFileVO
      * @return
      */
-    @PostMapping("/token/selectPage")
+    @PostMapping("/selectPage")
     public Result<Object> selectPage(@RequestBody ExportFileVO exportFileVO) {
         return Result.success(exportFileService.selectPage(exportFileVO));
     }
@@ -53,7 +53,7 @@ public class ExportFileController {
      * @param exportFileVO
      * @return
      */
-    @GetMapping("/token/downloadExportFile}")
+    @GetMapping("/downloadExportFile}")
     public Result<Object> downloadExportFile(@RequestBody ExportFileVO exportFileVO) {
         ExportFile exportFile = exportFileService.selectById(exportFileVO.getId());
         if (exportFile == null) {
@@ -74,7 +74,7 @@ public class ExportFileController {
      * @param exportFileVO
      * @return
      */
-    @GetMapping("/token/deleteBatchIds")
+    @GetMapping("/deleteBatchIds")
     public Result<Object> deleteBatchIds(@RequestBody ExportFileVO exportFileVO) {
         List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
         ArrayList<Long> list = new ArrayList<>();
@@ -106,7 +106,7 @@ public class ExportFileController {
      * @param exportFileVO
      * @return
      */
-    @PostMapping("/token/generateExportFile")
+    @PostMapping("/generateExportFile")
     public Result<Object> generateExportFile(@RequestBody ExportFileVO exportFileVO) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
         String endTime = simpleDateFormat.format(exportFileVO.getStartTime());

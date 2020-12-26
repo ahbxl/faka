@@ -27,7 +27,7 @@ public class ProductService extends ServiceImpl<ProductDao, Product>  {
         return productDao.selectOne(wrapper);
     }
 
-    public List<Product> selectByCategoryId(Integer categoryId) {
+    public List<Product> selectByCategoryId(Long categoryId) {
         QueryWrapper<Product> wrapper = new QueryWrapper<>();
         wrapper.eq("category_id", categoryId);
         wrapper.select("id", "name").orderBy(false, true, "state");

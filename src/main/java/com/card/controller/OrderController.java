@@ -22,7 +22,7 @@ import java.util.List;
 
 @RestController
 @Slf4j
-@RequestMapping("/order")
+@RequestMapping("/api/order")
 public class OrderController {
     @Autowired
     private OrderService orderService;
@@ -33,12 +33,12 @@ public class OrderController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/token/selectPage")
+    @PostMapping("/selectPage")
     public Result<Object> selectPage(@RequestBody OrderVO orderVO) {
         return Result.success(orderService.selectPage(orderVO));
     }
 
-    @PostMapping("/token/selectById")
+    @PostMapping("/selectById")
     public Result<Object> selectById(@RequestBody OrderVO orderVO) {
         return Result.success(orderService.selectById(orderVO.getId()));
     }
@@ -50,7 +50,7 @@ public class OrderController {
      * @param orderVO
      * @return
      */
-    @PostMapping("/token/deleteBatchIds")
+    @PostMapping("/deleteBatchIds")
     public Result<Object> deleteBatchIds(@RequestBody OrderVO orderVO) {
         ArrayList<Long> list = new ArrayList<>();
         List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
@@ -65,7 +65,7 @@ public class OrderController {
         return Result.success();
     }
 
-    @PostMapping("/token/updateById")
+    @PostMapping("/updateById")
     public Result<Object> updateById(@RequestBody Order order) {
         Order orderById = orderService.selectById(order.getId());
         if (orderById == null) {
@@ -82,7 +82,7 @@ public class OrderController {
      * @param order
      * @return
      */
-    @PostMapping("/token/faceToFace")
+    @PostMapping("/faceToFace")
     public Result<Object> faceToFace(@RequestBody Order order) {
         log.info("当面付支付调用");
         AlipayTradePrecreateResponse response = aliPayService.faceToFace(order.getSubject(), order.getOutTradeNo(), order.getTotalAmount());

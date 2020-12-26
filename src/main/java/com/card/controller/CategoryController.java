@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @Slf4j
-@RequestMapping("/category")
+@RequestMapping("/api/category")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
@@ -33,7 +33,7 @@ public class CategoryController {
      * @param categoryVO
      * @return
      */
-    @PostMapping("/token/selectPage")
+    @PostMapping("/selectPage")
     public Result<Object> selectPage(@RequestBody CategoryVO categoryVO) {
         return Result.success(categoryService.selectPage(categoryVO));
     }
@@ -45,7 +45,7 @@ public class CategoryController {
      * @param categoryVO
      * @return
      */
-    @PostMapping("/token/deleteBatchIds")
+    @PostMapping("/deleteBatchIds")
     public Result<Object> deleteBatchIds(@RequestBody CategoryVO categoryVO) {
         List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
         ArrayList<Long> list = new ArrayList<>();
@@ -67,7 +67,7 @@ public class CategoryController {
      * @param category
      * @return
      */
-    @PostMapping("/token/updateById")
+    @PostMapping("/updateById")
     public Result<Object> updateById(@RequestBody Category category) {
         Category category1 = categoryService.selectById(category.getId());
         if (category1 == null) {
@@ -88,7 +88,7 @@ public class CategoryController {
      * @param category
      * @return
      */
-    @PostMapping("/token/insert")
+    @PostMapping("/insert")
     public Result<Object> insert(@RequestBody Category category) {
         categoryService.insert(category);
         return Result.success();
