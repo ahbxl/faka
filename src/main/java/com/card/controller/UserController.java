@@ -6,7 +6,7 @@ import com.card.entity.vo.Result;
 import com.card.entity.vo.UserVO;
 import com.card.service.UserService;
 import com.card.util.JwtUtil;
-import com.card.util.SecurityUtil;
+import com.card.security.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UnknownAccountException;

@@ -10,6 +10,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @TableName("user")
@@ -41,4 +42,6 @@ public class User implements Serializable {
     private Date createTime;
     @TableField("update_time")
     private Date updateTime;
+    @TableField(exist = false)
+    private List<Role> roles;
 }

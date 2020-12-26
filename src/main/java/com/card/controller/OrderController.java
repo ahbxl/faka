@@ -9,7 +9,7 @@ import com.card.enu.OrderState;
 import com.card.service.AliPayService;
 import com.card.service.OrderService;
 import com.card.service.UserService;
-import com.card.util.SecurityUtil;
+import com.card.security.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

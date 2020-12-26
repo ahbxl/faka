@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @TableName("role")
@@ -25,4 +26,6 @@ public class Role implements Serializable {
     private Date createTime;
     @TableField("update_time")
     private Date updateTime;
+    @TableField(exist = false)
+    private List<Permission> permissions;
 }

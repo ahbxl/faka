@@ -1,13 +1,14 @@
 package com.card.security;
 
 import com.card.entity.Permission;
+import com.card.entity.Role;
 import com.card.entity.RolePermission;
 import com.card.entity.User;
 import com.card.entity.vo.UserVO;
 import com.card.service.PermissionService;
 import com.card.service.RolePermissionService;
+import com.card.service.RoleService;
 import com.card.service.UserService;
-import com.card.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -29,6 +30,8 @@ public class UserRealm extends AuthorizingRealm {
     private RolePermissionService rolePermissionService;
     @Autowired
     private PermissionService permissionService;
+    @Autowired
+    private RoleService roleService;
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
@@ -41,7 +44,8 @@ public class UserRealm extends AuthorizingRealm {
             set.addAll(permissions);
         }
         authorizationInfo.addStringPermissions(set.stream().map(Permission::getName).collect(Collectors.toList()));
-//        authorizationInfo.addRole();
+        List<Role> roles = roleService.selectRoles(SecurityUtil.getCurrentUser().getId(), true);
+        authorizationInfo.addRoles(roles.stream().map(Role::getName).collect(Collectors.toList()));
         return authorizationInfo;
     }
 

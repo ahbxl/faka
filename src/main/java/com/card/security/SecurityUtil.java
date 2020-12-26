@@ -1,4 +1,4 @@
-package com.card.util;
+package com.card.security;
 
 import com.card.entity.User;
 import org.apache.shiro.SecurityUtils;

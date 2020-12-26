@@ -8,7 +8,7 @@ import com.card.service.CustomMultiThreadingService;
 import com.card.service.ExportFileService;
 import com.card.service.UserService;
 import com.card.util.RandomUtil;
-import com.card.util.SecurityUtil;
+import com.card.security.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
