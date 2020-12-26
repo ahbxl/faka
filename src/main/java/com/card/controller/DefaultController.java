@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +32,8 @@ import java.util.stream.Collectors;
 public class DefaultController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private HttpServletResponse httpServletResponse;
 
     /**
      * 添加用户
@@ -72,7 +75,7 @@ public class DefaultController {
             // 将用户户名和token返回
             HashMap<String, String> map = new HashMap<>();
             map.put("username", user.getUsername());
-            map.put("token", token);
+            httpServletResponse.setHeader("token", token);
             return Result.success(map);
         } catch (UnknownAccountException e) {
             return Result.fail("登陆失败！用户名或密码不正确");
