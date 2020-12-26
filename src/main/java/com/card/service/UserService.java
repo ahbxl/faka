@@ -38,10 +38,6 @@ public class UserService extends ServiceImpl<UserDao, User> {
         return userDao.selectPage(userPage, wrapper);
     }
 
-    public void insert(User user) {
-        userDao.insert(user);
-    }
-
     public User selectByUsernameAndPassword(UserVO userVO) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda().eq(User::getUsername, userVO.getUsername()).eq(User::getPassword, userVO.getPassword());

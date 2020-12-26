@@ -53,10 +53,34 @@ public class ShiroConfig {
          * roles  拥有某个角色权限才能访问
          * 参考：https://www.cnblogs.com/koal/p/5152671.html
          * */
+        // 用户权限
         linkedHashMap.put("/api/user/selectPage", "perms[user:select]");
         linkedHashMap.put("/api/user/selectById", "perms[user:select]");
         linkedHashMap.put("/api/user/updateById", "perms[user:update]");
-        linkedHashMap.put("/api/user/deleteBatchIds", "perms[user:delete]");
+        linkedHashMap.put("/api/user/removeByIds", "perms[user:delete]");
+        // 商品权限
+        linkedHashMap.put("/api/product/deleteBatchIds", "perms[product:delete]");
+        linkedHashMap.put("/api/product/updateById", "perms[product:update]");
+        linkedHashMap.put("/api/product/insert", "perms[product:add]");
+
+        // 角色权限
+        linkedHashMap.put("/api/role/saveOrUpdate", "perms[role:add,role:update]");
+        linkedHashMap.put("/api/product/removeByIds", "perms[role:delete]");
+        linkedHashMap.put("/api/product/getById", "perms[role:select]");
+        linkedHashMap.put("/api/product/selectPage", "perms[role:select]");
+
+        // 菜单权限
+        linkedHashMap.put("/api/menuList/removeByIds", "perms[menuList:delete]");
+        linkedHashMap.put("/api/menuList/saveOrUpdate", "perms[menuList:add,menuList:update]");
+
+        // 订单权限
+        linkedHashMap.put("/api/order/deleteBatchIds", "perms[order:delete]");
+        linkedHashMap.put("/api/order/updateById", "perms[order:update]");
+
+        // 授权的权限
+        linkedHashMap.put("/api/rolePermission/saveOrUpdate", "perms[rolePermission:add]");
+        linkedHashMap.put("/api/rolePermission/removeByIds", "perms[rolePermission:delete]");
+
         // 登录之后才可以请求的接口
         linkedHashMap.put("/api/**", "jwt");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(linkedHashMap);

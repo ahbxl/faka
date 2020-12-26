@@ -55,9 +55,9 @@ public class UserController {
      * @param userVO
      * @return
      */
-    @PostMapping("/deleteBatchIds")
+    @PostMapping("/removeByIds")
     public Result<Object> deleteBatchIds(@RequestBody UserVO userVO) {
-        userService.deleteBatchIds(userVO.getIds());
+        userService.removeByIds(userVO.getIds());
         return Result.success();
     }
 

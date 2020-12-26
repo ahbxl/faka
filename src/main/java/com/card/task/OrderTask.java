@@ -23,10 +23,8 @@ public class OrderTask {
     public void deleteOrderByState() {
         List<Order> orders = orderService.selectByState(0);
         List<String> outTradeNos = orders.stream().map(Order::getOutTradeNo).collect(Collectors.toList());
-        // 将删除的订单号输出到日志
-        log.info(outTradeNos.toString());
-        // 每月的1日的凌晨1点删除数据库中未支付的订单信息
-        log.info("开始执行删除数据库中未支付的订单信息");
+        // 每月的1日的凌晨1点删除数据库中未支付的订单信息，并将将删除的订单号输出到日志
+        log.info("开始执行删除数据库中未支付的订单信息：{}", outTradeNos.toString());
         orderService.deleteByState(0);
     }
 }

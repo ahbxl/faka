@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,7 @@ public class Role implements Serializable {
     @TableField("parent_id")
     private String parentId;
     @TableField("name")
+    @NotBlank
     private String name;
     @TableField("state")
     private Integer state;

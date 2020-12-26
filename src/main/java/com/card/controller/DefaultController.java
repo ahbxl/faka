@@ -3,9 +3,11 @@ package com.card.controller;
 import com.card.entity.User;
 import com.card.entity.constant.SystemConstant;
 import com.card.entity.vo.Result;
+import com.card.entity.vo.UserVO;
 import com.card.service.UserService;
 import com.card.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -36,22 +38,32 @@ public class DefaultController {
     private HttpServletResponse httpServletResponse;
 
     /**
-     * 添加用户
+     * 注册用户
      *
-     * @param user 用户对象
+     * @param userVO
+     * @param bindingResult
      * @return
      */
     @PostMapping("/register")
-    public Result<Object> insert(@Validated @RequestBody User user, BindingResult bindingResult) {
+    public Result<Object> insert(@Validated @RequestBody UserVO userVO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<ObjectError> allErrors = bindingResult.getAllErrors();
             return Result.fail(0, "参数错误", allErrors.stream().map(ObjectError::getDefaultMessage).collect(Collectors.toList()));
         }
         // 通过shiro默认的加密工具类为注册用户的密码进行加密
         Object salt = ByteSource.Util.bytes(SystemConstant.slat);
-        SimpleHash simpleHash = new SimpleHash("MD5", user.getPassword(), salt, 1);
+        SimpleHash simpleHash = new SimpleHash("MD5", userVO.getPassword(), salt, 1);
+        User user = new User();
+        user.setUsername(userVO.getUsername());
         user.setPassword(simpleHash.toString());
-        userService.insert(user);
+        user.setEmail(userVO.getEmail());
+        if (StringUtils.isNotBlank(userVO.getQq())) {
+            user.setQq(userVO.getQq());
+        }
+        if (StringUtils.isNotBlank(userVO.getPhone())) {
+            user.setPhone(userVO.getPhone());
+        }
+        userService.saveOrUpdate(user);
         return Result.success();
     }
 

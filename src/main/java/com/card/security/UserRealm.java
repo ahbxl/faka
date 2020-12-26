@@ -31,32 +31,36 @@ public class UserRealm extends AuthorizingRealm {
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        log.info("=========执行授权=========");
+        // 执行授权
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
+        // 设置角色
+        List<Role> roles = roleService.selectRoles(SecurityUtil.getCurrentUser().getId(), true);
+        authorizationInfo.addRoles(roles.stream().map(Role::getName).collect(Collectors.toList()));
         List<RolePermission> rolePermissions = rolePermissionService.lambdaQuery().eq(RolePermission::getRoleId, SecurityUtil.getCurrentUser().getRoleId()).list();
         Set<Permission> set = new HashSet<>();
         for (RolePermission rolePermission : rolePermissions) {
             List<Permission> permissions = permissionService.lambdaQuery().eq(Permission::getId, rolePermission.getPermissionId()).list();
             set.addAll(permissions);
         }
+        // 设置权限
         authorizationInfo.addStringPermissions(set.stream().map(Permission::getName).collect(Collectors.toList()));
-        List<Role> roles = roleService.selectRoles(SecurityUtil.getCurrentUser().getId(), true);
-        authorizationInfo.addRoles(roles.stream().map(Role::getName).collect(Collectors.toList()));
         return authorizationInfo;
     }
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        log.info("=========执行认证=========");
+        // 执行认证
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) authenticationToken;
         UserVO userVO = new UserVO();
         userVO.setUsername(usernamePasswordToken.getUsername());
         userVO.setPassword(String.valueOf(usernamePasswordToken.getPassword()));
         User user = userService.selectByUsernameAndPassword(userVO);
-        if (user == null) {
+        // 查询不到用户或者用户状态为禁用
+        if (user == null || user.getState() == 0) {
             return null;
         }
         List<MenuList> menuLists = menuListService.lambdaQuery().in(MenuList::getRoleId, user.getRoleId()).list();
+        // 认证成功之后设置角色关联的菜单
         user.setMenuLists(menuLists);
         ((UsernamePasswordToken) authenticationToken).setRememberMe(true);
         return new SimpleAuthenticationInfo(user, String.valueOf(usernamePasswordToken.getPassword()), getName());
