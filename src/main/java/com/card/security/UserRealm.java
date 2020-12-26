@@ -56,8 +56,7 @@ public class UserRealm extends AuthorizingRealm {
         if (user == null) {
             return null;
         }
-        List<Role> roles = roleService.selectRoles(user.getId(), true);
-        List<MenuList> menuLists = menuListService.lambdaQuery().in(MenuList::getRoleId, roles).list();
+        List<MenuList> menuLists = menuListService.lambdaQuery().in(MenuList::getRoleId, user.getRoleId()).list();
         user.setMenuLists(menuLists);
         ((UsernamePasswordToken) authenticationToken).setRememberMe(true);
         return new SimpleAuthenticationInfo(user, String.valueOf(usernamePasswordToken.getPassword()), getName());

@@ -1,11 +1,13 @@
 package com.card.security;
 
+import com.card.service.PermissionService;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +19,9 @@ import java.util.Map;
 
 @Configuration
 public class ShiroConfig {
+    @Autowired
+    private PermissionService permissionService;
+
     /**
      * 开启Shiro的注解(如@RequiresRoles,@RequiresPermissions)
      *
@@ -40,11 +45,25 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setFilters(filterHashMap);
         // 过滤规则
         Map<String, String> linkedHashMap = new LinkedHashMap<>();
+        /*添加shiro的内置过滤器
+         * anon 无需认证就能访问
+         * authc  必须认证了才能访问
+         * user  必须拥有记住我才能访问
+         * perms  拥有对某个资源的权限才能访问
+         * roles  拥有某个角色权限才能访问
+         * 参考：https://www.cnblogs.com/koal/p/5152671.html
+         * */
+        linkedHashMap.put("/api/user/selectPage", "perms[user:select]");
+        linkedHashMap.put("/api/user/selectById", "perms[user:select]");
+        linkedHashMap.put("/api/user/updateById", "perms[user:update]");
+        linkedHashMap.put("/api/user/deleteBatchIds", "perms[user:delete]");
         // 登录之后才可以请求的接口
         linkedHashMap.put("/api/**", "jwt");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(linkedHashMap);
         // 设置登录请求
         shiroFilterFactoryBean.setLoginUrl("/login");
+        //未授权界面
+        shiroFilterFactoryBean.setUnauthorizedUrl("/403");
         return shiroFilterFactoryBean;
     }
 

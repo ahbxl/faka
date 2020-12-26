@@ -22,6 +22,8 @@ public class Product implements Serializable {
     private String name;
     @TableField("price")
     private BigDecimal price;
+    @TableField("creator")
+    private Long creator;
     @TableField("state")
     private Integer state;
     @TableField("create_time")
