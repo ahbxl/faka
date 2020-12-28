@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.card.entity.MenuList;
 import com.card.entity.vo.MenuListVO;
 import com.card.entity.vo.Result;
+import com.card.security.SecurityUtil;
 import com.card.service.MenuListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,14 @@ public class MenuListController {
     @Autowired
     private MenuListService menuListService;
 
+    @PostMapping("/selectList")
+    public Result<Object> selectList(@RequestBody MenuListVO MenuListVO) {
+        return Result.success(menuListService.selectList(SecurityUtil.getCurrentUser().getRoleId()));
+    }
+
     @PostMapping("/selectPage")
     public Result<Object> selectPage(@RequestBody MenuListVO MenuListVO) {
-        return Result.success(menuListService.menuList(MenuListVO));
+        return Result.success(menuListService.selectPage(MenuListVO));
     }
 
     @PostMapping("/removeByIds")
