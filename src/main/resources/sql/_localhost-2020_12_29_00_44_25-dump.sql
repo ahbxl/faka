@@ -102,7 +102,6 @@ DROP TABLE IF EXISTS `menu_list`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `menu_list` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `role_id` bigint(20) DEFAULT NULL COMMENT '角色id',
   `parent_id` bigint(20) DEFAULT NULL COMMENT '父级id',
   `name` varchar(255) DEFAULT NULL COMMENT '名称',
   `priority` int(11) DEFAULT NULL COMMENT '优先级',
@@ -193,6 +192,24 @@ CREATE TABLE `role` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `role_menu_list`
+--
+
+DROP TABLE IF EXISTS `role_menu_list`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `role_menu_list` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `role_id` bigint(20) DEFAULT NULL COMMENT '角色id',
+  `menu_list_id` bigint(20) DEFAULT NULL COMMENT '菜单id',
+  `state` tinyint(4) DEFAULT '1' COMMENT '状态 1/正常',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COMMENT='角色和菜单关联表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `role_permission`
 --
 
@@ -243,4 +260,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-12-28 23:18:04
+-- Dump completed on 2020-12-29  0:44:25
