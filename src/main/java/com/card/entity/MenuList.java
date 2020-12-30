@@ -19,8 +19,6 @@ public class MenuList implements Serializable {
     private static final long serialVersionUID = 6371298069578228652L;
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
-    @TableField("role_id")
-    private Long roleId;
     @TableField("parent_id")
     private Long parentId;
     @TableField("name")

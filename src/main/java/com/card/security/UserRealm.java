@@ -28,6 +28,8 @@ public class UserRealm extends AuthorizingRealm {
     private RoleService roleService;
     @Autowired
     private MenuListService menuListService;
+    @Autowired
+    private RoleMenuListService roleMenuListService;
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
@@ -59,7 +61,9 @@ public class UserRealm extends AuthorizingRealm {
         if (user == null || user.getState() == 0) {
             return null;
         }
-        List<MenuList> menuLists = menuListService.lambdaQuery().in(MenuList::getRoleId, user.getRoleId()).list();
+        List<RoleMenuList> roleMenuLists = roleMenuListService.lambdaQuery().in(RoleMenuList::getRoleId, user.getRoleId()).list();
+        List<Long> collect = roleMenuLists.stream().map(RoleMenuList::getMenuListId).collect(Collectors.toList());
+        List<MenuList> menuLists = menuListService.lambdaQuery().in(MenuList::getId, collect).list();
         // 认证成功之后设置角色关联的菜单
         user.setMenuLists(menuLists);
         ((UsernamePasswordToken) authenticationToken).setRememberMe(true);

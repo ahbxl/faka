@@ -10,9 +10,9 @@ import java.util.List;
 @Data
 public class PageVO {
     @NotNull
-    private Long pageSize;
+    private Long pageSize = 10L;
     @NotNull
-    private Long pageNum;
+    private Long pageNum = 1L;
     @Past
     private Date startTime;
     @Past
