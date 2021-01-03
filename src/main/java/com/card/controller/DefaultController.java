@@ -88,7 +88,6 @@ public class DefaultController {
             HashMap<String, String> map = new HashMap<>();
             map.put("username", user.getUsername());
             map.put("token",token);
-//            httpServletResponse.setHeader("token", token);
             return Result.success(map);
         } catch (UnknownAccountException e) {
             return Result.fail("登陆失败！用户名或密码不正确");

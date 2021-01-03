@@ -35,5 +35,5 @@ public class MenuList implements Serializable {
     private Date updateTime;
 
     @TableField(exist = false)
-    private List<MenuList> menuListList;
+    private List<MenuList> menuLists;
 }

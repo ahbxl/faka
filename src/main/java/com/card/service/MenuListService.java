@@ -62,7 +62,7 @@ public class MenuListService extends ServiceImpl<MenuListDao, MenuList> {
                 .list();
         for (MenuList menuList : menuLists) {
             List<MenuList> list = selectByParentId(menuList.getId());
-            menuList.setMenuListList(list);
+            menuList.setMenuLists(list);
         }
         return menuLists;
     }
@@ -78,7 +78,7 @@ public class MenuListService extends ServiceImpl<MenuListDao, MenuList> {
         if (CollectionUtil.isEmpty(list)) return null;
         for (MenuList menuList : list) {
             List<MenuList> menuLists = selectByParentId(menuList.getId());
-            menuList.setMenuListList(menuLists);
+            menuList.setMenuLists(menuLists);
         }
         return list;
     }
