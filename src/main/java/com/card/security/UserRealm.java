@@ -61,6 +61,7 @@ public class UserRealm extends AuthorizingRealm {
         if (user == null || user.getState() == 0) {
             return null;
         }
+        // 设置用户的权限
         List<RoleMenuList> roleMenuLists = roleMenuListService.lambdaQuery().in(RoleMenuList::getRoleId, user.getRoleId()).list();
         List<Long> collect = roleMenuLists.stream().map(RoleMenuList::getMenuListId).collect(Collectors.toList());
         List<MenuList> menuLists = menuListService.lambdaQuery().in(MenuList::getId, collect).list();
