@@ -25,7 +25,7 @@ public class MenuListController {
     private MenuListService menuListService;
 
     @PostMapping("/selectList")
-    public Result<Object> selectList(@RequestBody MenuListVO MenuListVO) {
+    public Result<Object> selectList(@RequestBody MenuList menuList) {
         return Result.success(menuListService.selectList(SecurityUtil.getCurrentUser().getRoleId()));
     }
 

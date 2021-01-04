@@ -9,7 +9,6 @@ import com.card.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.subject.Subject;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -34,8 +32,6 @@ import java.util.stream.Collectors;
 public class DefaultController {
     @Autowired
     private UserService userService;
-    @Autowired
-    private HttpServletResponse httpServletResponse;
 
     /**
      * 注册用户
@@ -75,11 +71,11 @@ public class DefaultController {
      */
     @PostMapping("/login")
     public Result<Object> findByUsernameAndPassword(@RequestBody User user) {
-        Subject subject = SecurityUtils.getSubject();
         Object salt = ByteSource.Util.bytes(SystemConstant.slat);
         SimpleHash simpleHash = new SimpleHash("MD5", user.getPassword(), salt, 1);
         UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUsername(), simpleHash.toString(), true);
         try {
+            Subject subject = SecurityUtils.getSubject();
             // shiro验证用户名密码
             subject.login(usernamePasswordToken);
             // 生成token，token有效时间为30分钟
@@ -87,9 +83,9 @@ public class DefaultController {
             // 将用户户名和token返回
             HashMap<String, String> map = new HashMap<>();
             map.put("username", user.getUsername());
-            map.put("token",token);
+            map.put("Authorization", token);
             return Result.success(map);
-        } catch (UnknownAccountException e) {
+        } catch (Exception e) {
             return Result.fail("登陆失败！用户名或密码不正确");
         }
     }

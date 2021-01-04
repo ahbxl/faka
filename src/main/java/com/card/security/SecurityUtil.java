@@ -12,8 +12,9 @@ public class SecurityUtil {
      */
     public static User getCurrentUser() {
         Subject subject = SecurityUtils.getSubject();
-        if (!subject.isAuthenticated() && !subject.isRemembered())
+        if (!subject.isAuthenticated() && !subject.isRemembered()) {
             throw new RuntimeException("Log current user error: UnAuthenticated subject");
+        }
         return (User) subject.getPrincipal();
     }
 }
