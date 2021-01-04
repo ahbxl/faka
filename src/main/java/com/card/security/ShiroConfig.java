@@ -65,9 +65,9 @@ public class ShiroConfig {
 
         // 角色权限
         linkedHashMap.put("/api/role/saveOrUpdate", "perms[role:add,role:update]");
-        linkedHashMap.put("/api/product/removeByIds", "perms[role:delete]");
-        linkedHashMap.put("/api/product/getById", "perms[role:select]");
-        linkedHashMap.put("/api/product/selectPage", "perms[role:select]");
+        linkedHashMap.put("/api/role/removeByIds", "perms[role:delete]");
+        linkedHashMap.put("/api/role/getById", "perms[role:select]");
+        linkedHashMap.put("/api/role/selectPage", "perms[role:select]");
 
         // 菜单权限
         linkedHashMap.put("/api/menuList/removeByIds", "perms[menuList:delete]");
