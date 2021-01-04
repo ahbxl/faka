@@ -11,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.SimpleHash;
-import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -75,9 +74,8 @@ public class DefaultController {
         SimpleHash simpleHash = new SimpleHash("MD5", user.getPassword(), salt, 1);
         UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUsername(), simpleHash.toString(), true);
         try {
-            Subject subject = SecurityUtils.getSubject();
             // shiro验证用户名密码
-            subject.login(usernamePasswordToken);
+            SecurityUtils.getSubject().login(usernamePasswordToken);
             // 生成token，token有效时间为30分钟
             String token = JwtUtil.createJWT(String.valueOf(new Date()), user.getUsername(), 3600000L);
             // 将用户户名和token返回
