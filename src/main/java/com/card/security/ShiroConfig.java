@@ -83,9 +83,6 @@ public class ShiroConfig {
 
         // 登录之后才可以请求的接口
         linkedHashMap.put("/api/**", "jwt");
-        linkedHashMap.put("/register", "anon");
-        linkedHashMap.put("/countUsername", "anon");
-        linkedHashMap.put("/403", "anon");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(linkedHashMap);
         // 设置登录请求
         shiroFilterFactoryBean.setLoginUrl("/login");
