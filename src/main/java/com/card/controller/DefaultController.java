@@ -47,7 +47,7 @@ public class DefaultController {
         }
         // 通过shiro默认的加密工具类为注册用户的密码进行加密
         Object salt = ByteSource.Util.bytes(SystemConstant.slat);
-        SimpleHash simpleHash = new SimpleHash("MD5", userVO.getPassword(), salt, 1);
+        SimpleHash simpleHash = new SimpleHash("MD5", userVO.getPassword(), salt, 1024);
         User user = new User();
         user.setUsername(userVO.getUsername());
         user.setPassword(simpleHash.toString());
