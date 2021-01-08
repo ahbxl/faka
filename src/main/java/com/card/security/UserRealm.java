@@ -50,7 +50,7 @@ public class UserRealm extends AuthorizingRealm {
     }
 
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) {
         // 执行认证
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) authenticationToken;
         UserVO userVO = new UserVO();
