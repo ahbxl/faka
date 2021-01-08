@@ -77,7 +77,7 @@ public class DefaultController {
             // shiro验证用户名密码
             SecurityUtils.getSubject().login(usernamePasswordToken);
             // 生成token，token有效时间为30分钟
-            String token = JwtUtil.createJWT(String.valueOf(new Date()), user.getUsername(), 3600000L);
+            String token = JwtUtil.createJWT(String.valueOf(System.currentTimeMillis()), user.getUsername(), 3600000L);
             // 将用户户名和token返回
             HashMap<String, String> map = new HashMap<>();
             map.put("username", user.getUsername());
