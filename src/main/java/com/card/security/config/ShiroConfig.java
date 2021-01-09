@@ -35,7 +35,7 @@ public class ShiroConfig {
     }
 
     @Bean
-    public ShiroFilterFactoryBean getShiroFilterFactoryBean(@Qualifier("getDefaultSecurityManager") DefaultSecurityManager defaultSecurityManager) {
+    public ShiroFilterFactoryBean getShiroFilterFactoryBean(@Qualifier("defaultSecurityManager") DefaultSecurityManager defaultSecurityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(defaultSecurityManager);
         // 自定义过滤器
@@ -91,7 +91,7 @@ public class ShiroConfig {
     }
 
     @Bean
-    public DefaultWebSecurityManager getDefaultSecurityManager(@Qualifier("getUserRealm") UserRealm userRealm) {
+    public DefaultWebSecurityManager defaultSecurityManager(@Qualifier("userRealm") UserRealm userRealm) {
         DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
         defaultWebSecurityManager.setRealm(userRealm);
         // 禁用shiro中的session
@@ -105,7 +105,7 @@ public class ShiroConfig {
     }
 
     @Bean
-    public UserRealm getUserRealm() {
+    public UserRealm userRealm() {
         UserRealm myUserRealm = new UserRealm();
         myUserRealm.setCredentialsMatcher(hashedCredentialsMatcher());
         return new UserRealm();
