@@ -1,6 +1,6 @@
 package com.card.security.utils;
 
-import com.card.entity.constant.SystemConstant;
+import com.card.security.constant.SystemConstant;
 import com.card.entity.vo.CheckResult;
 import io.jsonwebtoken.*;
 import org.apache.shiro.codec.Base64;

@@ -1,7 +1,7 @@
 package com.card.controller;
 
 import com.card.entity.User;
-import com.card.entity.constant.SystemConstant;
+import com.card.security.constant.SystemConstant;
 import com.card.entity.vo.Result;
 import com.card.entity.vo.UserVO;
 import com.card.service.UserService;

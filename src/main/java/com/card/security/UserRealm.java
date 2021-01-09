@@ -1,7 +1,7 @@
 package com.card.security;
 
 import com.card.entity.*;
-import com.card.entity.constant.SystemConstant;
+import com.card.security.constant.SystemConstant;
 import com.card.security.utils.SecurityUtil;
 import com.card.service.*;
 import lombok.extern.slf4j.Slf4j;
