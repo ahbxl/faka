@@ -75,9 +75,7 @@ public class DefaultController {
     @PostMapping("/login")
     public Result<Object> findByUsernameAndPassword(@RequestBody User user) {
         if (!SecurityUtils.getSubject().isAuthenticated()) {
-            Object salt = ByteSource.Util.bytes(SystemConstant.slat);
-            String md5 = new SimpleHash("MD5", user.getPassword(), salt, 1024).toHex();
-            UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUsername(), md5, true);
+            UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUsername(), user.getPassword(), true);
             try {
                 // shiro验证用户名密码
                 SecurityUtils.getSubject().login(usernamePasswordToken);

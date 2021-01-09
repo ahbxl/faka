@@ -1,5 +1,6 @@
 package com.card.security.config;
 
+import cn.hutool.core.codec.Base64;
 import com.card.security.NoSessionFilter;
 import com.card.security.StatelessDefaultSubjectFactory;
 import com.card.security.UserRealm;
@@ -8,7 +9,9 @@ import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.servlet.SimpleCookie;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -106,9 +109,9 @@ public class ShiroConfig {
 
     @Bean
     public UserRealm userRealm() {
-        UserRealm myUserRealm = new UserRealm();
-        myUserRealm.setCredentialsMatcher(hashedCredentialsMatcher());
-        return new UserRealm();
+        UserRealm userRealm = new UserRealm();
+        userRealm.setCredentialsMatcher(hashedCredentialsMatcher());
+        return userRealm;
     }
 
     @Bean
