@@ -4,7 +4,10 @@ import com.card.entity.*;
 import com.card.entity.vo.UserVO;
 import com.card.service.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authc.*;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -69,7 +72,6 @@ public class UserRealm extends AuthorizingRealm {
         // 认证成功之后设置角色关联的菜单
         user.setMenuLists(menuLists);
 
-        usernamePasswordToken.setRememberMe(true);
         return new SimpleAuthenticationInfo(user, String.valueOf(usernamePasswordToken.getPassword()), getName());
     }
 }

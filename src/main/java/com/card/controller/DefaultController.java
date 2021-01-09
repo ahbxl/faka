@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,12 +44,16 @@ public class DefaultController {
             List<ObjectError> allErrors = bindingResult.getAllErrors();
             return Result.fail(0, "参数错误", allErrors.stream().map(ObjectError::getDefaultMessage).collect(Collectors.toList()));
         }
+        Integer integer = userService.countByUsername(userVO.getUsername());
+        if (integer > 0) {
+            return Result.fail("用户名已经存在");
+        }
         // 通过shiro默认的加密工具类为注册用户的密码进行加密
         Object salt = ByteSource.Util.bytes(SystemConstant.slat);
-        SimpleHash simpleHash = new SimpleHash("MD5", userVO.getPassword(), salt, 1024);
+        String md5 = new SimpleHash("MD5", userVO.getPassword(), salt, 1024).toHex();
         User user = new User();
         user.setUsername(userVO.getUsername());
-        user.setPassword(simpleHash.toString());
+        user.setPassword(md5);
         user.setEmail(userVO.getEmail());
         if (StringUtils.isNotBlank(userVO.getQq())) {
             user.setQq(userVO.getQq());
@@ -71,8 +74,8 @@ public class DefaultController {
     @PostMapping("/login")
     public Result<Object> findByUsernameAndPassword(@RequestBody User user) {
         Object salt = ByteSource.Util.bytes(SystemConstant.slat);
-        SimpleHash simpleHash = new SimpleHash("MD5", user.getPassword(), salt, 1024);
-        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUsername(), simpleHash.toString(), true);
+        String md5 = new SimpleHash("MD5", user.getPassword(), salt, 1024).toHex();
+        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUsername(), md5, true);
         try {
             // shiro验证用户名密码
             SecurityUtils.getSubject().login(usernamePasswordToken);
