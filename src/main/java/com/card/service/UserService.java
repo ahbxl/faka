@@ -38,10 +38,8 @@ public class UserService extends ServiceImpl<UserDao, User> {
         return userDao.selectPage(userPage, wrapper);
     }
 
-    public User selectByUsernameAndPassword(UserVO userVO) {
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.lambda().eq(User::getUsername, userVO.getUsername()).eq(User::getPassword, userVO.getPassword());
-        return userDao.selectOne(queryWrapper);
+    public User selectByUsername(String username) {
+        return lambdaQuery().eq(User::getUsername,username).one();
     }
 
     public Integer countByUsername(String username) {

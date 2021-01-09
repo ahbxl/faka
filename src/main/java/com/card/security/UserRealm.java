@@ -1,7 +1,6 @@
 package com.card.security;
 
 import com.card.entity.*;
-import com.card.entity.vo.UserVO;
 import com.card.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -56,10 +55,7 @@ public class UserRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) {
         // 执行认证
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) authenticationToken;
-        UserVO userVO = new UserVO();
-        userVO.setUsername(usernamePasswordToken.getUsername());
-        userVO.setPassword(String.valueOf(usernamePasswordToken.getPassword()));
-        User user = userService.selectByUsernameAndPassword(userVO);
+        User user = userService.selectByUsername(usernamePasswordToken.getUsername());
         // 查询不到用户或者用户状态为禁用
         if (user == null || user.getState() == 0) {
             return null;
@@ -72,6 +68,6 @@ public class UserRealm extends AuthorizingRealm {
         // 认证成功之后设置角色关联的菜单
         user.setMenuLists(menuLists);
 
-        return new SimpleAuthenticationInfo(user, String.valueOf(usernamePasswordToken.getPassword()), getName());
+        return new SimpleAuthenticationInfo(user, user.getPassword(), getName());
     }
 }
