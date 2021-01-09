@@ -2,7 +2,7 @@ package com.card.security;
 
 import com.card.entity.constant.SystemConstant;
 import com.card.entity.vo.CheckResult;
-import com.card.util.JwtUtil;
+import com.card.security.utils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;

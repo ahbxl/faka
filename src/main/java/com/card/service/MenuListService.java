@@ -11,7 +11,7 @@ import com.card.entity.MenuList;
 import com.card.entity.Role;
 import com.card.entity.RoleMenuList;
 import com.card.entity.vo.MenuListVO;
-import com.card.security.SecurityUtil;
+import com.card.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

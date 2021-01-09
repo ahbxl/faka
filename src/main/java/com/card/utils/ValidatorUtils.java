@@ -1,4 +1,4 @@
-package com.card.util;
+package com.card.utils;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;

@@ -3,7 +3,7 @@ package com.card.controller;
 import com.card.entity.User;
 import com.card.entity.vo.Result;
 import com.card.entity.vo.UserVO;
-import com.card.security.SecurityUtil;
+import com.card.security.utils.SecurityUtil;
 import com.card.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;

@@ -1,4 +1,4 @@
-package com.card.util;
+package com.card.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Random;

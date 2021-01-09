@@ -2,13 +2,11 @@ package com.card.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.card.entity.MenuList;
-import com.card.entity.User;
 import com.card.entity.vo.MenuListVO;
 import com.card.entity.vo.Result;
-import com.card.security.SecurityUtil;
+import com.card.security.utils.SecurityUtil;
 import com.card.service.MenuListService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
