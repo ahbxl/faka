@@ -1,5 +1,6 @@
 package com.card.security;
 
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
@@ -102,11 +103,24 @@ public class ShiroConfig {
 
     @Bean
     public UserRealm getUserRealm() {
+        UserRealm myUserRealm = new UserRealm();
+        myUserRealm.setCredentialsMatcher(hashedCredentialsMatcher());
         return new UserRealm();
     }
 
     @Bean
     public StatelessDefaultSubjectFactory subjectFactory() {
         return new StatelessDefaultSubjectFactory();
+    }
+
+    /*
+     * 凭证匹配器 由于我们的密码校验交给Shiro的SimpleAuthenticationInfo进行处理了
+     */
+    @Bean
+    public HashedCredentialsMatcher hashedCredentialsMatcher() {
+        HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
+        hashedCredentialsMatcher.setHashAlgorithmName("MD5");// 散列算法:这里使用MD5算法;
+        hashedCredentialsMatcher.setHashIterations(1024);// 散列的次数，比如散列两次，相当于MD5(MD5(""));
+        return hashedCredentialsMatcher;
     }
 }

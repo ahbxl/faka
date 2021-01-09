@@ -9,7 +9,8 @@ import com.card.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authc.*;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,22 +74,39 @@ public class DefaultController {
      */
     @PostMapping("/login")
     public Result<Object> findByUsernameAndPassword(@RequestBody User user) {
-        Object salt = ByteSource.Util.bytes(SystemConstant.slat);
-        String md5 = new SimpleHash("MD5", user.getPassword(), salt, 1024).toHex();
-        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUsername(), md5, true);
-        try {
-            // shiro验证用户名密码
-            SecurityUtils.getSubject().login(usernamePasswordToken);
-            // 生成token，token有效时间为30分钟
-            String token = JwtUtil.createJWT(String.valueOf(System.currentTimeMillis()), user.getUsername(), 3600000L);
-            // 将用户户名和token返回
-            HashMap<String, String> map = new HashMap<>();
-            map.put("username", user.getUsername());
-            map.put("Authorization", token);
-            return Result.success(map);
-        } catch (Exception e) {
-            return Result.fail("登陆失败！用户名或密码不正确");
+        if (!SecurityUtils.getSubject().isAuthenticated()) {
+            Object salt = ByteSource.Util.bytes(SystemConstant.slat);
+            String md5 = new SimpleHash("MD5", user.getPassword(), salt, 1024).toHex();
+            UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUsername(), md5, true);
+            try {
+                // shiro验证用户名密码
+                SecurityUtils.getSubject().login(usernamePasswordToken);
+                // 生成token，token有效时间为30分钟
+                String token = JwtUtil.createJWT(String.valueOf(System.currentTimeMillis()), user.getUsername(), 3600000L);
+                // 将用户户名和token返回
+                HashMap<String, String> map = new HashMap<>();
+                map.put("username", user.getUsername());
+                map.put("Authorization", token);
+                return Result.success(map);
+            } catch (IncorrectCredentialsException e) {
+                return Result.fail("登录密码错误");
+            } catch (ExcessiveAttemptsException e) {
+                return Result.fail("登录失败次数过多");
+            } catch (LockedAccountException e) {
+                return Result.fail("帐号已被锁定");
+            } catch (DisabledAccountException e) {
+                return Result.fail("帐号已被禁用");
+            } catch (ExpiredCredentialsException e) {
+                return Result.fail("帐号已过期");
+            } catch (UnknownAccountException e) {
+                return Result.fail("帐号不存在");
+            } catch (UnauthorizedException e) {
+                return Result.fail("您没有得到相应的授权");
+            } catch (Exception e) {
+                return Result.fail("出错了！！！");
+            }
         }
+        return Result.fail("你已经登录了");
     }
 
     /**
