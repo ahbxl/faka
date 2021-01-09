@@ -1,40 +1,65 @@
 package com.card.security.utils;
 
-import com.card.security.constant.SystemConstant;
 import com.card.entity.vo.CheckResult;
+import com.card.security.constant.SystemConstant;
 import io.jsonwebtoken.*;
-import org.apache.shiro.codec.Base64;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
+import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+@Data
+@Component
+@Slf4j
 public class JwtUtil {
+    // 秘钥
+    private String secret = "aHR0cHM6Ly9teS5vc2NoaW5hLm5ldC91LzM2ODE4Njg=";
+
+    // 有效时间
+    private Long expire = 5184000L;
+
+    // 用户凭证
+    private String header = "Authorization";
+
+    // 签发者
+    private String issuer = "faka";
+
     /**
-     * 签发JWT
+     * 生成token签名
      *
-     * @param id
-     * @param subject   可以是JSON数据 尽可能少
-     * @param ttlMillis 有效时间
-     * @return String
+     * @param subject
+     * @return
      */
-    public static String createJWT(String id, String subject, Long ttlMillis) {
-        long nowMillis = System.currentTimeMillis();
-        Date now = new Date(nowMillis);
-        SecretKey secretKey = generalKey();
-        JwtBuilder builder = Jwts.builder()
-                .setId(id) // 是JWT的唯一标识，根据业务需要，这个可以设置为一个不重复的值，主要用来作为一次性token,从而回避重放攻击。
-                .setSubject(subject)   // 代表这个JWT的主体，即它的所有人，这个是一个json格式的字符串，可以存放什么userid，roldid之类的，作为什么用户的唯一标志
-                .setIssuer("faka")     // 颁发者是使用 HTTP 或 HTTPS 方案的 URL（区分大小写），其中包含方案、主机及（可选的）端口号和路径部分
-                .setIssuedAt(now)      // jwt的签发时间
-                .signWith(SignatureAlgorithm.HS256, secretKey); // 设置签名使用的签名算法和签名使用的秘钥
-        if (ttlMillis > 0) {
-            long expMillis = nowMillis + ttlMillis;
-            Date expDate = new Date(expMillis);
-            builder.setExpiration(expDate); // 过期时间
-        }
+    public String generateToken(String subject) {
+        final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+        Date now = new Date();
+        // 过期时间
+        Date expireDate = new Date(now.getTime() + expire * 1000);
+        //Create the Signature SecretKey
+        final byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(Base64.getEncoder().encodeToString(getSecret().getBytes()));
+        final Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
+        final Map<String, Object> headerMap = new HashMap<>();
+        headerMap.put("alg", "HS256");
+        headerMap.put("typ", "JWT");
+        //add JWT Parameters
+        final JwtBuilder builder = Jwts.builder()
+                .setHeaderParams(headerMap)
+                .setSubject(subject)
+                .setIssuedAt(now)
+                .setExpiration(expireDate)
+                .setIssuer(getIssuer())
+                .signWith(signatureAlgorithm, signingKey);
         return builder.compact();
+
     }
+
 
     /**
      * 验证JWT
@@ -42,10 +67,10 @@ public class JwtUtil {
      * @param jwtStr
      * @return
      */
-    public static CheckResult validateJWT(String jwtStr) {
+    public CheckResult validateJWT(String jwtStr) {
         CheckResult checkResult = new CheckResult();
         try {
-            Claims claims = parseJWT(jwtStr);
+            Claims claims = parseToken(jwtStr);
             checkResult.setSuccess(true);
             checkResult.setClaims(claims);
         } catch (ExpiredJwtException e) {
@@ -58,22 +83,33 @@ public class JwtUtil {
         return checkResult;
     }
 
-    private static SecretKey generalKey() {
-        byte[] encodedKey = Base64.decode(SystemConstant.JWT_SECERT);
-        return new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
+    /**
+     * 判断token是否过期
+     *
+     * @param expiration
+     * @return
+     */
+    public boolean isExpired(Date expiration) {
+        return expiration.before(new Date());
     }
 
     /**
-     * 解析JWT字符串
+     * 解析token
      *
-     * @param jwt
+     * @param token token
      * @return
      */
-    public static Claims parseJWT(String jwt) {
-        SecretKey secretKey = generalKey();
-        return Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(jwt)
-                .getBody();
+    public Claims parseToken(String token) {
+        Claims claims = null;
+        try {
+            final byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(Base64.getEncoder().encodeToString(getSecret().getBytes()));
+            claims = Jwts.parser().setSigningKey(apiKeySecretBytes).parseClaimsJws(token).getBody();
+            log.info("Parse JWT token by: ID: {}, Subject: {}, Issuer: {}, Expiration: {}", claims.getId(), claims.getSubject(), claims.getIssuer(), claims.getExpiration());
+        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException
+                | IllegalArgumentException e) {
+            log.error("Parse JWT error " + e.getMessage());
+            return null;
+        }
+        return claims;
     }
 }

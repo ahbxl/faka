@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class AliPayService extends ServiceImpl<AliPayConfigDao, AliPayConfig>  {
+public class AliPayService extends ServiceImpl<AliPayConfigDao, AliPayConfig> {
     @Autowired
     private AliPayConfigDao aliPayConfigDao;
     @Autowired

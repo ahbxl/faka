@@ -33,7 +33,8 @@ public class NoSessionFilter extends BasicHttpAuthenticationFilter {
             return false;
         }
         // 验证token
-        CheckResult checkResult = JwtUtil.validateJWT(token);
+        JwtUtil jwtUtil = new JwtUtil();
+        CheckResult checkResult = jwtUtil.validateJWT(token);
         if (checkResult.isSuccess()) {
             // 验证通过
             return true;

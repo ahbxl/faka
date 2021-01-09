@@ -1,11 +1,11 @@
 package com.card.controller;
 
 import com.card.entity.User;
-import com.card.security.constant.SystemConstant;
 import com.card.entity.vo.Result;
 import com.card.entity.vo.UserVO;
-import com.card.service.UserService;
+import com.card.security.constant.SystemConstant;
 import com.card.security.utils.JwtUtil;
+import com.card.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -82,7 +82,8 @@ public class DefaultController {
                 // shiro验证用户名密码
                 SecurityUtils.getSubject().login(usernamePasswordToken);
                 // 生成token，token有效时间为30分钟
-                String token = JwtUtil.createJWT(String.valueOf(System.currentTimeMillis()), user.getUsername(), 3600000L);
+                JwtUtil jwtUtil = new JwtUtil();
+                String token = jwtUtil.generateToken(user.getUsername());
                 // 将用户户名和token返回
                 HashMap<String, String> map = new HashMap<>();
                 map.put("username", user.getUsername());
