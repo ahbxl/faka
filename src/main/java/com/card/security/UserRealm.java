@@ -1,6 +1,7 @@
 package com.card.security;
 
 import com.card.entity.*;
+import com.card.entity.constant.SystemConstant;
 import com.card.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -11,6 +12,7 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;
@@ -68,6 +70,6 @@ public class UserRealm extends AuthorizingRealm {
         // 认证成功之后设置角色关联的菜单
         user.setMenuLists(menuLists);
 
-        return new SimpleAuthenticationInfo(user, user.getPassword(), getName());
+        return new SimpleAuthenticationInfo(user, user.getPassword(), ByteSource.Util.bytes(SystemConstant.slat), getName());
     }
 }

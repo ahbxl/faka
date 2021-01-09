@@ -1,13 +1,11 @@
 package com.card.security;
 
-import com.card.service.PermissionService;
 import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,9 +17,6 @@ import java.util.Map;
 
 @Configuration
 public class ShiroConfig {
-    @Autowired
-    private PermissionService permissionService;
-
     /**
      * 开启Shiro的注解(如@RequiresRoles,@RequiresPermissions)
      *
