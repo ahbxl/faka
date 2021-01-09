@@ -100,13 +100,12 @@ public class JwtUtil {
      * @return
      */
     public Claims parseToken(String token) {
-        Claims claims = null;
+        Claims claims;
         try {
             final byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(Base64.getEncoder().encodeToString(getSecret().getBytes()));
             claims = Jwts.parser().setSigningKey(apiKeySecretBytes).parseClaimsJws(token).getBody();
             log.info("Parse JWT token by: ID: {}, Subject: {}, Issuer: {}, Expiration: {}", claims.getId(), claims.getSubject(), claims.getIssuer(), claims.getExpiration());
-        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException
-                | IllegalArgumentException e) {
+        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
             log.error("Parse JWT error " + e.getMessage());
             return null;
         }
