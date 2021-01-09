@@ -1,7 +1,5 @@
 package com.card.security;
 
-import com.card.security.constant.SystemConstant;
-import com.card.entity.vo.CheckResult;
 import com.card.security.utils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -34,18 +32,7 @@ public class NoSessionFilter extends BasicHttpAuthenticationFilter {
         }
         // 验证token
         JwtUtil jwtUtil = new JwtUtil();
-        CheckResult checkResult = jwtUtil.validateJWT(token);
-        if (checkResult.isSuccess()) {
-            // 验证通过
-            return true;
-        } else {
-            if (checkResult.getErrCode().equals(SystemConstant.JWT_ERRCODE_EXPIRE)) {
-                return false;
-            } else if (checkResult.getErrCode().equals(SystemConstant.JWT_ERRCODE_FAIL)) {
-                return false;
-            }
-            return false;
-        }
+        return jwtUtil.validateJWT(token);
     }
 
     @Override

@@ -67,20 +67,14 @@ public class JwtUtil {
      * @param jwtStr
      * @return
      */
-    public CheckResult validateJWT(String jwtStr) {
-        CheckResult checkResult = new CheckResult();
+    public Boolean validateJWT(String jwtStr) {
         try {
             Claims claims = parseToken(jwtStr);
-            checkResult.setSuccess(true);
-            checkResult.setClaims(claims);
-        } catch (ExpiredJwtException e) {
-            checkResult.setErrCode(SystemConstant.JWT_ERRCODE_EXPIRE);
-            checkResult.setSuccess(false);
+            if (claims == null || claims.isEmpty() || isExpired(claims.getExpiration())) return false;
         } catch (Exception e) {
-            checkResult.setErrCode(SystemConstant.JWT_ERRCODE_FAIL);
-            checkResult.setSuccess(false);
+            return false;
         }
-        return checkResult;
+        return true;
     }
 
     /**
