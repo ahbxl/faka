@@ -39,6 +39,7 @@ public class UserRealm extends AuthorizingRealm {
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
+        log.info("执行授权");
         // 执行授权
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         // 设置角色
@@ -57,6 +58,7 @@ public class UserRealm extends AuthorizingRealm {
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) {
+        log.info("执行认证");
         // 执行认证
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) authenticationToken;
         User user = userService.selectByUsername(usernamePasswordToken.getUsername());
