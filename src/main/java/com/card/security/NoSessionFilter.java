@@ -1,19 +1,18 @@
 package com.card.security;
 
-import cn.hutool.core.util.StrUtil;
 import com.card.security.constant.SystemConstants;
-import com.card.security.utils.JwtUtils;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureException;
+import com.card.security.entity.JwtToken;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 
 @Slf4j
@@ -26,24 +25,23 @@ public class NoSessionFilter extends BasicHttpAuthenticationFilter {
         String token = getTokenFromCookie(servletRequest);
         if (StringUtils.isBlank(token)) {
             // 2.从headers中获取
-            token = servletRequest.getHeader("Authorization");
+            token = servletRequest.getHeader(SystemConstants.TOKEN_HEADER);
         }
         if (StringUtils.isBlank(token)) {
             // 3.从请求参数获取
-            token = request.getParameter("Authorization");
+            token = request.getParameter(SystemConstants.TOKEN_HEADER);
         }
         if (StringUtils.isBlank(token)) {
             return false;
         }
         // 验证token
         token = token.replace(SystemConstants.TOKEN_PREFIX, "");
-        try {
-            String username = JwtUtils.getUsernameByToken(token);
-            return !StrUtil.isEmpty(username);
-        } catch (SignatureException | ExpiredJwtException | MalformedJwtException | IllegalArgumentException exception) {
-            log.warn("Request to parse JWT with invalid signature . Detail : " + exception.getMessage());
-            return false;
-        }
+        JwtToken jwtToken = new JwtToken(token);
+        // 提交给realm进行登入，如果错误他会抛出异常并被捕获
+        // todo https://www.cnblogs.com/red-star/p/12121941.html https://blog.csdn.net/qq_43721032/article/details/110188342
+        getSubject(request, response).login(jwtToken);
+        // 如果没有抛出异常则代表登入成功，返回true
+        return true;
     }
 
     @Override
@@ -62,12 +60,30 @@ public class NoSessionFilter extends BasicHttpAuthenticationFilter {
         int len = null == cookies ? 0 : cookies.length;
         if (len > 0) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("Authorization")) {
+                if (cookie.getName().equals(SystemConstants.TOKEN_HEADER)) {
                     token = cookie.getValue();
                     break;
                 }
             }
         }
         return token;
+    }
+
+    /**
+     * 对跨域提供支持
+     */
+    @Override
+    protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+        httpServletResponse.setHeader("Access-control-Allow-Origin", httpServletRequest.getHeader("Origin"));
+        httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT,DELETE");
+        httpServletResponse.setHeader("Access-Control-Allow-Headers", httpServletRequest.getHeader("Access-Control-Request-Headers"));
+        // 跨域时会首先发送一个option请求，这里我们给option请求直接返回正常状态
+        if (httpServletRequest.getMethod().equals(RequestMethod.OPTIONS.name())) {
+            httpServletResponse.setStatus(HttpStatus.OK.value());
+            return false;
+        }
+        return super.preHandle(request, response);
     }
 }

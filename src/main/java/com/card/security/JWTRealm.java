@@ -1,17 +1,26 @@
 package com.card.security;
 
-import cn.hutool.core.collection.CollectionUtil;
-import com.card.entity.*;
-import com.card.security.constant.SystemConstants;
+import cn.hutool.core.util.StrUtil;
+import com.card.entity.Permission;
+import com.card.entity.Role;
+import com.card.entity.RolePermission;
+import com.card.entity.User;
+import com.card.security.entity.JwtToken;
+import com.card.security.utils.JwtUtils;
 import com.card.security.utils.SecurityUtil;
-import com.card.service.*;
+import com.card.service.PermissionService;
+import com.card.service.RolePermissionService;
+import com.card.service.RoleService;
+import com.card.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authc.*;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.AuthenticationInfo;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;
@@ -20,19 +29,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class UserRealm extends AuthorizingRealm {
+public class JWTRealm extends AuthorizingRealm {
     @Autowired
     private UserService userService;
+    @Autowired
+    private RoleService roleService;
     @Autowired
     private RolePermissionService rolePermissionService;
     @Autowired
     private PermissionService permissionService;
-    @Autowired
-    private RoleService roleService;
-    @Autowired
-    private MenuListService menuListService;
-    @Autowired
-    private RoleMenuListService roleMenuListService;
+
+    @Override
+    public boolean supports(AuthenticationToken token) {
+        return token instanceof JwtToken;
+    }
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
@@ -53,13 +63,14 @@ public class UserRealm extends AuthorizingRealm {
     }
 
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) {
-        if (authenticationToken.getPrincipal() == null) {
-            return null;
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
+        String token = (String) authenticationToken.getCredentials();
+        // 解密获得username，用于和数据库进行对比
+        String username = JwtUtils.getUsernameByToken(token);
+        if (StrUtil.isBlank(username)) {
+            throw new AuthenticationException("token认证失败!");
         }
-        // 执行认证
-        UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) authenticationToken;
-        User user = userService.selectByUsername(usernamePasswordToken.getUsername());
+        User user = userService.selectByUsername(username);
         // 判断用户
         if (user == null) {
             throw new AuthenticationException("用户不存在!");
@@ -67,14 +78,6 @@ public class UserRealm extends AuthorizingRealm {
         if (user.getState() == 0) {
             throw new AuthenticationException("账号已被禁用!");
         }
-
-        // 设置用户的权限
-        List<RoleMenuList> roleMenuLists = roleMenuListService.lambdaQuery().in(RoleMenuList::getRoleId, user.getRoleId()).list();
-        List<Long> collect = roleMenuLists.stream().map(RoleMenuList::getMenuListId).collect(Collectors.toList());
-        List<MenuList> menuLists = menuListService.lambdaQuery().in(CollectionUtil.isNotEmpty(collect), MenuList::getId, collect).list();
-        // 认证成功之后设置角色关联的菜单
-        user.setMenuLists(CollectionUtil.isNotEmpty(collect) ? menuLists : null);
-
-        return new SimpleAuthenticationInfo(user, user.getPassword(), ByteSource.Util.bytes(SystemConstants.JWT_SECRET_KEY), getName());
+        return new SimpleAuthenticationInfo(token, token, getName());
     }
 }
