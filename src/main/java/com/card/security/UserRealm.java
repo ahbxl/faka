@@ -1,5 +1,6 @@
 package com.card.security;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.card.entity.*;
 import com.card.security.constant.SystemConstant;
 import com.card.security.utils.SecurityUtil;
@@ -67,9 +68,9 @@ public class UserRealm extends AuthorizingRealm {
         // 设置用户的权限
         List<RoleMenuList> roleMenuLists = roleMenuListService.lambdaQuery().in(RoleMenuList::getRoleId, user.getRoleId()).list();
         List<Long> collect = roleMenuLists.stream().map(RoleMenuList::getMenuListId).collect(Collectors.toList());
-        List<MenuList> menuLists = menuListService.lambdaQuery().in(MenuList::getId, collect).list();
+        List<MenuList> menuLists = menuListService.lambdaQuery().in(CollectionUtil.isNotEmpty(collect), MenuList::getId, collect).list();
         // 认证成功之后设置角色关联的菜单
-        user.setMenuLists(menuLists);
+        user.setMenuLists(CollectionUtil.isNotEmpty(collect) ? menuLists : null);
 
         return new SimpleAuthenticationInfo(user, user.getPassword(), ByteSource.Util.bytes(SystemConstant.slat), getName());
     }
