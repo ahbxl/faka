@@ -4,15 +4,18 @@ import com.card.security.NoSessionFilter;
 import com.card.security.StatelessDefaultSubjectFactory;
 import com.card.security.UserRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.mgt.DefaultSecurityManager;
+import org.apache.shiro.cache.CacheManager;
+import org.apache.shiro.cache.MemoryConstrainedCacheManager;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
+import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.DelegatingFilterProxy;
 
 import javax.servlet.Filter;
 import java.util.HashMap;
@@ -34,14 +37,11 @@ public class ShiroConfig {
         return advisorAutoProxyCreator;
     }
 
-    @Bean
-    public ShiroFilterFactoryBean getShiroFilterFactoryBean(@Qualifier("defaultSecurityManager") DefaultSecurityManager defaultSecurityManager) {
+    @Bean(name = "shiroFilterFactoryBean")
+    public ShiroFilterFactoryBean shiroFilterFactoryBean() {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-        shiroFilterFactoryBean.setSecurityManager(defaultSecurityManager);
-        // 自定义过滤器
-        HashMap<String, Filter> filterHashMap = new HashMap<>();
-        filterHashMap.put("jwt", new NoSessionFilter());
-        shiroFilterFactoryBean.setFilters(filterHashMap);
+        shiroFilterFactoryBean.setSecurityManager(defaultSecurityManager());
+
         // 过滤规则
         Map<String, String> linkedHashMap = new LinkedHashMap<>();
         /*添加shiro的内置过滤器
@@ -80,20 +80,20 @@ public class ShiroConfig {
         linkedHashMap.put("/api/rolePermission/saveOrUpdate", "perms[rolePermission:add]");
         linkedHashMap.put("/api/rolePermission/removeByIds", "perms[rolePermission:delete]");
 
+        // 自定义过滤器
+        HashMap<String, Filter> filterHashMap = new HashMap<>();
+        filterHashMap.put("jwt", new NoSessionFilter());
+        shiroFilterFactoryBean.setFilters(filterHashMap);
         // 登录之后才可以请求的接口
         linkedHashMap.put("/api/**", "jwt");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(linkedHashMap);
-        // 设置登录请求
-        shiroFilterFactoryBean.setLoginUrl("/login");
-        //未授权界面
-        shiroFilterFactoryBean.setUnauthorizedUrl("/403");
         return shiroFilterFactoryBean;
     }
 
     @Bean
-    public DefaultWebSecurityManager defaultSecurityManager(@Qualifier("userRealm") UserRealm userRealm) {
+    public DefaultWebSecurityManager defaultSecurityManager() {
         DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
-        defaultWebSecurityManager.setRealm(userRealm);
+        defaultWebSecurityManager.setRealm(userRealm());
         // 禁用shiro中的session
         DefaultSubjectDAO defaultSubjectDAO = new DefaultSubjectDAO();
         DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();

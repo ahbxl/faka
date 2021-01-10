@@ -2,14 +2,11 @@ package com.card.security;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.card.entity.*;
-import com.card.security.constant.SystemConstant;
+import com.card.security.constant.SystemConstants;
 import com.card.security.utils.SecurityUtil;
 import com.card.service.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -59,12 +56,18 @@ public class UserRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) {
         log.info("执行认证");
+        if (authenticationToken.getPrincipal() == null) {
+            return null;
+        }
         // 执行认证
         UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) authenticationToken;
         User user = userService.selectByUsername(usernamePasswordToken.getUsername());
-        // 查询不到用户或者用户状态为禁用
-        if (user == null || user.getState() == 0) {
-            return null;
+        // 判断用户
+        if (user == null) {
+            throw new AuthenticationException("用户不存在!");
+        }
+        if (user.getState() == 0) {
+            throw new AuthenticationException("账号已被禁用!");
         }
 
         // 设置用户的权限
@@ -74,6 +77,6 @@ public class UserRealm extends AuthorizingRealm {
         // 认证成功之后设置角色关联的菜单
         user.setMenuLists(CollectionUtil.isNotEmpty(collect) ? menuLists : null);
 
-        return new SimpleAuthenticationInfo(user, user.getPassword(), ByteSource.Util.bytes(SystemConstant.slat), getName());
+        return new SimpleAuthenticationInfo(user, user.getPassword(), ByteSource.Util.bytes(SystemConstants.JWT_SECRET_KEY), getName());
     }
 }

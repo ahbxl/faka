@@ -7,7 +7,7 @@ import com.card.enu.ExportFileState;
 import com.card.service.CustomMultiThreadingService;
 import com.card.service.ExportFileService;
 import com.card.service.UserService;
-import com.card.utils.RandomUtil;
+import com.card.utils.RandomUtils;
 import com.card.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,7 +111,7 @@ public class ExportFileController {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
         String endTime = simpleDateFormat.format(exportFileVO.getStartTime());
         String startTime = simpleDateFormat.format(exportFileVO.getEndTime());
-        String fileName = startTime + "至" + endTime + "卡密数据" + RandomUtil.getStringRandom(4) + ".xlsx";
+        String fileName = startTime + "至" + endTime + "卡密数据" + RandomUtils.getStringRandom(4) + ".xlsx";
         // 插入到数据库，状态值为正在生成
         ExportFile exportFile = new ExportFile();
         exportFile.setName(fileName);

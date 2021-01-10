@@ -3,7 +3,7 @@ package com.card.utils;
 import java.text.SimpleDateFormat;
 import java.util.Random;
 
-public class RandomUtil {
+public class RandomUtils {
     //生成随机数字和字母,
     public static String getStringRandom(int length) {
         StringBuilder val = new StringBuilder();

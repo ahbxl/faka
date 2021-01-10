@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ExcelUtil {
+public class ExcelUtils {
     /**
      * 创建workbook,
      * 通过maplist填充Excel内容

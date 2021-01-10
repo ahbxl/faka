@@ -3,8 +3,8 @@ package com.card.controller;
 import com.card.entity.User;
 import com.card.entity.vo.Result;
 import com.card.entity.vo.UserVO;
-import com.card.security.constant.SystemConstant;
-import com.card.security.utils.JwtUtil;
+import com.card.security.constant.SystemConstants;
+import com.card.security.utils.JwtUtils;
 import com.card.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -50,7 +50,7 @@ public class DefaultController {
             return Result.fail("用户名已经存在");
         }
         // 通过shiro默认的加密工具类为注册用户的密码进行加密
-        Object salt = ByteSource.Util.bytes(SystemConstant.slat);
+        Object salt = ByteSource.Util.bytes(SystemConstants.JWT_SECRET_KEY);
         String md5 = new SimpleHash("MD5", userVO.getPassword(), salt, 1024).toHex();
         User user = new User();
         user.setUsername(userVO.getUsername());
@@ -79,9 +79,8 @@ public class DefaultController {
             try {
                 // shiro验证用户名密码
                 SecurityUtils.getSubject().login(usernamePasswordToken);
-                // 生成token，token有效时间为30分钟
-                JwtUtil jwtUtil = new JwtUtil();
-                String token = jwtUtil.generateToken(user.getUsername());
+                // 生成token
+                String token = JwtUtils.createToken(user.getUsername(),false);
                 // 将用户户名和token返回
                 HashMap<String, String> map = new HashMap<>();
                 map.put("username", user.getUsername());

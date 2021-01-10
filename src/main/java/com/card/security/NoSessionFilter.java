@@ -1,6 +1,11 @@
 package com.card.security;
 
-import com.card.security.utils.JwtUtil;
+import cn.hutool.core.util.StrUtil;
+import com.card.security.constant.SystemConstants;
+import com.card.security.utils.JwtUtils;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
@@ -31,8 +36,14 @@ public class NoSessionFilter extends BasicHttpAuthenticationFilter {
             return false;
         }
         // 验证token
-        JwtUtil jwtUtil = new JwtUtil();
-        return jwtUtil.validateJWT(token);
+        token = token.replace(SystemConstants.TOKEN_PREFIX, "");
+        try {
+            String username = JwtUtils.getUsernameByToken(token);
+            return !StrUtil.isEmpty(username);
+        } catch (SignatureException | ExpiredJwtException | MalformedJwtException | IllegalArgumentException exception) {
+            log.warn("Request to parse JWT with invalid signature . Detail : " + exception.getMessage());
+            return false;
+        }
     }
 
     @Override

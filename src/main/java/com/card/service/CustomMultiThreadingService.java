@@ -7,7 +7,7 @@ import com.card.entity.Card;
 import com.card.entity.ExportFile;
 import com.card.entity.export.CardExport;
 import com.card.enu.ExportFileState;
-import com.card.utils.ExcelUtil;
+import com.card.utils.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,14 +48,14 @@ public class CustomMultiThreadingService {
         // sheet2 数据
         List<Card> cardExportsOne = cardDao.selectByStateAndTime(1, startTime, endTime);
         // sheet1
-        Map<String, Object> zeroSheet = ExcelUtil.createOneSheet("未售出的卡密", "未售出的卡密", CardExport.class, cardExportsZero);
+        Map<String, Object> zeroSheet = ExcelUtils.createOneSheet("未售出的卡密", "未售出的卡密", CardExport.class, cardExportsZero);
         // sheet2
-        Map<String, Object> oneSheet = ExcelUtil.createOneSheet("已经售出的卡密", "已经售出的卡密", CardExport.class, cardExportsOne);
+        Map<String, Object> oneSheet = ExcelUtils.createOneSheet("已经售出的卡密", "已经售出的卡密", CardExport.class, cardExportsOne);
         // 导出多个sheet
         List<Map<String, Object>> mapList = new ArrayList<>();
         mapList.add(zeroSheet);
         mapList.add(oneSheet);
-        Workbook workbook = ExcelUtil.mutiSheet(mapList);
+        Workbook workbook = ExcelUtils.mutiSheet(mapList);
         // 输出文件到服务器/data/faka/exportFile文件夹下
         // 获取输出流
         try {
