@@ -117,14 +117,4 @@ public class DefaultController {
     public Result<Object> countUsername(@PathVariable String username) {
         return Result.success(userService.countByUsername(username));
     }
-
-    /**
-     * 403
-     *
-     * @return
-     */
-    @PostMapping("/403")
-    public String unauthorized() {
-        return "/error/403.html";
-    }
 }

@@ -23,16 +23,23 @@ public class JwtUtils {
     private static byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(SystemConstants.JWT_SECRET_KEY);
     private static SecretKey secretKey = Keys.hmacShaKeyFor(apiKeySecretBytes);
 
-    public static String createToken(String username, boolean isRememberMe) {
+    /**
+     * 创建JWT
+     *
+     * @param subject      主体，用户名
+     * @param isRememberMe 记住我
+     * @return
+     */
+    public static String createToken(String subject, boolean isRememberMe) {
         long expiration = isRememberMe ? SystemConstants.EXPIRATION_REMEMBER : SystemConstants.EXPIRATION;
 
         String tokenPrefix = Jwts.builder()
                 .setHeaderParam("typ", SystemConstants.TOKEN_TYPE)
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .signWith(secretKey, SignatureAlgorithm.HS256) // 设置加密方式
                 .setIssuer("Faka")
-                .setIssuedAt(new Date())
-                .setSubject(username)
-                .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000))
+                .setIssuedAt(new Date()) // 签发时间
+                .setSubject(subject) // 主体
+                .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000)) // 有效时间
                 .compact();
         return SystemConstants.TOKEN_PREFIX + tokenPrefix;
     }
@@ -46,10 +53,17 @@ public class JwtUtils {
         return getTokenBody(token).getSubject();
     }
 
+    /**
+     * 解析JWT
+     *
+     * @param token
+     * @return
+     */
     private static Claims getTokenBody(String token) {
         return Jwts.parser()
                 .setSigningKey(secretKey)
                 .parseClaimsJws(token)
                 .getBody();
+
     }
 }

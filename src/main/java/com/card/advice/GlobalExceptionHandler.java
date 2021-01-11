@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    // 其它异常异常捕捉
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     public Result<Object> exception(HttpServletRequest req, Exception e) {

@@ -101,6 +101,11 @@ public class ShiroConfig {
         return defaultWebSecurityManager;
     }
 
+    /**
+     * 登录的认证和授权
+     *
+     * @return
+     */
     @Bean
     public UserRealm userRealm() {
         UserRealm userRealm = new UserRealm();
@@ -108,6 +113,11 @@ public class ShiroConfig {
         return userRealm;
     }
 
+    /**
+     * token登录认证和授权
+     *
+     * @return
+     */
     @Bean
     public JWTRealm jwtRealm() {
         return new JWTRealm();
