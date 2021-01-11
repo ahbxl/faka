@@ -78,6 +78,6 @@ public class JWTRealm extends AuthorizingRealm {
         if (user.getState() == 0) {
             throw new AuthenticationException("账号已被禁用!");
         }
-        return new SimpleAuthenticationInfo(token, token, getName());
+        return new SimpleAuthenticationInfo(user, token, getName());
     }
 }

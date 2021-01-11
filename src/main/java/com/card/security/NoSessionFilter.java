@@ -4,6 +4,7 @@ import com.card.security.constant.SystemConstants;
 import com.card.security.entity.JwtToken;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,7 +40,11 @@ public class NoSessionFilter extends BasicHttpAuthenticationFilter {
         JwtToken jwtToken = new JwtToken(token);
         // 提交给realm进行登入，如果错误他会抛出异常并被捕获
         // todo https://www.cnblogs.com/red-star/p/12121941.html https://blog.csdn.net/qq_43721032/article/details/110188342
-        getSubject(request, response).login(jwtToken);
+        try {
+            SecurityUtils.getSubject().login(jwtToken);
+        } catch (Exception e) {
+            return false;
+        }
         // 如果没有抛出异常则代表登入成功，返回true
         return true;
     }
