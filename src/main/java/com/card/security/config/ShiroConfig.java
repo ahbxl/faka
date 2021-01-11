@@ -90,7 +90,7 @@ public class ShiroConfig {
     @Bean
     public DefaultWebSecurityManager defaultSecurityManager() {
         DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
-        defaultWebSecurityManager.setRealms(Arrays.asList(userRealm(), jwtRealm()));
+        defaultWebSecurityManager.setRealms(Arrays.asList(userRealm(), new JWTRealm()));
         // 禁用shiro中的session
         DefaultSubjectDAO defaultSubjectDAO = new DefaultSubjectDAO();
         DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
@@ -111,16 +111,6 @@ public class ShiroConfig {
         UserRealm userRealm = new UserRealm();
         userRealm.setCredentialsMatcher(hashedCredentialsMatcher());
         return userRealm;
-    }
-
-    /**
-     * token登录认证和授权
-     *
-     * @return
-     */
-    @Bean
-    public JWTRealm jwtRealm() {
-        return new JWTRealm();
     }
 
     @Bean
