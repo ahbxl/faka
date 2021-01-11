@@ -41,7 +41,7 @@ public class NoSessionFilter extends BasicHttpAuthenticationFilter {
         // 提交给realm进行登入，如果错误他会抛出异常并被捕获
         // todo https://www.cnblogs.com/red-star/p/12121941.html https://blog.csdn.net/qq_43721032/article/details/110188342
         try {
-            SecurityUtils.getSubject().login(jwtToken);
+            getSubject(request, response).login(jwtToken);
         } catch (Exception e) {
             return false;
         }
