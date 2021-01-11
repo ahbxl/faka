@@ -49,7 +49,7 @@ public class JWTRealm extends AuthorizingRealm {
         // 执行授权
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         // 设置角色
-        List<Role> roles = roleService.selectRoles(SecurityUtil.getCurrentUser().getId(), true);
+        List<Role> roles = roleService.selectRoles(SecurityUtil.getCurrentUser().getRoleId(), true);
         authorizationInfo.addRoles(roles.stream().map(Role::getName).collect(Collectors.toList()));
         List<RolePermission> rolePermissions = rolePermissionService.lambdaQuery().eq(RolePermission::getRoleId, SecurityUtil.getCurrentUser().getRoleId()).list();
         Set<Permission> set = new HashSet<>();
