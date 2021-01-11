@@ -23,6 +23,8 @@ public class MenuList implements Serializable {
     private Long parentId;
     @TableField("name")
     private String name;
+    @TableField("icon")
+    private String icon;
     @TableField("priority")
     private Integer priority;
     @TableField("path")

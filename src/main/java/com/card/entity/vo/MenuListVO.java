@@ -14,6 +14,7 @@ public class MenuListVO extends PageVO implements Serializable {
     private Long roleId;
     private Long parentId;
     private String name;
+    private String icon;
     private Integer priority;
     private String path;
     private Integer state;

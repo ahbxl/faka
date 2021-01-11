@@ -57,7 +57,8 @@ public class MenuListService extends ServiceImpl<MenuListDao, MenuList> {
         List<RoleMenuList> roleMenuLists = roleMenuListDao.selectList(new QueryWrapper<RoleMenuList>().lambda()
                 .in(RoleMenuList::getRoleId, ids));
         List<Long> collect = roleMenuLists.stream().map(RoleMenuList::getMenuListId).collect(Collectors.toList());
-        List<MenuList> menuLists = lambdaQuery().isNull(MenuList::getParentId)
+        List<MenuList> menuLists = lambdaQuery()
+                .isNull(MenuList::getParentId)
                 .in(CollectionUtil.isNotEmpty(collect), MenuList::getId, collect)
                 .list();
         for (MenuList menuList : menuLists) {
