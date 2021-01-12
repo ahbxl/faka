@@ -9,6 +9,7 @@ import com.card.entity.vo.Result;
 import com.card.entity.vo.RoleVO;
 import com.card.service.RoleService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +26,7 @@ public class RoleController {
     private RoleService roleService;
 
     @PostMapping("/saveOrUpdate")
+    @RequiresPermissions({"role:add,role:update"})
     public Result<Object> saveOrUpdate(@RequestBody Role role) {
         List<Role> roles = roleService.lambdaQuery().eq(Role::getName, role.getName())
                 .ne(role.getId() != null, Role::getId, role.getId())
@@ -37,17 +39,20 @@ public class RoleController {
     }
 
     @PostMapping("/removeByIds")
+    @RequiresPermissions({"role:delete"})
     public Result<Object> update(@RequestBody PageVO pageVO) {
         roleService.removeByIds(pageVO.getIds());
         return Result.success();
     }
 
     @PostMapping("/getById")
+    @RequiresPermissions({"role:select"})
     public Result<Object> getById(@RequestBody Role role) {
         return Result.success(roleService.getById(role.getId()));
     }
 
     @PostMapping("/selectPage")
+    @RequiresPermissions({"role:select"})
     public Result<Object> selectPage(@RequestBody RoleVO roleVO) {
         IPage<Role> roleIPage = roleService.lambdaQuery()
                 .eq(null != roleVO.getParentId(), Role::getParentId, roleVO.getParentId())

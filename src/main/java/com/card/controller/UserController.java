@@ -7,6 +7,7 @@ import com.card.security.utils.SecurityUtil;
 import com.card.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +30,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/selectPage")
-    @RequiresRoles({"admin"})
+    @RequiresPermissions({"user:select"})
     public Result<Object> selectPage(@RequestBody UserVO userVO) {
         return Result.success(userService.selectPage(userVO));
     }
@@ -41,6 +42,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/updateById")
+    @RequiresPermissions({"user:update"})
     public Result<Object> updateById(@RequestBody User user) {
         User userById = userService.selectById(user.getId());
         if (userById == null) {
@@ -58,6 +60,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/removeByIds")
+    @RequiresPermissions({"user:delete"})
     public Result<Object> deleteBatchIds(@RequestBody UserVO userVO) {
         userService.removeByIds(userVO.getIds());
         return Result.success();
@@ -70,6 +73,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/selectById")
+    @RequiresPermissions({"user:select"})
     public Result<Object> selectById(@RequestBody UserVO userVO) {
         return Result.success(userService.selectById(userVO.getId()));
     }

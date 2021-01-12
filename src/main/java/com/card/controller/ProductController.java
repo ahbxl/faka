@@ -6,6 +6,7 @@ import com.card.entity.vo.ProductVO;
 import com.card.entity.vo.Result;
 import com.card.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -61,6 +62,7 @@ public class ProductController {
      * @return
      */
     @PostMapping("/deleteBatchIds")
+    @RequiresPermissions({"product:delete]"})
     public Result<Object> deleteBatchIds(@RequestBody ProductVO productVO) {
         productService.deleteBatchIds(productVO.getIds());
         return Result.success();
@@ -74,6 +76,7 @@ public class ProductController {
      * @return
      */
     @PostMapping("/updateById")
+    @RequiresPermissions({"product:update"})
     public Result<Object> updateById(@RequestBody Product product) {
         Product productById = productService.selectOne(product.getId());
         if (productById == null) {
@@ -91,6 +94,7 @@ public class ProductController {
      * @return
      */
     @PostMapping("/insert")
+    @RequiresPermissions({"product:add"})
     public Result<Object> insert(@RequestBody Product product) {
         productService.insert(product);
         return Result.success();

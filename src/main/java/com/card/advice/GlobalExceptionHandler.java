@@ -33,17 +33,7 @@ public class GlobalExceptionHandler {
     /**
      * 处理Shiro权限拦截异常
      */
-    @ExceptionHandler(value = UnauthorizedException.class)
-    @ResponseBody
-    public Result<Object> unauthorizedException(HttpServletRequest req, UnauthorizedException e) {
-        log.error("---unauthorizedException Handler---Host {} invokes url {} ERROR: ", req.getRemoteHost(), req.getRequestURL(), e);
-        return Result.fail("没有授权");
-    }
-
-    /**
-     * 处理Shiro权限拦截异常
-     */
-    @ExceptionHandler(value = AuthorizationException.class)
+    @ExceptionHandler(value = {AuthorizationException.class, UnauthorizedException.class})
     @ResponseBody
     public Result<Object> authorizationException(HttpServletRequest req, UnauthorizedException e) {
         log.error("---authorizationException Handler---Host {} invokes url {} ERROR: ", req.getRemoteHost(), req.getRequestURL(), e);

@@ -6,6 +6,7 @@ import com.card.entity.vo.Result;
 import com.card.entity.vo.RolePermissionVO;
 import com.card.service.RolePermissionService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +23,7 @@ public class RolePermissionController {
     private RolePermissionService rolePermissionService;
 
     @PostMapping("/saveOrUpdate")
+    @RequiresPermissions({"rolePermission:add"})
     public Result<Object> saveOrUpdate(@RequestBody RolePermission rolePermission) {
         rolePermission.setId(null);
         List<RolePermission> rolePermissions = rolePermissionService.lambdaQuery().eq(RolePermission::getRoleId, rolePermission.getRoleId())
@@ -34,6 +36,7 @@ public class RolePermissionController {
     }
 
     @PostMapping("/removeByIds")
+    @RequiresPermissions({"rolePermission:delete"})
     public Result<Object> removeByIds(@RequestBody RolePermissionVO rolePermissionVO) {
         rolePermissionService.removeByIds(rolePermissionVO.getIds());
         return Result.success();

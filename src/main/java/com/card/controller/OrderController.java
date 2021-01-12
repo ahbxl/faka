@@ -11,6 +11,7 @@ import com.card.service.OrderService;
 import com.card.service.UserService;
 import com.card.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,6 +52,7 @@ public class OrderController {
      * @return
      */
     @PostMapping("/deleteBatchIds")
+    @RequiresPermissions({"order:delete"})
     public Result<Object> deleteBatchIds(@RequestBody OrderVO orderVO) {
         ArrayList<Long> list = new ArrayList<>();
         List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
@@ -66,6 +68,7 @@ public class OrderController {
     }
 
     @PostMapping("/updateById")
+    @RequiresPermissions({"order:update"})
     public Result<Object> updateById(@RequestBody Order order) {
         Order orderById = orderService.selectById(order.getId());
         if (orderById == null) {

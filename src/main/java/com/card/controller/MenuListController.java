@@ -7,6 +7,7 @@ import com.card.entity.vo.Result;
 import com.card.security.utils.SecurityUtil;
 import com.card.service.MenuListService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,12 +34,14 @@ public class MenuListController {
     }
 
     @PostMapping("/removeByIds")
+    @RequiresPermissions({"menuList:delete"})
     public Result<Object> removeByIds(@RequestBody MenuListVO MenuListVO) {
         menuListService.removeByIds(MenuListVO.getIds());
         return Result.success();
     }
 
     @PostMapping("/saveOrUpdate")
+    @RequiresPermissions({"menuList:add,menuList:update"})
     public Result<Object> saveOrUpdate(@RequestBody MenuList menuList) {
         List<MenuList> menuLists = menuListService.lambdaQuery()
                 .eq(MenuList::getName, menuList.getName())
