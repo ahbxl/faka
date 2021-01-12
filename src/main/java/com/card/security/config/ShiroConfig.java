@@ -8,7 +8,6 @@ import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
-import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -68,6 +67,9 @@ public class ShiroConfig {
 
         // 过滤规则
         Map<String, String> linkedHashMap = new LinkedHashMap<>();
+        // 无状态登录情况下关闭了shiro中的session，导致所有需要加上authc接口请求时候都会报错，
+        // 所以使用@RequiresRoles,@RequiresPermissions注解,aop方式实现接口的权限校验
+
         /* 添加shiro的内置过滤器，自定义url规则
          * Shiro自带拦截器配置规则
          * rest：比如/admins/user/**=rest[user],根据请求的方法，相当于/admins/user/**=perms[user：method] ,其中method为post，get，delete等
