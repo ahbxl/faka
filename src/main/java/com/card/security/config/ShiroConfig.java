@@ -8,6 +8,7 @@ import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
+import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -58,32 +59,32 @@ public class ShiroConfig {
          * 详情见文档 http://shiro.apache.org/web.html#urls-
          * */
         // 用户权限
-        linkedHashMap.put("/api/user/selectPage", "perms[user:select]");
-        linkedHashMap.put("/api/user/selectById", "perms[user:select]");
-        linkedHashMap.put("/api/user/updateById", "perms[user:update]");
-        linkedHashMap.put("/api/user/removeByIds", "perms[user:delete]");
-        // 商品权限
-        linkedHashMap.put("/api/product/deleteBatchIds", "perms[product:delete]");
-        linkedHashMap.put("/api/product/updateById", "perms[product:update]");
-        linkedHashMap.put("/api/product/insert", "perms[product:add]");
-
-        // 角色权限
-        linkedHashMap.put("/api/role/saveOrUpdate", "perms[role:add,role:update]");
-        linkedHashMap.put("/api/role/removeByIds", "perms[role:delete]");
-        linkedHashMap.put("/api/role/getById", "perms[role:select]");
-        linkedHashMap.put("/api/role/selectPage", "perms[role:select]");
-
-        // 菜单权限
-        linkedHashMap.put("/api/menuList/removeByIds", "perms[menuList:delete]");
-        linkedHashMap.put("/api/menuList/saveOrUpdate", "perms[menuList:add,menuList:update]");
-
-        // 订单权限
-        linkedHashMap.put("/api/order/deleteBatchIds", "perms[order:delete]");
-        linkedHashMap.put("/api/order/updateById", "perms[order:update]");
-
-        // 授权的权限
-        linkedHashMap.put("/api/rolePermission/saveOrUpdate", "perms[rolePermission:add]");
-        linkedHashMap.put("/api/rolePermission/removeByIds", "perms[rolePermission:delete]");
+//        linkedHashMap.put("/api/user/selectPage", "perms[user:select]");
+//        linkedHashMap.put("/api/user/selectById", "perms[user:select]");
+//        linkedHashMap.put("/api/user/updateById", "perms[user:update]");
+//        linkedHashMap.put("/api/user/removeByIds", "perms[user:delete]");
+//        // 商品权限
+//        linkedHashMap.put("/api/product/deleteBatchIds", "perms[product:delete]");
+//        linkedHashMap.put("/api/product/updateById", "perms[product:update]");
+//        linkedHashMap.put("/api/product/insert", "perms[product:add]");
+//
+//        // 角色权限
+//        linkedHashMap.put("/api/role/saveOrUpdate", "perms[role:add,role:update]");
+//        linkedHashMap.put("/api/role/removeByIds", "perms[role:delete]");
+//        linkedHashMap.put("/api/role/getById", "perms[role:select]");
+//        linkedHashMap.put("/api/role/selectPage", "perms[role:select]");
+//
+//        // 菜单权限
+//        linkedHashMap.put("/api/menuList/removeByIds", "perms[menuList:delete]");
+//        linkedHashMap.put("/api/menuList/saveOrUpdate", "perms[menuList:add,menuList:update]");
+//
+//        // 订单权限
+//        linkedHashMap.put("/api/order/deleteBatchIds", "perms[order:delete]");
+//        linkedHashMap.put("/api/order/updateById", "perms[order:update]");
+//
+//        // 授权的权限
+//        linkedHashMap.put("/api/rolePermission/saveOrUpdate", "perms[rolePermission:add]");
+//        linkedHashMap.put("/api/rolePermission/removeByIds", "perms[rolePermission:delete]");
 
         // 自定义过滤器
         HashMap<String, Filter> filterHashMap = new HashMap<>();
@@ -95,10 +96,22 @@ public class ShiroConfig {
         return shiroFilterFactoryBean;
     }
 
+    /**
+     * 开启aop注解支持
+     *
+     * @return
+     */
+    @Bean
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor() {
+        AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
+        authorizationAttributeSourceAdvisor.setSecurityManager(defaultSecurityManager());
+        return authorizationAttributeSourceAdvisor;
+    }
+
     @Bean
     public DefaultWebSecurityManager defaultSecurityManager() {
         DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
-        defaultWebSecurityManager.setRealms(Arrays.asList(userRealm(), new JWTRealm()));
+        defaultWebSecurityManager.setRealms(Arrays.asList(userRealm(), jwtRealm()));
         // 禁用shiro中的session
         DefaultSubjectDAO defaultSubjectDAO = new DefaultSubjectDAO();
         DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
@@ -119,6 +132,16 @@ public class ShiroConfig {
         UserRealm userRealm = new UserRealm();
         userRealm.setCredentialsMatcher(hashedCredentialsMatcher());
         return userRealm;
+    }
+
+    /**
+     * token的认证和授权
+     *
+     * @return
+     */
+    @Bean
+    public JWTRealm jwtRealm() {
+        return new JWTRealm();
     }
 
     @Bean

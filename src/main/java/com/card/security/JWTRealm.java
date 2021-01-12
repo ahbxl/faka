@@ -8,10 +8,7 @@ import com.card.entity.User;
 import com.card.security.entity.JwtToken;
 import com.card.security.utils.JwtUtils;
 import com.card.security.utils.SecurityUtil;
-import com.card.service.PermissionService;
-import com.card.service.RolePermissionService;
-import com.card.service.RoleService;
-import com.card.service.UserService;
+import com.card.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -22,7 +19,6 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.List;
@@ -30,16 +26,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component
 public class JWTRealm extends AuthorizingRealm {
     @Autowired
     private UserService userService;
     @Autowired
-    private RoleService roleService;
-    @Autowired
     private RolePermissionService rolePermissionService;
     @Autowired
     private PermissionService permissionService;
+    @Autowired
+    private RoleService roleService;
 
     @Override
     public boolean supports(AuthenticationToken token) {

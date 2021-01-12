@@ -7,6 +7,7 @@ import com.card.entity.vo.Result;
 import com.card.security.utils.SecurityUtil;
 import com.card.service.MenuListService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,11 +24,13 @@ public class MenuListController {
     private MenuListService menuListService;
 
     @PostMapping("/selectList")
+    @RequiresPermissions({"user:select"})
     public Result<Object> selectList(@RequestBody MenuList menuList) {
         return Result.success(menuListService.selectList(SecurityUtil.getCurrentUser().getRoleId()));
     }
 
     @PostMapping("/selectPage")
+    @RequiresPermissions({"user:select"})
     public Result<Object> selectPage(@RequestBody MenuListVO MenuListVO) {
         return Result.success(menuListService.selectPage(MenuListVO));
     }
