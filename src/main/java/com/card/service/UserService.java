@@ -39,21 +39,11 @@ public class UserService extends ServiceImpl<UserDao, User> {
     }
 
     public User selectByUsername(String username) {
-        return lambdaQuery().eq(User::getUsername,username).one();
+        return lambdaQuery().eq(User::getUsername, username).one();
     }
 
     public Integer countByUsername(String username) {
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", username);
-        return userDao.selectCount(queryWrapper);
-    }
-
-    public User selectById(Long id) {
-        return userDao.selectById(id);
-    }
-
-    public void deleteBatchIds(List<Long> ids) {
-        userDao.deleteBatchIds(ids);
+        return lambdaQuery().eq(User::getUsername, username).count();
     }
 
     public List<Long> selectIdsByParentId(Long parentId) {

@@ -2,38 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.card.dao.OrderDao">
-
-    <delete id="orderDeleteByIds">
-        delete from `order` where id in
-        <foreach collection="ids" open="(" separator="," close=")" item="item">
-            #{item}
-        </foreach>
-    </delete>
-    <update id="orderUpdateById">
-        update `order`
-        <set>
-            <if test="order.productId != null and order.productId!=''">
-                product_id = #{order.productId}
-            </if>
-            <if test="order.subject != null and order.subject!=''">
-                , subject = #{order.subject}
-            </if>
-            <if test="order.quantity != null and order.quantity!=''">
-                , quantity = #{order.quantity}
-            </if>
-            <if test="order.outTradeNo != null and order.outTradeNo!=''">
-                , outTradeNo = #{order.outTradeNo}
-            </if>
-            <if test="order.state != null">
-                , state = #{order.state}
-            </if>
-        </set>
-        where id = #{id}
-    </update>
-    <insert id="orderInsert">
-            insert into `order`(product_id,quantity,subject,outTradeNo,state,total_amount,create_time) values
-            (#{order.productId},#{order.quantity},#{order.subject},#{order.outTradeNo},#{order.state},#{order.totalAmount},#{order.createTime})
-    </insert>
     <update id="orderUpdateStateByOutTradeNo">
         update `order` set state = #{state} where outTradeNo = #{outTradeNo}
     </update>

@@ -1,5 +1,6 @@
 package com.card.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.card.entity.User;
 import com.card.entity.vo.Result;
 import com.card.entity.vo.UserVO;
@@ -8,7 +9,6 @@ import com.card.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,19 +36,19 @@ public class UserController {
     }
 
     /**
-     * 通过id修改用户
+     * 添加或或者修改用户
      *
      * @param user
      * @return
      */
-    @PostMapping("/updateById")
+    @PostMapping("/saveOrUpdate")
     @RequiresPermissions({"user:update"})
-    public Result<Object> updateById(@RequestBody User user) {
-        User userById = userService.selectById(user.getId());
-        if (userById == null) {
-            return Result.fail("不存在该用户");
-        }
-        userService.updateById(user);
+    public Result<Object> saveOrUpdate(@RequestBody User user) {
+        Integer count = userService.lambdaQuery().eq(User::getUsername, user.getUsername())
+                .ne(user.getId() != null, User::getId, user.getId())
+                .count();
+        if (count > 0) return Result.fail("用户名已存在");
+        userService.saveOrUpdate(user);
         return Result.success();
     }
 
@@ -62,7 +62,7 @@ public class UserController {
     @PostMapping("/removeByIds")
     @RequiresPermissions({"user:delete"})
     public Result<Object> deleteBatchIds(@RequestBody UserVO userVO) {
-        userService.removeByIds(userVO.getIds());
+        if (CollectionUtil.isNotEmpty(userVO.getIds())) userService.removeByIds(userVO.getIds());
         return Result.success();
     }
 
@@ -72,10 +72,10 @@ public class UserController {
      * @param userVO
      * @return
      */
-    @PostMapping("/selectById")
+    @PostMapping("/getById")
     @RequiresPermissions({"user:select"})
     public Result<Object> selectById(@RequestBody UserVO userVO) {
-        return Result.success(userService.selectById(userVO.getId()));
+        return Result.success(userService.getById(userVO.getId()));
     }
 
     /**
