@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @TableName("category")
@@ -27,4 +28,7 @@ public class Category implements Serializable {
     private Date createTime;
     @TableField("update_time")
     private Date updateTime;
+
+    @TableField(exist = false)
+    private List<Category> Categorys;
 }
