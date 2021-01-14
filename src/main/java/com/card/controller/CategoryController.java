@@ -67,6 +67,7 @@ public class CategoryController {
                 .ne(category.getId() != null, Category::getId, category.getId())
                 .count();
         if (count > 0) return Result.fail("该分类名称已存在");
+        category.setCreator(category.getId() == null ? SecurityUtil.getCurrentUser().getId() : null);
         categoryService.saveOrUpdate(category);
         return Result.success();
     }
@@ -78,5 +79,10 @@ public class CategoryController {
                 .eq(Category::getCreator, SecurityUtil.getCurrentUser().getId())
                 .list();
         return Result.success(categories);
+    }
+
+    @PostMapping("/getById")
+    public Result<Object> getById(@RequestBody Category category) {
+        return Result.success(categoryService.getById(category.getId()));
     }
 }
