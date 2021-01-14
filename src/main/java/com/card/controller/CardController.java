@@ -39,7 +39,7 @@ public class CardController {
      */
     @PostMapping("/countByProductId")
     public Result<Object> countByProductId(@RequestBody CardVO cardVO) {
-        Product product = productService.selectById(cardVO.getProductId());
+        Product product = productService.getById(cardVO.getProductId());
         if (null == product) {
             return Result.fail("不存在该产品");
         }

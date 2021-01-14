@@ -1,5 +1,6 @@
 package com.card.entity.vo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

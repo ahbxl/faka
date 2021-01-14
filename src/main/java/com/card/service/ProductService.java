@@ -1,10 +1,10 @@
 package com.card.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.card.dao.ProductDao;
+import com.card.entity.Category;
 import com.card.entity.Product;
 import com.card.entity.vo.ProductVO;
 import lombok.extern.slf4j.Slf4j;
@@ -16,45 +16,29 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class ProductService extends ServiceImpl<ProductDao, Product>  {
+public class ProductService extends ServiceImpl<ProductDao, Product> {
     @Autowired
     private ProductDao productDao;
+    @Autowired
+    private CategoryService categoryService;
 
-    public Product selectOne(Long id) {
-        QueryWrapper<Product> wrapper = new QueryWrapper<>();
-        wrapper.eq("id", id);
-        wrapper.select("id", "name", "price", "category_id", "state");
-        return productDao.selectOne(wrapper);
-    }
-
-    public List<Product> selectByCategoryId(Long categoryId) {
-        QueryWrapper<Product> wrapper = new QueryWrapper<>();
-        wrapper.eq("category_id", categoryId);
-        wrapper.select("id", "name").orderBy(false, true, "state");
-        return productDao.selectList(wrapper);
-    }
-
-
-    public void insert(Product product) {
-        productDao.insert(product);
-    }
-
-    public void deleteBatchIds(List<Long> ids) {
-        productDao.deleteBatchIds(ids);
+    public List<Product> selectByCategoryId(ProductVO productVO) {
+        return lambdaQuery().eq(Product::getCategoryId, productVO.getCategoryId())
+                .orderByDesc(Product::getState)
+                .list();
     }
 
     public IPage<Product> selectPage(ProductVO productVO) {
-        Page<Product> productPage = new Page<>(productVO.getPageNum(), productVO.getPageSize());
-        QueryWrapper<Product> wrapper = new QueryWrapper<>();
-        wrapper.like(!StringUtils.isBlank(productVO.getName()), "name", productVO.getName());
-        wrapper.eq(null != productVO.getState(), "state", productVO.getState());
-        wrapper.eq(null != productVO.getCategoryId(), "category_id", productVO.getCategoryId());
-        wrapper.between(null != productVO.getStartTime() && null != productVO.getEndTime(), "create_time", productVO.getStartTime(), productVO.getEndTime());
-        wrapper.orderByDesc("create_time");
-        return productDao.selectPage(productPage, wrapper);
-    }
-
-    public Product selectById(Long id) {
-        return productDao.selectById(id);
+        IPage<Product> productIPage = lambdaQuery().like(!StringUtils.isBlank(productVO.getName()), Product::getName, productVO.getName())
+                .eq(null != productVO.getState(), Product::getState, productVO.getState())
+                .eq(null != productVO.getCategoryId(), Product::getCategoryId, productVO.getCategoryId())
+                .between(null != productVO.getStartTime() && null != productVO.getEndTime(), Product::getCreateTime, productVO.getStartTime(), productVO.getEndTime())
+                .orderByDesc(Product::getCreateTime)
+                .page(new Page<>(productVO.getPageNum(), productVO.getPageSize()));
+        productIPage.getRecords().forEach(product -> {
+            Category category = categoryService.getById(product.getCategoryId());
+            product.setCategory(category);
+        });
+        return productIPage;
     }
 }

@@ -1,9 +1,12 @@
 package com.card.controller;
 
 
+import cn.hutool.core.util.StrUtil;
+import com.card.entity.Category;
 import com.card.entity.Product;
 import com.card.entity.vo.ProductVO;
 import com.card.entity.vo.Result;
+import com.card.service.CategoryService;
 import com.card.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -19,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController {
     @Autowired
     private ProductService productService;
+    @Autowired
+    private CategoryService categoryService;
 
     /**
      * 通过id查询产品信息
@@ -26,9 +31,12 @@ public class ProductController {
      * @param productVO
      * @return
      */
-    @PostMapping("/selectOne")
-    public Result<Object> selectOne(@RequestBody ProductVO productVO) {
-        return Result.success(productService.selectOne(productVO.getId()));
+    @PostMapping("/getById")
+    public Result<Object> getById(@RequestBody ProductVO productVO) {
+        Product product = productService.getById(productVO.getId());
+        Category category = categoryService.getById(product.getCategoryId());
+        product.setCategory(category);
+        return Result.success(product);
     }
 
     /**
@@ -39,7 +47,7 @@ public class ProductController {
      */
     @PostMapping("/selectByCategoryId")
     public Result<Object> selectByCategoryId(@RequestBody ProductVO productVO) {
-        return Result.success(productService.selectByCategoryId(productVO.getCategoryId()));
+        return Result.success(productService.selectByCategoryId(productVO));
     }
 
     /**
@@ -55,16 +63,16 @@ public class ProductController {
     }
 
     /**
-     * 批量删除产品
+     * 删除产品
      * 需要管理员权限
      *
      * @param productVO
      * @return
      */
-    @PostMapping("/deleteBatchIds")
+    @PostMapping("/removeById")
     @RequiresPermissions({"product:delete]"})
-    public Result<Object> deleteBatchIds(@RequestBody ProductVO productVO) {
-        productService.deleteBatchIds(productVO.getIds());
+    public Result<Object> removeById(@RequestBody ProductVO productVO) {
+        productService.removeById(productVO.getId());
         return Result.success();
     }
 
@@ -75,14 +83,13 @@ public class ProductController {
      * @param product
      * @return
      */
-    @PostMapping("/updateById")
+    @PostMapping("/saveOrUpdate")
     @RequiresPermissions({"product:update"})
-    public Result<Object> updateById(@RequestBody Product product) {
-        Product productById = productService.selectOne(product.getId());
-        if (productById == null) {
-            Result.fail("不存在该产品信息");
-        }
-        productService.updateById(product);
+    public Result<Object> saveOrUpdate(@RequestBody Product product) {
+        Integer count = productService.lambdaQuery().eq(StrUtil.isNotBlank(product.getName()), Product::getName, product.getName())
+                .ne(product.getId() != null, Product::getId, product.getId()).count();
+        if (count > 0) return Result.fail("该商品名称已存在");
+        productService.saveOrUpdate(product);
         return Result.success();
     }
 
@@ -96,7 +103,7 @@ public class ProductController {
     @PostMapping("/insert")
     @RequiresPermissions({"product:add"})
     public Result<Object> insert(@RequestBody Product product) {
-        productService.insert(product);
+        productService.saveOrUpdate(product);
         return Result.success();
     }
 }
