@@ -37,13 +37,14 @@ public class OrderController {
 
     @PostMapping("/getById")
     public Result<Object> getById(@RequestBody OrderVO orderVO) {
-        Order order = orderService.getById(orderVO.getId());
+        Order order = orderService.lambdaQuery().eq(Order::getCreator, SecurityUtil.getCurrentUser().getId())
+                .eq(Order::getId, orderVO.getId()).one();
         if (order != null) order.setProduct(productService.getById(order.getProductId()));
         return Result.success(order);
     }
 
     /**
-     * 批量删除订单
+     * 删除订单
      * 需要管理员权限
      *
      * @param orderVO
@@ -52,11 +53,9 @@ public class OrderController {
     @PostMapping("/removeById")
     @RequiresPermissions({"order:delete"})
     public Result<Object> removeById(@RequestBody OrderVO orderVO) {
-        Order order = orderService.getById(orderVO.getId());
-        if (order != null && SecurityUtil.getCurrentUser().getId().equals(order.getCreator())) {
-            orderService.removeById(orderVO.getId());
-            log.info("用户{}删除了订单，订单id为{}", SecurityUtil.getCurrentUser().getId(), orderVO.getId());
-        }
+        boolean remove = orderService.lambdaUpdate().eq(Order::getCreator, SecurityUtil.getCurrentUser().getId())
+                .eq(Order::getId, orderVO.getId()).remove();
+        if (remove) log.info("用户{}删除了订单，订单id为{}", SecurityUtil.getCurrentUser().getId(), orderVO.getId());
         return Result.success();
     }
 

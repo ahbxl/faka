@@ -1,14 +1,15 @@
 package com.card.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.card.entity.AliPayConfig;
 import com.card.entity.Order;
 import com.card.entity.vo.AliPayConfigVO;
 import com.card.entity.vo.OrderVO;
 import com.card.entity.vo.Result;
+import com.card.security.utils.SecurityUtil;
 import com.card.service.AliPayService;
 import com.card.service.OrderService;
 import com.card.service.UserService;
-import com.card.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,15 +41,13 @@ public class AliPayController {
      */
     @PostMapping("/updateById")
     public Result<Object> updateById(@RequestBody AliPayConfig aliPayConfig) {
-        AliPayConfig aliPayConfig1 = aliPayService.selectById(aliPayConfig.getId());
-        if (aliPayConfig1 == null) {
-            return Result.fail("不存在该配置");
-        }
-        List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
-        if (!longs.contains(aliPayConfig1.getUserId())) {
-            return Result.fail("您暂无权限");
-        }
-        aliPayService.updateById(aliPayConfig);
+        Integer count = aliPayService.lambdaQuery()
+                .eq(StrUtil.isNotBlank(aliPayConfig.getAppId()), AliPayConfig::getAppId, aliPayConfig.getAppId())
+                .eq(AliPayConfig::getUserId, SecurityUtil.getCurrentUser().getId())
+                .ne(aliPayConfig.getId() != null, AliPayConfig::getId, aliPayConfig.getId())
+                .count();
+        if (count > 0) return Result.fail("配置已存在");
+        aliPayService.saveOrUpdate(aliPayConfig);
         log.info("用户{}更新了{}", SecurityUtil.getCurrentUser().getId(), aliPayConfig);
         return Result.success();
     }
@@ -60,17 +59,9 @@ public class AliPayController {
      * @param aliPayConfigVO
      * @return
      */
-    @PostMapping("/selectById")
-    public Result<Object> selectById(@RequestBody AliPayConfigVO aliPayConfigVO) {
-        AliPayConfig aliPayConfig = aliPayService.selectById(aliPayConfigVO.getId());
-        if (aliPayConfig == null) {
-            return Result.fail("不存在该配置");
-        }
-        List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
-        if (!longs.contains(aliPayConfig.getUserId())) {
-            return Result.fail("您暂无权限");
-        }
-        return Result.success(aliPayConfig);
+    @PostMapping("/getById")
+    public Result<Object> getById(@RequestBody AliPayConfigVO aliPayConfigVO) {
+        return Result.success(aliPayService.getById(aliPayConfigVO.getId()));
     }
 
     /**
@@ -81,14 +72,6 @@ public class AliPayController {
      */
     @PostMapping("/selectByOutTradeNo")
     public Result<Object> selectByOutTradeNo(@RequestBody OrderVO orderVO) {
-        Order order = orderService.selectByOutTradeNo(orderVO.getOutTradeNo());
-        if (order == null) {
-            return Result.fail("不存在该订单");
-        }
-        List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
-        if (!longs.contains(order.getCreator())) {
-            return Result.fail("您暂无权限");
-        }
         return Result.success(aliPayService.selectByOutTradeNo(orderVO.getOutTradeNo()));
     }
 
@@ -101,9 +84,7 @@ public class AliPayController {
     @PostMapping("/cancelTrade")
     public Result<Object> cancelTrade(@RequestBody OrderVO orderVO) {
         Order order = orderService.selectByOutTradeNo(orderVO.getOutTradeNo());
-        if (order == null) {
-            return Result.fail("不存在该订单");
-        }
+        if (order == null) return Result.fail("不存在该订单");
         List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
         if (!longs.contains(order.getCreator())) {
             return Result.fail("您暂无权限");

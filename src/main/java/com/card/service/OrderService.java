@@ -8,6 +8,7 @@ import com.card.dao.OrderDao;
 import com.card.dao.ProductDao;
 import com.card.entity.Order;
 import com.card.entity.vo.OrderVO;
+import com.card.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class OrderService extends ServiceImpl<OrderDao, Order> {
                 .like(!StrUtil.isBlank(orderVO.getOutTradeNo()), Order::getOutTradeNo, orderVO.getOutTradeNo())
                 .eq(null != orderVO.getState(), Order::getState, orderVO.getState())
                 .between(null != orderVO.getStartTime() && null != orderVO.getEndTime(), Order::getCreateTime, orderVO.getStartTime(), orderVO.getEndTime())
+                .eq(Order::getCreator, SecurityUtil.getCurrentUser().getId())
                 .orderByDesc(Order::getCreateTime)
                 .page(new Page<>(orderVO.getPageNum(), orderVO.getPageSize()));
         orderIPage.getRecords().forEach(order -> {

@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.card.dao.CategoryDao;
 import com.card.entity.Category;
 import com.card.entity.vo.CategoryVO;
+import com.card.security.utils.SecurityUtil;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class CategoryService extends ServiceImpl<CategoryDao, Category> {
                 .eq(null != categoryVO.getState(), Category::getState, categoryVO.getState())
                 .eq(null != categoryVO.getParentId(), Category::getParentId, categoryVO.getParentId())
                 .between(null != categoryVO.getStartTime() && null != categoryVO.getEndTime(), Category::getCreateTime, categoryVO.getStartTime(), categoryVO.getCreateTime())
+                .eq(Category::getCreator, SecurityUtil.getCurrentUser().getId())
                 .orderByDesc(Category::getCreateTime)
                 .page(new Page<>(categoryVO.getPageNum(), categoryVO.getPageSize()));
     }

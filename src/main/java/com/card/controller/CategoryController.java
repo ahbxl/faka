@@ -6,7 +6,6 @@ import com.card.entity.vo.CategoryVO;
 import com.card.entity.vo.Result;
 import com.card.security.utils.SecurityUtil;
 import com.card.service.CategoryService;
-import com.card.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,9 +21,6 @@ import java.util.List;
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
-
-    @Autowired
-    private UserService userService;
 
     /**
      * 分页查询分类信息
@@ -49,8 +45,11 @@ public class CategoryController {
     public Result<Object> removeById(@RequestBody CategoryVO categoryVO) {
         List<Category> categories = categoryService.selectCategorys(categoryVO.getId(), false);
         if (CollectionUtil.isNotEmpty(categories)) return Result.fail("该分类下含有子集,不可以删除");
-        categoryService.removeById(categoryVO.getId());
-        log.info("用户{}删除了{}", SecurityUtil.getCurrentUser().getId(), categoryVO.getId());
+        boolean remove = categoryService.lambdaUpdate()
+                .eq(Category::getCreator, SecurityUtil.getCurrentUser().getId())
+                .eq(Category::getId, categoryVO.getId())
+                .remove();
+        if (remove) log.info("用户{}删除了{}", SecurityUtil.getCurrentUser().getId(), categoryVO.getId());
         return Result.success();
     }
 
@@ -83,6 +82,8 @@ public class CategoryController {
 
     @PostMapping("/getById")
     public Result<Object> getById(@RequestBody Category category) {
-        return Result.success(categoryService.getById(category.getId()));
+        Category one = categoryService.lambdaQuery().eq(Category::getCreator, SecurityUtil.getCurrentUser().getId())
+                .eq(Category::getId, category.getId()).one();
+        return Result.success(one);
     }
 }

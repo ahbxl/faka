@@ -6,6 +6,7 @@ import com.card.entity.Category;
 import com.card.entity.Product;
 import com.card.entity.vo.ProductVO;
 import com.card.entity.vo.Result;
+import com.card.security.utils.SecurityUtil;
 import com.card.service.CategoryService;
 import com.card.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,8 @@ public class ProductController {
      */
     @PostMapping("/getById")
     public Result<Object> getById(@RequestBody ProductVO productVO) {
-        Product product = productService.getById(productVO.getId());
+        Product product = productService.lambdaQuery().eq(Product::getCreator, SecurityUtil.getCurrentUser().getId())
+                .eq(Product::getId, productVO.getId()).one();
         Category category = categoryService.getById(product.getCategoryId());
         product.setCategory(category);
         return Result.success(product);
@@ -72,12 +74,14 @@ public class ProductController {
     @PostMapping("/removeById")
     @RequiresPermissions({"product:delete"})
     public Result<Object> removeById(@RequestBody ProductVO productVO) {
-        productService.removeById(productVO.getId());
+        boolean remove = productService.lambdaUpdate().eq(Product::getCreator, SecurityUtil.getCurrentUser().getId())
+                .eq(Product::getId, productVO.getId()).remove();
+        if (remove) log.info("用户{}删除了{}", SecurityUtil.getCurrentUser().getId(), productVO.getId());
         return Result.success();
     }
 
     /**
-     * 通过id修改产品信息
+     * 修改或者添加产品信息
      * 需要管理员权限
      *
      * @param product
@@ -89,20 +93,6 @@ public class ProductController {
         Integer count = productService.lambdaQuery().eq(StrUtil.isNotBlank(product.getName()), Product::getName, product.getName())
                 .ne(product.getId() != null, Product::getId, product.getId()).count();
         if (count > 0) return Result.fail("该商品名称已存在");
-        productService.saveOrUpdate(product);
-        return Result.success();
-    }
-
-    /**
-     * 添加产品
-     * 需要管理员权限
-     *
-     * @param product 产品对象
-     * @return
-     */
-    @PostMapping("/insert")
-    @RequiresPermissions({"product:add"})
-    public Result<Object> insert(@RequestBody Product product) {
         productService.saveOrUpdate(product);
         return Result.success();
     }

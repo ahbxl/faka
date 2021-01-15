@@ -7,6 +7,7 @@ import com.card.dao.ProductDao;
 import com.card.entity.Category;
 import com.card.entity.Product;
 import com.card.entity.vo.ProductVO;
+import com.card.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ public class ProductService extends ServiceImpl<ProductDao, Product> {
 
     public List<Product> selectByCategoryId(ProductVO productVO) {
         return lambdaQuery().eq(Product::getCategoryId, productVO.getCategoryId())
+                .eq(Product::getCreator, SecurityUtil.getCurrentUser().getId())
                 .orderByDesc(Product::getState)
                 .list();
     }
@@ -33,6 +35,7 @@ public class ProductService extends ServiceImpl<ProductDao, Product> {
                 .eq(null != productVO.getState(), Product::getState, productVO.getState())
                 .eq(null != productVO.getCategoryId(), Product::getCategoryId, productVO.getCategoryId())
                 .between(null != productVO.getStartTime() && null != productVO.getEndTime(), Product::getCreateTime, productVO.getStartTime(), productVO.getEndTime())
+                .eq(Product::getCreator,SecurityUtil.getCurrentUser().getId())
                 .orderByDesc(Product::getCreateTime)
                 .page(new Page<>(productVO.getPageNum(), productVO.getPageSize()));
         productIPage.getRecords().forEach(product -> {
