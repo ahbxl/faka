@@ -1,15 +1,16 @@
 package com.card.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.alipay.easysdk.kernel.util.ResponseChecker;
 import com.alipay.easysdk.payment.facetoface.models.AlipayTradePrecreateResponse;
 import com.card.entity.Order;
 import com.card.entity.vo.OrderVO;
 import com.card.entity.vo.Result;
 import com.card.enu.OrderState;
+import com.card.security.utils.SecurityUtil;
 import com.card.service.AliPayService;
 import com.card.service.OrderService;
-import com.card.service.UserService;
-import com.card.security.utils.SecurityUtil;
+import com.card.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,30 +19,27 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RestController
 @Slf4j
 @RequestMapping("/api/order")
 public class OrderController {
     @Autowired
     private OrderService orderService;
-
     @Autowired
     private AliPayService aliPayService;
-
     @Autowired
-    private UserService userService;
+    private ProductService productService;
 
     @PostMapping("/selectPage")
     public Result<Object> selectPage(@RequestBody OrderVO orderVO) {
         return Result.success(orderService.selectPage(orderVO));
     }
 
-    @PostMapping("/selectById")
-    public Result<Object> selectById(@RequestBody OrderVO orderVO) {
-        return Result.success(orderService.selectById(orderVO.getId()));
+    @PostMapping("/getById")
+    public Result<Object> getById(@RequestBody OrderVO orderVO) {
+        Order order = orderService.getById(orderVO.getId());
+        if (order != null) order.setProduct(productService.getById(order.getProductId()));
+        return Result.success(order);
     }
 
     /**
@@ -51,30 +49,29 @@ public class OrderController {
      * @param orderVO
      * @return
      */
-    @PostMapping("/deleteBatchIds")
+    @PostMapping("/removeById")
     @RequiresPermissions({"order:delete"})
-    public Result<Object> deleteBatchIds(@RequestBody OrderVO orderVO) {
-        ArrayList<Long> list = new ArrayList<>();
-        List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
-        for (Long id : orderVO.getIds()) {
-            Order order = orderService.selectById(id);
-            if (order != null && longs.contains(order.getCreator())) {
-                list.add(id);
-            }
+    public Result<Object> removeById(@RequestBody OrderVO orderVO) {
+        Order order = orderService.getById(orderVO.getId());
+        if (order != null && SecurityUtil.getCurrentUser().getId().equals(order.getCreator())) {
+            orderService.removeById(orderVO.getId());
+            log.info("用户{}删除了订单，订单id为{}", SecurityUtil.getCurrentUser().getId(), orderVO.getId());
         }
-        orderService.deleteBatchIds(list);
-        log.info("用户{}删除了订单，订单号为{}", SecurityUtil.getCurrentUser().getId(), list);
         return Result.success();
     }
 
-    @PostMapping("/updateById")
+    @PostMapping("/saveOrUpdate")
     @RequiresPermissions({"order:update"})
-    public Result<Object> updateById(@RequestBody Order order) {
-        Order orderById = orderService.selectById(order.getId());
-        if (orderById == null) {
-            Result.fail("不存在该订单");
-        }
-        orderService.updateById(order);
+    public Result<Object> saveOrUpdate(@RequestBody Order order) {
+        Integer count = orderService.lambdaQuery()
+                .eq(StrUtil.isNotBlank(order.getSubject()), Order::getSubject, order.getSubject())
+                .ne(order.getId() != null, Order::getId, order.getId())
+                .count();
+        if (count > 0) return Result.fail("订单标题或者订单号已存在");
+        orderService.lambdaUpdate()
+                .set(StrUtil.isNotBlank(order.getSubject()), Order::getSubject, order.getSubject())
+                .set(order.getState() != null, Order::getState, order.getState())
+                .update();
         log.info("用户{}更新了订单{}", SecurityUtil.getCurrentUser().getId(), order);
         return Result.success();
     }
@@ -92,7 +89,7 @@ public class OrderController {
         if (ResponseChecker.success(response)) {
             order.setState(OrderState.Pay.getValue());
             order.setCreator(SecurityUtil.getCurrentUser().getId());
-            orderService.insert(order);
+            orderService.saveOrUpdate(order);
             log.info("生成支付二维码链接");
             return Result.success(response.qrCode);
         }

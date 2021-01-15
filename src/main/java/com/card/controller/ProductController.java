@@ -70,7 +70,7 @@ public class ProductController {
      * @return
      */
     @PostMapping("/removeById")
-    @RequiresPermissions({"product:delete]"})
+    @RequiresPermissions({"product:delete"})
     public Result<Object> removeById(@RequestBody ProductVO productVO) {
         productService.removeById(productVO.getId());
         return Result.success();
