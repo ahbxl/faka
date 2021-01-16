@@ -33,20 +33,21 @@ public class AliPayController {
     private UserService userService;
 
     /**
-     * 通过id修改支付配置
+     * 修改或者添加支付配置
      * 需要管理员权限
      *
      * @param aliPayConfig
      * @return
      */
-    @PostMapping("/updateById")
-    public Result<Object> updateById(@RequestBody AliPayConfig aliPayConfig) {
+    @PostMapping("/saveOrUpdate")
+    public Result<Object> saveOrUpdate(@RequestBody AliPayConfig aliPayConfig) {
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
         Integer count = aliPayService.lambdaQuery()
                 .eq(StrUtil.isNotBlank(aliPayConfig.getAppId()), AliPayConfig::getAppId, aliPayConfig.getAppId())
-                .eq(AliPayConfig::getUserId, SecurityUtil.getCurrentUser().getId())
+                .in(AliPayConfig::getUserId, longs)
                 .ne(aliPayConfig.getId() != null, AliPayConfig::getId, aliPayConfig.getId())
                 .count();
-        if (count > 0) return Result.fail("配置已存在");
+        if (count > 0) return Result.fail("AppId已存在");
         aliPayService.saveOrUpdate(aliPayConfig);
         log.info("用户{}更新了{}", SecurityUtil.getCurrentUser().getId(), aliPayConfig);
         return Result.success();
@@ -61,7 +62,9 @@ public class AliPayController {
      */
     @PostMapping("/getById")
     public Result<Object> getById(@RequestBody AliPayConfigVO aliPayConfigVO) {
-        return Result.success(aliPayService.getById(aliPayConfigVO.getId()));
+        AliPayConfig aliPayConfig = aliPayService.lambdaQuery().eq(AliPayConfig::getId, SecurityUtil.getCurrentUser().getId())
+                .eq(AliPayConfig::getId, aliPayConfigVO.getId()).one();
+        return Result.success(aliPayConfig);
     }
 
     /**
@@ -85,7 +88,7 @@ public class AliPayController {
     public Result<Object> cancelTrade(@RequestBody OrderVO orderVO) {
         Order order = orderService.selectByOutTradeNo(orderVO.getOutTradeNo());
         if (order == null) return Result.fail("不存在该订单");
-        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(),true);
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
         if (!longs.contains(order.getCreator())) {
             return Result.fail("您暂无权限");
         }
