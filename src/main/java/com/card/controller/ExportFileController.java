@@ -59,7 +59,7 @@ public class ExportFileController {
         if (exportFile == null) {
             return Result.success("未查询到文件信息");
         }
-        List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(),true);
         if (!longs.contains(exportFile.getCreator())) {
             return Result.success("你没有权限删除");
         }
@@ -76,7 +76,7 @@ public class ExportFileController {
      */
     @GetMapping("/deleteBatchIds")
     public Result<Object> deleteBatchIds(@RequestBody ExportFileVO exportFileVO) {
-        List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(),true);
         ArrayList<Long> list = new ArrayList<>();
         for (Long id : exportFileVO.getIds()) {
             ExportFile exportFile = exportFileService.selectById(id);

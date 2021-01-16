@@ -21,13 +21,13 @@ import java.util.List;
 public class CategoryService extends ServiceImpl<CategoryDao, Category> {
     @Autowired
     private CategoryDao categoryDao;
-
-    public Category selectById(Long id) {
-        return categoryDao.selectById(id);
-    }
+    @Autowired
+    private UserService userService;
 
     public IPage<Category> selectPage(CategoryVO categoryVO) {
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
         return lambdaQuery().like(StrUtil.isNotBlank(categoryVO.getName()), Category::getName, categoryVO.getName())
+                .in(Category::getCreator, longs)
                 .eq(null != categoryVO.getState(), Category::getState, categoryVO.getState())
                 .eq(null != categoryVO.getParentId(), Category::getParentId, categoryVO.getParentId())
                 .between(null != categoryVO.getStartTime() && null != categoryVO.getEndTime(), Category::getCreateTime, categoryVO.getStartTime(), categoryVO.getCreateTime())

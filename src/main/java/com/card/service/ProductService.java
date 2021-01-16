@@ -22,6 +22,8 @@ public class ProductService extends ServiceImpl<ProductDao, Product> {
     private ProductDao productDao;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private UserService userService;
 
     public List<Product> selectByCategoryId(ProductVO productVO) {
         return lambdaQuery().eq(Product::getCategoryId, productVO.getCategoryId())
@@ -31,11 +33,12 @@ public class ProductService extends ServiceImpl<ProductDao, Product> {
     }
 
     public IPage<Product> selectPage(ProductVO productVO) {
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
         IPage<Product> productIPage = lambdaQuery().like(!StringUtils.isBlank(productVO.getName()), Product::getName, productVO.getName())
                 .eq(null != productVO.getState(), Product::getState, productVO.getState())
                 .eq(null != productVO.getCategoryId(), Product::getCategoryId, productVO.getCategoryId())
                 .between(null != productVO.getStartTime() && null != productVO.getEndTime(), Product::getCreateTime, productVO.getStartTime(), productVO.getEndTime())
-                .eq(Product::getCreator,SecurityUtil.getCurrentUser().getId())
+                .in(Product::getCreator, longs)
                 .orderByDesc(Product::getCreateTime)
                 .page(new Page<>(productVO.getPageNum(), productVO.getPageSize()));
         productIPage.getRecords().forEach(product -> {

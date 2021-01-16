@@ -85,7 +85,7 @@ public class AliPayController {
     public Result<Object> cancelTrade(@RequestBody OrderVO orderVO) {
         Order order = orderService.selectByOutTradeNo(orderVO.getOutTradeNo());
         if (order == null) return Result.fail("不存在该订单");
-        List<Long> longs = userService.selectIdsByParentId(SecurityUtil.getCurrentUser().getId());
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(),true);
         if (!longs.contains(order.getCreator())) {
             return Result.fail("您暂无权限");
         }

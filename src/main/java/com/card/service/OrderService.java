@@ -22,6 +22,8 @@ public class OrderService extends ServiceImpl<OrderDao, Order> {
     private OrderDao orderDao;
     @Autowired
     private ProductDao productDao;
+    @Autowired
+    private UserService userService;
 
 
     public void deleteByState(Integer state) {
@@ -29,7 +31,9 @@ public class OrderService extends ServiceImpl<OrderDao, Order> {
     }
 
     public IPage<Order> selectPage(OrderVO orderVO) {
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
         IPage<Order> orderIPage = lambdaQuery()
+                .in(Order::getCreator, longs)
                 .like(!StrUtil.isBlank(orderVO.getSubject()), Order::getSubject, orderVO.getSubject())
                 .like(!StrUtil.isBlank(orderVO.getOutTradeNo()), Order::getOutTradeNo, orderVO.getOutTradeNo())
                 .eq(null != orderVO.getState(), Order::getState, orderVO.getState())

@@ -9,6 +9,7 @@ import com.card.entity.vo.Result;
 import com.card.security.utils.SecurityUtil;
 import com.card.service.CategoryService;
 import com.card.service.ProductService;
+import com.card.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -25,6 +28,8 @@ public class ProductController {
     private ProductService productService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private UserService userService;
 
     /**
      * 通过id查询产品信息
@@ -34,7 +39,8 @@ public class ProductController {
      */
     @PostMapping("/getById")
     public Result<Object> getById(@RequestBody ProductVO productVO) {
-        Product product = productService.lambdaQuery().eq(Product::getCreator, SecurityUtil.getCurrentUser().getId())
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
+        Product product = productService.lambdaQuery().in(Product::getCreator, longs)
                 .eq(Product::getId, productVO.getId()).one();
         Category category = categoryService.getById(product.getCategoryId());
         product.setCategory(category);

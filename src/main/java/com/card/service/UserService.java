@@ -1,18 +1,19 @@
 package com.card.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.card.dao.UserDao;
 import com.card.entity.User;
 import com.card.entity.vo.UserVO;
+import com.card.security.utils.SecurityUtil;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,19 +24,20 @@ public class UserService extends ServiceImpl<UserDao, User> {
     private UserDao userDao;
 
     public IPage<User> selectPage(UserVO userVO) {
-        Page<User> userPage = new Page<>(userVO.getPageNum(), userVO.getPageSize());
-        QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.like(StringUtils.isNotBlank(userVO.getUsername()), "username", userVO.getUsername());
-        wrapper.like(StringUtils.isNotBlank(userVO.getEmail()), "email", userVO.getEmail());
-        wrapper.like(StringUtils.isNotBlank(userVO.getQq()), "qq", userVO.getQq());
-        wrapper.like(StringUtils.isNotBlank(userVO.getPhone()), "phone", userVO.getPhone());
-        wrapper.like(StringUtils.isNotBlank(userVO.getEmail()), "email", userVO.getEmail());
-        wrapper.eq(null != userVO.getState(), "state", userVO.getState());
-        wrapper.eq(null != userVO.getRoleId(), "role_id", userVO.getRoleId());
-        wrapper.eq(null != userVO.getParentId(), "parent_id", userVO.getParentId());
-        wrapper.between(null != userVO.getStartTime() && null != userVO.getEndTime(), "create_time", userVO.getStartTime(), userVO.getEndTime());
-        wrapper.orderByDesc("create_time");
-        return userDao.selectPage(userPage, wrapper);
+        List<Long> longs = selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
+        IPage<User> userIPage = lambdaQuery()
+                .in(User::getId, longs)
+                .like(StrUtil.isNotBlank(userVO.getUsername()), User::getUsername, userVO.getUsername())
+                .like(StrUtil.isNotBlank(userVO.getEmail()), User::getEmail, userVO.getEmail())
+                .like(StrUtil.isNotBlank(userVO.getQq()), User::getQq, userVO.getQq())
+                .like(StrUtil.isNotBlank(userVO.getPhone()), User::getPhone, userVO.getPhone())
+                .eq(null != userVO.getState(), User::getState, userVO.getState())
+                .eq(null != userVO.getRoleId(), User::getRoleId, userVO.getRoleId())
+                .eq(null != userVO.getParentId(), User::getParentId, userVO.getParentId())
+                .between(null != userVO.getStartTime() && null != userVO.getEndTime(), User::getCreateTime, userVO.getStartTime(), userVO.getEndTime())
+                .orderByDesc(User::getCreateTime)
+                .page(new Page<>(userVO.getPageNum(), userVO.getPageSize()));
+        return userIPage;
     }
 
     public User selectByUsername(String username) {
@@ -46,26 +48,27 @@ public class UserService extends ServiceImpl<UserDao, User> {
         return lambdaQuery().eq(User::getUsername, username).count();
     }
 
-    public List<Long> selectIdsByParentId(Long parentId) {
-        return selectByParentId(parentId);
-    }
-
     /**
      * 查询用户及下级用户的id集合
      *
-     * @param parentId
+     * @param id
+     * @param bool
      * @return
      */
-    List<Long> selectByParentId(Long parentId) {
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("parent_id", parentId);
-        List<User> users = userDao.selectList(queryWrapper);
-        List<Long> collect = users.stream().map(User::getId).collect(Collectors.toList());
-        ArrayList<Long> list = new ArrayList<>(collect);
-        list.add(parentId);
-        for (Long aLong : collect) {
-            list.addAll(selectByParentId(aLong));
+    public List<Long> selectUserIds(Long id, Boolean bool) {
+        List<Long> ids = Lists.newArrayList();
+        if (bool) ids.add(id);
+        selectByParentId(id, ids);
+        return ids;
+    }
+
+    List<Long> selectByParentId(Long parentId, List<Long> ids) {
+        List<User> list = lambdaQuery().eq(User::getParentId, parentId).list();
+        List<Long> collect = list.stream().map(User::getId).collect(Collectors.toList());
+        if (CollectionUtil.isNotEmpty(collect)) {
+            ids.addAll(collect);
+            collect.forEach(l -> selectByParentId(l, ids));
         }
-        return list;
+        return ids;
     }
 }

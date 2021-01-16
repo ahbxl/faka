@@ -1,6 +1,5 @@
 package com.card.controller;
 
-import cn.hutool.core.collection.CollectionUtil;
 import com.card.entity.User;
 import com.card.entity.vo.Result;
 import com.card.entity.vo.UserVO;
@@ -62,7 +61,7 @@ public class UserController {
     @PostMapping("/removeByIds")
     @RequiresPermissions({"user:delete"})
     public Result<Object> deleteBatchIds(@RequestBody UserVO userVO) {
-        if (CollectionUtil.isNotEmpty(userVO.getIds())) userService.removeByIds(userVO.getIds());
+        userService.removeById(userVO.getId());
         return Result.success();
     }
 
