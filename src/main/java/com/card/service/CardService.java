@@ -1,6 +1,5 @@
 package com.card.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -20,23 +19,25 @@ import java.util.List;
 public class CardService extends ServiceImpl<CardDao, Card> {
     @Autowired
     private CardDao cardDao;
-
-    public void insert(Card card) {
-        cardDao.insert(card);
-    }
+    @Autowired
+    private UserService userService;
 
     public IPage<Card> selectPage(CardVO cardVO) {
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
         IPage<Card> cardIPage = lambdaQuery().eq(null != cardVO.getProductId(), Card::getProductId, cardVO.getProductId())
                 .like(StringUtils.isNotBlank(cardVO.getContent()), Card::getContent, cardVO.getContent())
                 .eq(null != cardVO.getState(), Card::getState, cardVO.getState())
                 .between(null != cardVO.getStartTime() && null != cardVO.getEndTime(), Card::getCreateTime, cardVO.getStartTime(), cardVO.getEndTime())
                 .eq(Card::getCreator, SecurityUtil.getCurrentUser().getId())
+                .in(Card::getCreator, longs)
                 .orderByDesc(Card::getCreateTime)
                 .page(new Page<>(cardVO.getPageNum(), cardVO.getPageSize()));
         return cardIPage;
     }
 
     public Integer countByProductId(Long productId) {
-        return lambdaQuery().eq(Card::getProductId, productId).eq(Card::getCreator, SecurityUtil.getCurrentUser().getId()).count();
+        return lambdaQuery().eq(Card::getProductId, productId)
+                .eq(Card::getCreator, SecurityUtil.getCurrentUser().getId())
+                .count();
     }
 }

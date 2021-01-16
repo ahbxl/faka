@@ -1,7 +1,6 @@
 package com.card.controller;
 
 import com.card.entity.Card;
-import com.card.entity.Product;
 import com.card.entity.vo.CardVO;
 import com.card.entity.vo.Result;
 import com.card.security.utils.SecurityUtil;
@@ -75,8 +74,9 @@ public class CardController {
      */
     @PostMapping("/getById")
     public Result<Object> getById(@RequestBody CardVO cardVO) {
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
         Card card = cardService.lambdaQuery()
-                .eq(Card::getCreator, SecurityUtil.getCurrentUser().getId())
+                .in(Card::getCreator, longs)
                 .eq(Card::getId, cardVO.getId())
                 .one();
         return Result.success(card);
@@ -91,8 +91,9 @@ public class CardController {
      */
     @PostMapping("/removeById")
     public Result<Object> removeById(@RequestBody CardVO cardVO) {
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
         boolean remove = cardService.lambdaUpdate()
-                .eq(Card::getCreator, SecurityUtil.getCurrentUser().getId())
+                .in(Card::getCreator, longs)
                 .eq(Card::getId, cardVO.getId())
                 .remove();
         if (remove) log.info("用户{}删除卡密id{}", SecurityUtil.getCurrentUser().getId(), cardVO.getId());
