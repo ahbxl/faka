@@ -21,6 +21,8 @@ public class CardService extends ServiceImpl<CardDao, Card> {
     private CardDao cardDao;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ProductService productService;
 
     public IPage<Card> selectPage(CardVO cardVO) {
         List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
@@ -32,6 +34,9 @@ public class CardService extends ServiceImpl<CardDao, Card> {
                 .in(Card::getCreator, longs)
                 .orderByDesc(Card::getCreateTime)
                 .page(new Page<>(cardVO.getPageNum(), cardVO.getPageSize()));
+        cardIPage.getRecords().forEach(
+                card -> card.setProduct(productService.getById(card.getProductId()))
+        );
         return cardIPage;
     }
 

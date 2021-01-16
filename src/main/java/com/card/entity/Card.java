@@ -19,8 +19,6 @@ public class Card implements Serializable {
     private Long productId;
     @TableField("creator")
     private Long creator;
-    @TableField(exist = false)
-    private String productName;
     @TableField("content")
     private String content;
     @TableField("state")
@@ -29,4 +27,6 @@ public class Card implements Serializable {
     private Date createTime;
     @TableField("update_time")
     private Date updateTime;
+    @TableField(exist = false)
+    private Product product;
 }

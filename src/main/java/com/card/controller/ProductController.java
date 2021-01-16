@@ -47,6 +47,13 @@ public class ProductController {
         return Result.success(product);
     }
 
+    @PostMapping("/selectList")
+    public Result<Object> selectList(@RequestBody ProductVO productVO) {
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
+        List<Product> products = productService.lambdaQuery().in(Product::getCreator, longs).list();
+        return Result.success(products);
+    }
+
     /**
      * 查看指定分类的产品
      *
@@ -99,6 +106,7 @@ public class ProductController {
         Integer count = productService.lambdaQuery().eq(StrUtil.isNotBlank(product.getName()), Product::getName, product.getName())
                 .ne(product.getId() != null, Product::getId, product.getId()).count();
         if (count > 0) return Result.fail("该商品名称已存在");
+        product.setCreator(SecurityUtil.getCurrentUser().getId());
         productService.saveOrUpdate(product);
         return Result.success();
     }
