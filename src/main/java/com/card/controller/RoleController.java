@@ -21,7 +21,7 @@ public class RoleController {
     private RoleService roleService;
 
     @PostMapping("/saveOrUpdate")
-    @RequiresPermissions({"role:add,role:update"})
+    @RequiresPermissions({"role:add", "role:update"})
     @RequiresRoles({"admin"})
     public Result<Object> saveOrUpdate(@RequestBody Role role) {
         Integer count = roleService.lambdaQuery().eq(Role::getName, role.getName())
@@ -52,5 +52,12 @@ public class RoleController {
     @RequiresRoles({"admin"})
     public Result<Object> selectPage(@RequestBody RoleVO roleVO) {
         return Result.success(roleService.selectPage(roleVO));
+    }
+
+    @PostMapping("/select")
+    @RequiresPermissions({"role:select"})
+    @RequiresRoles({"admin"})
+    public Result<Object> select(@RequestBody RoleVO roleVO) {
+        return Result.success(roleService.lambdaQuery().list());
     }
 }

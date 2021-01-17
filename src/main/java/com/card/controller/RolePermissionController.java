@@ -1,9 +1,13 @@
 package com.card.controller;
 
+import com.card.entity.Permission;
+import com.card.entity.Role;
 import com.card.entity.RolePermission;
 import com.card.entity.vo.Result;
 import com.card.entity.vo.RolePermissionVO;
+import com.card.service.PermissionService;
 import com.card.service.RolePermissionService;
+import com.card.service.RoleService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
@@ -19,13 +23,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class RolePermissionController {
     @Autowired
     private RolePermissionService rolePermissionService;
+    @Autowired
+    private RoleService roleService;
+    @Autowired
+    private PermissionService permissionService;
 
     @PostMapping("/saveOrUpdate")
     @RequiresPermissions({"rolePermission:add"})
     @RequiresRoles({"admin"})
     public Result<Object> saveOrUpdate(@RequestBody RolePermission rolePermission) {
-        Integer count = rolePermissionService.lambdaQuery().eq(RolePermission::getRoleId, rolePermission.getRoleId())
-                .eq(RolePermission::getPermissionId, rolePermission.getPermissionId()).count();
+        Integer count = rolePermissionService.lambdaQuery()
+                .eq(RolePermission::getRoleId, rolePermission.getRoleId())
+                .eq(RolePermission::getPermissionId, rolePermission.getPermissionId())
+                .ne(rolePermission.getId() != null, RolePermission::getId, rolePermission.getId())
+                .count();
         if (count > 0) return Result.fail("授权已存在");
         rolePermissionService.saveOrUpdate(rolePermission);
         return Result.success();
@@ -44,5 +55,19 @@ public class RolePermissionController {
     @RequiresPermissions({"rolePermission:select"})
     public Result<Object> selectPage(@RequestBody RolePermissionVO rolePermissionVO) {
         return Result.success(rolePermissionService.selectPage(rolePermissionVO));
+    }
+
+    @PostMapping("/getById")
+    @RequiresRoles({"admin"})
+    @RequiresPermissions({"rolePermission:select"})
+    public Result<Object> getById(@RequestBody RolePermissionVO rolePermissionVO) {
+        RolePermission rolePermission = rolePermissionService.getById(rolePermissionVO.getId());
+        if (rolePermission != null) {
+            Role role = roleService.getById(rolePermission.getRoleId());
+            Permission permission = permissionService.getById(rolePermission.getPermissionId());
+            rolePermission.setRole(role);
+            rolePermission.setPermission(permission);
+        }
+        return Result.success(rolePermission);
     }
 }

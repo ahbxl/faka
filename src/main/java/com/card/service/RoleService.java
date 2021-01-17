@@ -1,5 +1,6 @@
 package com.card.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -42,8 +43,7 @@ public class RoleService extends ServiceImpl<RoleDao, Role> {
 
     public IPage<Role> selectPage(RoleVO roleVO) {
         IPage<Role> roleIPage = lambdaQuery()
-                .eq(null != roleVO.getParentId(), Role::getParentId, roleVO.getParentId())
-                .like(Role::getName, roleVO.getName())
+                .like(StrUtil.isNotBlank(roleVO.getName()), Role::getName, roleVO.getName())
                 .page(new Page<>(roleVO.getPageNum(), roleVO.getPageSize()));
         return roleIPage;
     }

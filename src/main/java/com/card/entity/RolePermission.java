@@ -25,4 +25,9 @@ public class RolePermission implements Serializable {
     private Date createTime;
     @TableField("update_time")
     private Date updateTime;
+
+    @TableField(exist = false)
+    private Role role;
+    @TableField(exist = false)
+    private Permission permission;
 }
