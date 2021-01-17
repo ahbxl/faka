@@ -8,6 +8,7 @@ import com.card.security.utils.SecurityUtil;
 import com.card.service.MenuListService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,19 +30,22 @@ public class MenuListController {
     }
 
     @PostMapping("/selectPage")
+    @RequiresRoles({"admin"})
     public Result<Object> selectPage(@RequestBody MenuListVO MenuListVO) {
         return Result.success(menuListService.selectPage(MenuListVO));
     }
 
-    @PostMapping("/removeByIds")
+    @PostMapping("/removeById")
+    @RequiresRoles({"admin"})
     @RequiresPermissions({"menuList:delete"})
-    public Result<Object> removeByIds(@RequestBody MenuListVO MenuListVO) {
-        menuListService.removeByIds(MenuListVO.getIds());
+    public Result<Object> removeById(@RequestBody MenuListVO MenuListVO) {
+        menuListService.removeById(MenuListVO.getId());
         return Result.success();
     }
 
     @PostMapping("/saveOrUpdate")
-    @RequiresPermissions({"menuList:add,menuList:update"})
+    @RequiresRoles({"admin"})
+    @RequiresPermissions({"menuList:add", "menuList:update"})
     public Result<Object> saveOrUpdate(@RequestBody MenuList menuList) {
         List<MenuList> menuLists = menuListService.lambdaQuery()
                 .eq(MenuList::getName, menuList.getName())

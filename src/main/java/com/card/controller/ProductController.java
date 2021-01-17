@@ -87,7 +87,8 @@ public class ProductController {
     @PostMapping("/removeById")
     @RequiresPermissions({"product:delete"})
     public Result<Object> removeById(@RequestBody ProductVO productVO) {
-        boolean remove = productService.lambdaUpdate().eq(Product::getCreator, SecurityUtil.getCurrentUser().getId())
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
+        boolean remove = productService.lambdaUpdate().in(Product::getCreator, longs)
                 .eq(Product::getId, productVO.getId()).remove();
         if (remove) log.info("用户{}删除了{}", SecurityUtil.getCurrentUser().getId(), productVO.getId());
         return Result.success();
@@ -101,12 +102,12 @@ public class ProductController {
      * @return
      */
     @PostMapping("/saveOrUpdate")
-    @RequiresPermissions({"product:update"})
+    @RequiresPermissions({"product:update", "product:add"})
     public Result<Object> saveOrUpdate(@RequestBody Product product) {
         Integer count = productService.lambdaQuery().eq(StrUtil.isNotBlank(product.getName()), Product::getName, product.getName())
                 .ne(product.getId() != null, Product::getId, product.getId()).count();
         if (count > 0) return Result.fail("该商品名称已存在");
-        product.setCreator(SecurityUtil.getCurrentUser().getId());
+        product.setCreator(product.getId() == null ? SecurityUtil.getCurrentUser().getId() : null);
         productService.saveOrUpdate(product);
         return Result.success();
     }

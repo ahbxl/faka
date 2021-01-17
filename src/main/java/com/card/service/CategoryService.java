@@ -31,7 +31,6 @@ public class CategoryService extends ServiceImpl<CategoryDao, Category> {
                 .eq(null != categoryVO.getState(), Category::getState, categoryVO.getState())
                 .eq(null != categoryVO.getParentId(), Category::getParentId, categoryVO.getParentId())
                 .between(null != categoryVO.getStartTime() && null != categoryVO.getEndTime(), Category::getCreateTime, categoryVO.getStartTime(), categoryVO.getCreateTime())
-                .eq(Category::getCreator, SecurityUtil.getCurrentUser().getId())
                 .orderByDesc(Category::getCreateTime)
                 .page(new Page<>(categoryVO.getPageNum(), categoryVO.getPageSize()));
     }

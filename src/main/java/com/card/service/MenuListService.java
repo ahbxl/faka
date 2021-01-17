@@ -31,12 +31,7 @@ public class MenuListService extends ServiceImpl<MenuListDao, MenuList> {
     private RoleMenuListDao roleMenuListDao;
 
     public IPage<MenuList> selectPage(MenuListVO menuListVO) {
-        List<Role> roles = roleService.selectRoles(SecurityUtil.getCurrentUser().getRoleId(), true);
-        List<Long> list = roles.stream().map(Role::getId).collect(Collectors.toList());
-        List<RoleMenuList> roleMenuLists = roleMenuListDao.selectList(new QueryWrapper<RoleMenuList>().lambda()
-                .in(RoleMenuList::getRoleId, list));
-        List<Long> collect = roleMenuLists.stream().map(RoleMenuList::getMenuListId).collect(Collectors.toList());
-        IPage<MenuList> menuListIPage = lambdaQuery().in(CollectionUtil.isNotEmpty(collect), MenuList::getId, collect)
+        IPage<MenuList> menuListIPage = lambdaQuery()
                 .like(StringUtils.isNotBlank(menuListVO.getName()), MenuList::getName, menuListVO.getName())
                 .eq(null != menuListVO.getState(), MenuList::getState, menuListVO.getState())
                 .between(null != menuListVO.getStartTime() && null != menuListVO.getEndTime(), MenuList::getCreateTime, menuListVO.getStartTime(), menuListVO.getEndTime())
@@ -46,7 +41,7 @@ public class MenuListService extends ServiceImpl<MenuListDao, MenuList> {
     }
 
     /**
-     * 根据角色返回角色树
+     * 根据角色返回菜单,树状结构
      *
      * @param roleId
      * @return

@@ -4,6 +4,7 @@ import com.card.entity.Role;
 import com.card.entity.vo.Result;
 import com.card.entity.vo.RoleVO;
 import com.card.service.RoleService;
+import com.card.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresRoles;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class RoleController {
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/saveOrUpdate")
     @RequiresPermissions({"role:add", "role:update"})

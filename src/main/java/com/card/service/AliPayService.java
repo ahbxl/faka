@@ -119,7 +119,8 @@ public class AliPayService extends ServiceImpl<AliPayConfigDao, AliPayConfig> {
 
     public IPage<AliPayConfig> selectPage(AliPayConfigVO aliPayConfigVO) {
         List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
-        IPage<AliPayConfig> aliPayConfigIPage = lambdaQuery().in(AliPayConfig::getUserId, longs)
+        IPage<AliPayConfig> aliPayConfigIPage = lambdaQuery()
+                .in(AliPayConfig::getUserId, longs)
                 .like(StrUtil.isNotBlank(aliPayConfigVO.getAppId()), AliPayConfig::getAppId, aliPayConfigVO.getAppId())
                 .orderByDesc(AliPayConfig::getCreateTime)
                 .page(new Page<>(aliPayConfigVO.getPageNum(), aliPayConfigVO.getPageSize()));

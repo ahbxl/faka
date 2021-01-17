@@ -34,7 +34,6 @@ public class AliPayController {
 
     /**
      * 修改或者添加支付配置
-     * 需要管理员权限
      *
      * @param aliPayConfig
      * @return
@@ -51,7 +50,7 @@ public class AliPayController {
         if (aliPayConfig.getId() == null) {
             aliPayConfig.setUserId(SecurityUtil.getCurrentUser().getId());
         }
-        aliPayService.saveOrUpdate(aliPayConfig);
+        aliPayService.lambdaUpdate().in(AliPayConfig::getUserId, longs).update(aliPayConfig);
         log.info("用户{}更新了{}", SecurityUtil.getCurrentUser().getId(), aliPayConfig);
         return Result.success();
     }
@@ -65,7 +64,8 @@ public class AliPayController {
      */
     @PostMapping("/getById")
     public Result<Object> getById(@RequestBody AliPayConfigVO aliPayConfigVO) {
-        AliPayConfig aliPayConfig = aliPayService.lambdaQuery().eq(AliPayConfig::getUserId, SecurityUtil.getCurrentUser().getId())
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
+        AliPayConfig aliPayConfig = aliPayService.lambdaQuery().in(AliPayConfig::getUserId, longs)
                 .eq(AliPayConfig::getId, aliPayConfigVO.getId()).one();
         return Result.success(aliPayConfig);
     }

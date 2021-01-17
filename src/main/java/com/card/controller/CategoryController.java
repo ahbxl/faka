@@ -8,6 +8,8 @@ import com.card.security.utils.SecurityUtil;
 import com.card.service.CategoryService;
 import com.card.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,6 +35,7 @@ public class CategoryController {
      * @return
      */
     @PostMapping("/selectPage")
+    @RequiresRoles({"admin"})
     public Result<Object> selectPage(@RequestBody CategoryVO categoryVO) {
         return Result.success(categoryService.selectPage(categoryVO));
     }
@@ -45,11 +48,13 @@ public class CategoryController {
      * @return
      */
     @PostMapping("/removeById")
+    @RequiresRoles({"admin"})
     public Result<Object> removeById(@RequestBody CategoryVO categoryVO) {
         List<Category> categories = categoryService.selectCategorys(categoryVO.getId(), false);
         if (CollectionUtil.isNotEmpty(categories)) return Result.fail("该分类下含有子集,不可以删除");
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
         boolean remove = categoryService.lambdaUpdate()
-                .eq(Category::getCreator, SecurityUtil.getCurrentUser().getId())
+                .in(Category::getCreator, longs)
                 .eq(Category::getId, categoryVO.getId())
                 .remove();
         if (remove) log.info("用户{}删除了{}", SecurityUtil.getCurrentUser().getId(), categoryVO.getId());
@@ -64,13 +69,17 @@ public class CategoryController {
      * @return
      */
     @PostMapping("/saveOrUpdate")
+    @RequiresRoles({"admin"})
     public Result<Object> saveOrUpdate(@RequestBody Category category) {
-        Integer count = categoryService.lambdaQuery().eq(Category::getName, category.getName())
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
+        Integer count = categoryService.lambdaQuery()
+                .eq(Category::getName, category.getName())
+                .in(Category::getCreator, longs)
                 .ne(category.getId() != null, Category::getId, category.getId())
                 .count();
         if (count > 0) return Result.fail("该分类名称已存在");
         category.setCreator(category.getId() == null ? SecurityUtil.getCurrentUser().getId() : null);
-        categoryService.saveOrUpdate(category);
+        categoryService.lambdaUpdate().in(Category::getCreator, longs).update(category);
         return Result.success();
     }
 

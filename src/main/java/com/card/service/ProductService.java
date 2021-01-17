@@ -26,8 +26,10 @@ public class ProductService extends ServiceImpl<ProductDao, Product> {
     private UserService userService;
 
     public List<Product> selectByCategoryId(ProductVO productVO) {
-        return lambdaQuery().eq(Product::getCategoryId, productVO.getCategoryId())
-                .eq(Product::getCreator, SecurityUtil.getCurrentUser().getId())
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
+        return lambdaQuery()
+                .eq(Product::getCategoryId, productVO.getCategoryId())
+                .in(Product::getCreator, longs)
                 .orderByDesc(Product::getState)
                 .list();
     }

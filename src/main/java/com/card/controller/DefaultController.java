@@ -1,5 +1,6 @@
 package com.card.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.card.entity.User;
 import com.card.entity.vo.Result;
 import com.card.entity.vo.UserVO;
@@ -56,10 +57,10 @@ public class DefaultController {
         user.setUsername(userVO.getUsername());
         user.setPassword(md5);
         user.setEmail(userVO.getEmail());
-        if (StringUtils.isNotBlank(userVO.getQq())) {
+        if (StrUtil.isNotBlank(userVO.getQq())) {
             user.setQq(userVO.getQq());
         }
-        if (StringUtils.isNotBlank(userVO.getPhone())) {
+        if (StrUtil.isNotBlank(userVO.getPhone())) {
             user.setPhone(userVO.getPhone());
         }
         userService.saveOrUpdate(user);

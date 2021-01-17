@@ -11,13 +11,17 @@ import com.card.security.utils.SecurityUtil;
 import com.card.service.AliPayService;
 import com.card.service.OrderService;
 import com.card.service.ProductService;
+import com.card.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -29,6 +33,8 @@ public class OrderController {
     private AliPayService aliPayService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/selectPage")
     public Result<Object> selectPage(@RequestBody OrderVO orderVO) {
@@ -51,9 +57,11 @@ public class OrderController {
      * @return
      */
     @PostMapping("/removeById")
+    @RequiresRoles({"admin"})
     @RequiresPermissions({"order:delete"})
     public Result<Object> removeById(@RequestBody OrderVO orderVO) {
-        boolean remove = orderService.lambdaUpdate().eq(Order::getCreator, SecurityUtil.getCurrentUser().getId())
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
+        boolean remove = orderService.lambdaUpdate().in(Order::getCreator, longs)
                 .eq(Order::getId, orderVO.getId()).remove();
         if (remove) log.info("用户{}删除了订单，订单id为{}", SecurityUtil.getCurrentUser().getId(), orderVO.getId());
         return Result.success();
@@ -67,11 +75,11 @@ public class OrderController {
                 .ne(order.getId() != null, Order::getId, order.getId())
                 .count();
         if (count > 0) return Result.fail("订单标题或者订单号已存在");
-        orderService.lambdaUpdate()
+        boolean update = orderService.lambdaUpdate()
                 .set(StrUtil.isNotBlank(order.getSubject()), Order::getSubject, order.getSubject())
                 .set(order.getState() != null, Order::getState, order.getState())
                 .update();
-        log.info("用户{}更新了订单{}", SecurityUtil.getCurrentUser().getId(), order);
+        if (update) log.info("用户{}更新了订单{}", SecurityUtil.getCurrentUser().getId(), order);
         return Result.success();
     }
 

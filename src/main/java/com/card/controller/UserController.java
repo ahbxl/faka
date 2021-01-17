@@ -8,6 +8,7 @@ import com.card.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +30,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/selectPage")
+    @RequiresRoles({"admin"})
     @RequiresPermissions({"user:select"})
     public Result<Object> selectPage(@RequestBody UserVO userVO) {
         return Result.success(userService.selectPage(userVO));
@@ -41,6 +43,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/saveOrUpdate")
+    @RequiresRoles({"admin"})
     @RequiresPermissions({"user:update"})
     public Result<Object> saveOrUpdate(@RequestBody User user) {
         Integer count = userService.lambdaQuery().eq(User::getUsername, user.getUsername())
@@ -59,6 +62,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/removeById")
+    @RequiresRoles({"admin"})
     @RequiresPermissions({"user:delete"})
     public Result<Object> removeById(@RequestBody UserVO userVO) {
         userService.removeById(userVO.getId());

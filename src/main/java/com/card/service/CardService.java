@@ -30,7 +30,6 @@ public class CardService extends ServiceImpl<CardDao, Card> {
                 .like(StringUtils.isNotBlank(cardVO.getContent()), Card::getContent, cardVO.getContent())
                 .eq(null != cardVO.getState(), Card::getState, cardVO.getState())
                 .between(null != cardVO.getStartTime() && null != cardVO.getEndTime(), Card::getCreateTime, cardVO.getStartTime(), cardVO.getEndTime())
-                .eq(Card::getCreator, SecurityUtil.getCurrentUser().getId())
                 .in(Card::getCreator, longs)
                 .orderByDesc(Card::getCreateTime)
                 .page(new Page<>(cardVO.getPageNum(), cardVO.getPageSize()));
@@ -42,7 +41,6 @@ public class CardService extends ServiceImpl<CardDao, Card> {
 
     public Integer countByProductId(Long productId) {
         return lambdaQuery().eq(Card::getProductId, productId)
-                .eq(Card::getCreator, SecurityUtil.getCurrentUser().getId())
                 .count();
     }
 }

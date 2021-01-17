@@ -5,7 +5,6 @@ import com.card.entity.vo.CardVO;
 import com.card.entity.vo.Result;
 import com.card.security.utils.SecurityUtil;
 import com.card.service.CardService;
-import com.card.service.ProductService;
 import com.card.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +23,6 @@ public class CardController {
     private CardService cardService;
 
     @Autowired
-    private ProductService productService;
-
-    @Autowired
     private UserService userService;
 
     /**
@@ -42,7 +38,6 @@ public class CardController {
 
     /**
      * 分页查询卡密内容
-     * 需要管理员权限
      *
      * @param cardVO
      * @return
@@ -54,15 +49,15 @@ public class CardController {
 
     /**
      * 添加或者更新卡密
-     * 需要管理员权限
      *
      * @param card 卡密对象
      * @return
      */
     @PostMapping("/saveOrUpdate")
     public Result<Object> saveOrUpdate(@RequestBody Card card) {
-        card.setCreator(SecurityUtil.getCurrentUser().getId());
-        cardService.saveOrUpdate(card);
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
+        card.setCreator(card.getId() == null ? SecurityUtil.getCurrentUser().getId() : null);
+        cardService.lambdaUpdate().in(Card::getCreator, longs).update(card);
         return Result.success();
     }
 
