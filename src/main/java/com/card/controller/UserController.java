@@ -58,9 +58,9 @@ public class UserController {
      * @param userVO
      * @return
      */
-    @PostMapping("/removeByIds")
+    @PostMapping("/removeById")
     @RequiresPermissions({"user:delete"})
-    public Result<Object> deleteBatchIds(@RequestBody UserVO userVO) {
+    public Result<Object> removeById(@RequestBody UserVO userVO) {
         userService.removeById(userVO.getId());
         return Result.success();
     }

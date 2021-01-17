@@ -1,5 +1,6 @@
 package com.card.service;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -56,7 +58,19 @@ public class UserService extends ServiceImpl<UserDao, User> {
     public List<Long> selectUserIds(Long id, Boolean bool) {
         List<Long> ids = Lists.newArrayList();
         if (bool) ids.add(id);
-        ids.addAll(userDao.selectUserIds(id));
+        selectByParentId(id, ids);
+        return ids;
+    }
+
+    public List<Long> selectByParentId(Long parentId, List<Long> ids) {
+        List<User> list = lambdaQuery().eq(User::getParentId, parentId).list();
+        if (CollectionUtil.isNotEmpty(list)) {
+            List<Long> collect = list.stream().map(User::getId).collect(Collectors.toList());
+            ids.addAll(collect);
+            for (User user : list) {
+                selectByParentId(user.getId(), ids);
+            }
+        }
         return ids;
     }
 }
