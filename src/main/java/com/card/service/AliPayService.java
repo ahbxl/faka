@@ -1,5 +1,6 @@
 package com.card.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.request.AlipayTradeCancelRequest;
@@ -8,14 +9,19 @@ import com.alipay.easysdk.factory.Factory;
 import com.alipay.easysdk.kernel.Config;
 import com.alipay.easysdk.payment.facetoface.models.AlipayTradePrecreateResponse;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.card.dao.AliPayConfigDao;
 import com.card.dao.UserDao;
 import com.card.entity.AliPayConfig;
+import com.card.entity.vo.AliPayConfigVO;
 import com.card.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -24,6 +30,8 @@ public class AliPayService extends ServiceImpl<AliPayConfigDao, AliPayConfig> {
     private AliPayConfigDao aliPayConfigDao;
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private UserService userService;
 
     public AlipayTradePrecreateResponse faceToFace(String subject, String outTradeNo, String totalAmount) {
         try {
@@ -109,7 +117,12 @@ public class AliPayService extends ServiceImpl<AliPayConfigDao, AliPayConfig> {
         }
     }
 
-    public AliPayConfig selectById(Long id) {
-        return aliPayConfigDao.selectById(id);
+    public IPage<AliPayConfig> selectPage(AliPayConfigVO aliPayConfigVO) {
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
+        IPage<AliPayConfig> aliPayConfigIPage = lambdaQuery().in(AliPayConfig::getUserId, longs)
+                .like(StrUtil.isNotBlank(aliPayConfigVO.getAppId()), AliPayConfig::getAppId, aliPayConfigVO.getAppId())
+                .orderByDesc(AliPayConfig::getCreateTime)
+                .page(new Page<>(aliPayConfigVO.getPageNum(), aliPayConfigVO.getPageSize()));
+        return aliPayConfigIPage;
     }
 }

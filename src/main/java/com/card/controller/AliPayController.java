@@ -48,6 +48,9 @@ public class AliPayController {
                 .ne(aliPayConfig.getId() != null, AliPayConfig::getId, aliPayConfig.getId())
                 .count();
         if (count > 0) return Result.fail("AppId已存在");
+        if (aliPayConfig.getId() == null) {
+            aliPayConfig.setUserId(SecurityUtil.getCurrentUser().getId());
+        }
         aliPayService.saveOrUpdate(aliPayConfig);
         log.info("用户{}更新了{}", SecurityUtil.getCurrentUser().getId(), aliPayConfig);
         return Result.success();
@@ -62,7 +65,7 @@ public class AliPayController {
      */
     @PostMapping("/getById")
     public Result<Object> getById(@RequestBody AliPayConfigVO aliPayConfigVO) {
-        AliPayConfig aliPayConfig = aliPayService.lambdaQuery().eq(AliPayConfig::getId, SecurityUtil.getCurrentUser().getId())
+        AliPayConfig aliPayConfig = aliPayService.lambdaQuery().eq(AliPayConfig::getUserId, SecurityUtil.getCurrentUser().getId())
                 .eq(AliPayConfig::getId, aliPayConfigVO.getId()).one();
         return Result.success(aliPayConfig);
     }
@@ -92,7 +95,22 @@ public class AliPayController {
         if (!longs.contains(order.getCreator())) {
             return Result.fail("您暂无权限");
         }
+        aliPayService.cancelTrade(orderVO.getOutTradeNo());
         log.info("用户{}取消了订单，订单号号为{}", SecurityUtil.getCurrentUser().getId(), orderVO.getOutTradeNo());
-        return Result.success(aliPayService.cancelTrade(orderVO.getOutTradeNo()));
+        return Result.success();
+    }
+
+    @PostMapping("/selectPage")
+    public Result<Object> selectPage(@RequestBody AliPayConfigVO aliPayConfigVO) {
+        return Result.success(aliPayService.selectPage(aliPayConfigVO));
+    }
+
+    @PostMapping("/removeById")
+    public Result<Object> removeById(@RequestBody AliPayConfig aliPayConfig) {
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
+        aliPayService.lambdaUpdate().in(AliPayConfig::getUserId, longs)
+                .eq(AliPayConfig::getId, aliPayConfig.getId())
+                .remove();
+        return Result.success();
     }
 }

@@ -54,10 +54,6 @@ public class RoleController {
     @PostMapping("/selectPage")
     @RequiresPermissions({"role:select"})
     public Result<Object> selectPage(@RequestBody RoleVO roleVO) {
-        IPage<Role> roleIPage = roleService.lambdaQuery()
-                .eq(null != roleVO.getParentId(), Role::getParentId, roleVO.getParentId())
-                .like(Role::getName, roleVO.getName())
-                .page(new Page<>(roleVO.getPageNum(), roleVO.getPageSize()));
-        return Result.success(roleIPage);
+        return Result.success(roleService.selectPage(roleVO));
     }
 }

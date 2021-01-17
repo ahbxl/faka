@@ -1,8 +1,11 @@
 package com.card.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.card.dao.RoleDao;
 import com.card.entity.Role;
+import com.card.entity.vo.RoleVO;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +38,13 @@ public class RoleService extends ServiceImpl<RoleDao, Role> {
         }
         selectRolesByParentId(roles, id);
         return Lists.newArrayList(roles);
+    }
+
+    public IPage<Role> selectPage(RoleVO roleVO) {
+        IPage<Role> roleIPage = lambdaQuery()
+                .eq(null != roleVO.getParentId(), Role::getParentId, roleVO.getParentId())
+                .like(Role::getName, roleVO.getName())
+                .page(new Page<>(roleVO.getPageNum(), roleVO.getPageSize()));
+        return roleIPage;
     }
 }
