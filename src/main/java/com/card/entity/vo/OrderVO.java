@@ -15,6 +15,7 @@ public class OrderVO extends PageVO implements Serializable {
     private Long creator;
     private Long quantity;
     private String subject;
+    private String address;
     private String outTradeNo;
     private String totalAmount;
     private Integer state;

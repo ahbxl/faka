@@ -23,6 +23,8 @@ public class Order implements Serializable {
     private Long quantity;
     @TableField("subject")
     private String subject;
+    @TableField("address")
+    private String address;
     @TableField("outTradeNo")
     private String outTradeNo;
     @TableField("total_amount")
