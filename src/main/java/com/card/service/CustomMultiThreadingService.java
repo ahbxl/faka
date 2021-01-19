@@ -1,6 +1,5 @@
 package com.card.service;
 
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.card.dao.CardDao;
 import com.card.dao.ExportFileDao;
 import com.card.entity.Card;
@@ -65,9 +64,8 @@ public class CustomMultiThreadingService {
             os.close();
             log.info("导出结束，耗时：" + (System.currentTimeMillis() - s) + "ms");
             // 修改数据库中的文件状态为未下载
-            UpdateWrapper<ExportFile> wrapper = new UpdateWrapper<>();
-            wrapper.set("state", ExportFileState.Not_Downloaded.getValue());
-            exportFileDao.update(exportFile, wrapper);
+            exportFile.setState(ExportFileState.Not_Downloaded.getValue());
+            exportFileDao.updateById(exportFile);
         } catch (IOException e) {
             log.error("导出异常：", e);
         }

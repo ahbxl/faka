@@ -12,10 +12,15 @@ import com.card.utils.RandomUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -52,7 +57,7 @@ public class ExportFileController {
      * @param exportFileVO
      * @return
      */
-    @GetMapping("/downloadExportFile")
+    @PostMapping("/downloadExportFile")
     public Result<Object> downloadExportFile(@RequestBody ExportFileVO exportFileVO) {
         ExportFile exportFile = exportFileService.getById(exportFileVO.getId());
         if (exportFile == null) return Result.fail("未查询到文件信息");
@@ -68,7 +73,7 @@ public class ExportFileController {
      * @param exportFileVO
      * @return
      */
-    @GetMapping("/removeById")
+    @PostMapping("/removeById")
     public Result<Object> removeById(@RequestBody ExportFileVO exportFileVO) {
         List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
         ExportFile exportFile = exportFileService.getById(exportFileVO.getId());
@@ -99,18 +104,24 @@ public class ExportFileController {
      */
     @PostMapping("/generateExportFile")
     public Result<Object> generateExportFile(@RequestBody ExportFileVO exportFileVO) {
+        Date start = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(start);
+        c.add(Calendar.DAY_OF_MONTH, -7);
+        start = c.getTime();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
-        String endTime = simpleDateFormat.format(exportFileVO.getStartTime());
-        String startTime = simpleDateFormat.format(exportFileVO.getEndTime());
+        String endTime = simpleDateFormat.format(exportFileVO.getEndTime() == null ? new Date() : exportFileVO.getEndTime());
+        String startTime = simpleDateFormat.format(exportFileVO.getStartTime() == null ? start : exportFileVO.getStartTime());
         String fileName = startTime + "至" + endTime + "卡密数据" + RandomUtils.getStringRandom(4) + ".xlsx";
         // 插入到数据库，状态值为正在生成
         ExportFile exportFile = new ExportFile();
         exportFile.setName(fileName);
-        exportFile.setPath(path);
+        exportFile.setPath(path + fileName);
+        exportFile.setCreator(SecurityUtil.getCurrentUser().getId());
         exportFile.setState(ExportFileState.Downloading.getValue());
-        Integer insert = exportFileService.insert(exportFile);
+        exportFileService.saveOrUpdate(exportFile);
         // 新建线程生成需要导出的文件到服务器/data/faka/exportFile文件夹下
-        customMultiThreadingService.executeAysncCardExport(exportFileVO.getStartTime(), exportFileVO.getEndTime(), exportFileService.getById(Long.valueOf(insert)));
+        customMultiThreadingService.executeAysncCardExport(exportFileVO.getStartTime(), exportFileVO.getEndTime(), exportFile);
         return Result.success();
     }
 }
