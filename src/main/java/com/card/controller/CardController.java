@@ -57,6 +57,7 @@ public class CardController {
     public Result<Object> saveOrUpdate(@RequestBody Card card) {
         List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
         if (card.getId() == null) card.setCreator(SecurityUtil.getCurrentUser().getId());
+        // TODO: 2021/1/20 更新之前需要校验这个卡密的创建人是不是当前用户的下级，怎样写才会让代码更加优雅？ 
         cardService.saveOrUpdate(card);
         return Result.success();
     }
