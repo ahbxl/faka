@@ -1,7 +1,6 @@
 package com.card.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -9,7 +8,6 @@ import com.card.dao.ExportFileDao;
 import com.card.entity.ExportFile;
 import com.card.entity.vo.ExportFileVO;
 import com.card.enu.ExportFileState;
-import com.card.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +20,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -44,18 +41,13 @@ public class ExportFileService extends ServiceImpl<ExportFileDao, ExportFile> {
         return exportFileDao.selectPage(productPage, wrapper);
     }
 
-    public Integer insert(ExportFile exportFile) {
-        exportFile.setCreator(SecurityUtil.getCurrentUser().getId());
-        return exportFileDao.insert(exportFile);
-    }
-
     public void downloadExportFile(ExportFile exportFile) {
         try {
             File file = new File(exportFile.getPath());
             String fileName = file.getName();
             FileInputStream fis = new FileInputStream(exportFile.getPath());
             // 设置头部信息
-            response.setContentType("application/octet-stream;charset=utf-8");
+            response.setContentType("application/octet-stream;charset=UTF-8");
             response.setHeader("Content-Disposition", "attachment;filename="
                     + new String(fileName.getBytes(), StandardCharsets.ISO_8859_1));
             response.setCharacterEncoding("UTF-8");
@@ -66,8 +58,8 @@ public class ExportFileService extends ServiceImpl<ExportFileDao, ExportFile> {
             throw new RuntimeException("不存在该文件");
         } finally {
             // 修改数据库中的文件状态为已下载
-            lambdaUpdate().eq(ExportFile::getId,exportFile.getId())
-                    .set(ExportFile::getState,ExportFileState.Downloaded.getValue())
+            lambdaUpdate().eq(ExportFile::getId, exportFile.getId())
+                    .set(ExportFile::getState, ExportFileState.Downloaded.getValue())
                     .update(exportFile);
         }
     }

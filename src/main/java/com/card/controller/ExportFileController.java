@@ -58,13 +58,12 @@ public class ExportFileController {
      * @return
      */
     @PostMapping("/downloadExportFile")
-    public Result<Object> downloadExportFile(@RequestBody ExportFileVO exportFileVO) {
+    public void downloadExportFile(@RequestBody ExportFileVO exportFileVO) {
         ExportFile exportFile = exportFileService.getById(exportFileVO.getId());
-        if (exportFile == null) return Result.fail("未查询到文件信息");
+        if (exportFile == null) throw new RuntimeException("未查询到文件信息");
         List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
-        if (!longs.contains(exportFile.getCreator())) return Result.fail("你没有权限");
+        if (!longs.contains(exportFile.getCreator())) throw new RuntimeException("你没有权限");
         exportFileService.downloadExportFile(exportFile);
-        return Result.success();
     }
 
     /**
