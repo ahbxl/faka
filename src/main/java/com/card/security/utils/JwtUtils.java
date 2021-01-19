@@ -44,7 +44,7 @@ public class JwtUtils {
         return SystemConstants.TOKEN_PREFIX + tokenPrefix;
     }
 
-    private boolean isTokenExpired(String token) {
+    public static boolean isTokenExpired(String token) {
         Date expiredDate = getTokenBody(token).getExpiration();
         return expiredDate.before(new Date());
     }

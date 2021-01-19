@@ -56,8 +56,8 @@ public class CardController {
     @PostMapping("/saveOrUpdate")
     public Result<Object> saveOrUpdate(@RequestBody Card card) {
         List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
-        card.setCreator(card.getId() == null ? SecurityUtil.getCurrentUser().getId() : null);
-        cardService.lambdaUpdate().in(Card::getCreator, longs).update(card);
+        if (card.getId() == null) card.setCreator(SecurityUtil.getCurrentUser().getId());
+        cardService.saveOrUpdate(card);
         return Result.success();
     }
 

@@ -23,6 +23,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,7 +84,7 @@ public class DefaultController {
                 // shiro验证用户名密码
                 SecurityUtils.getSubject().login(usernamePasswordToken);
                 // 生成token
-                String token = JwtUtils.createToken(user.getUsername(),false);
+                String token = JwtUtils.createToken(user.getUsername(), false);
                 // 将用户户名和token返回
                 HashMap<String, String> map = new HashMap<>();
                 map.put("username", user.getUsername());
