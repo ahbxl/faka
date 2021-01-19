@@ -70,7 +70,6 @@ CREATE TABLE `card` (
 
 LOCK TABLES `card` WRITE;
 /*!40000 ALTER TABLE `card` DISABLE KEYS */;
-INSERT INTO `card` VALUES (9,3,3,'sfasdf',0,'2021-01-16 21:50:02','2021-01-16 21:50:02'),(10,3,3,'sadfadsf',1,'2021-01-16 21:51:25','2021-01-16 21:51:25'),(11,3,3,'asdfdasf',1,'2021-01-16 21:52:24','2021-01-16 21:52:24'),(12,2,3,'asdfdas',1,'2021-01-16 21:54:26','2021-01-16 21:54:26');
 /*!40000 ALTER TABLE `card` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -113,13 +112,13 @@ DROP TABLE IF EXISTS `export_file`;
 CREATE TABLE `export_file` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` varchar(50) DEFAULT NULL COMMENT '文件名称',
-  `path` varchar(50) DEFAULT NULL COMMENT '文件路径',
+  `path` varchar(150) DEFAULT NULL COMMENT '文件路径',
   `creator` bigint(20) DEFAULT NULL COMMENT '创建人',
   `state` tinyint(4) NOT NULL DEFAULT '-1' COMMENT '状态 0/未下载 1/已下载 -1/正在生成',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -149,7 +148,7 @@ CREATE TABLE `menu_list` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -158,7 +157,7 @@ CREATE TABLE `menu_list` (
 
 LOCK TABLES `menu_list` WRITE;
 /*!40000 ALTER TABLE `menu_list` DISABLE KEYS */;
-INSERT INTO `menu_list` VALUES (1,NULL,'主页','el-icon-s-home',1,'home',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(2,NULL,'用户管理','el-icon-user-solid',2,'',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(3,NULL,'分类管理','el-icon-star-on',3,'',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(4,NULL,'商品管理','el-icon-s-goods',4,'',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(5,NULL,'卡密管理','el-icon-s-comment',5,'',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(6,NULL,'订单管理','el-icon-s-order',6,'',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(7,NULL,'支付管理','el-icon-s-tools',7,'',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(8,NULL,'权限管理','el-icon-collection-tag',8,'',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(9,NULL,'角色管理','el-icon-s-flag',9,'',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(10,2,'用户列表','el-icon-s-custom',10,'userList',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(11,3,'分类列表','el-icon-s-grid',11,'categoryList',1,'2021-01-10 22:48:18','2021-01-14 00:45:18'),(12,4,'商品列表','el-icon-s-shop',12,'productList',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(13,5,'卡密列表','el-icon-s-unfold',13,'cardList',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(14,6,'订单列表','el-icon-s-marketing',14,'orderList',1,'2021-01-10 22:57:11','2021-01-12 00:56:12'),(15,7,'支付配置','el-icon-s-help',15,'alipay',1,'2021-01-10 22:57:11','2021-01-12 00:56:12'),(16,8,'权限列表','el-icon-s-opportunity',16,'rightsList',1,'2021-01-10 22:57:11','2021-01-12 00:56:12'),(17,9,'角色列表','el-icon-s-promotion',17,'roleList',1,'2021-01-10 22:57:11','2021-01-12 00:56:12');
+INSERT INTO `menu_list` VALUES (1,NULL,'主页','el-icon-s-home',1,'home',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(2,NULL,'用户管理','el-icon-user-solid',2,'',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(3,NULL,'分类管理','el-icon-star-on',3,'',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(4,NULL,'商品管理','el-icon-s-goods',4,'',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(5,NULL,'卡密管理','el-icon-s-comment',5,'',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(6,NULL,'订单管理','el-icon-s-order',6,'',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(7,NULL,'支付管理','el-icon-s-tools',7,'',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(8,NULL,'权限管理','el-icon-collection-tag',8,'',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(9,NULL,'角色管理','el-icon-s-flag',9,'',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(10,2,'用户列表','el-icon-s-custom',10,'userList',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(11,3,'分类列表','el-icon-s-grid',11,'categoryList',1,'2021-01-10 22:48:18','2021-01-14 00:45:18'),(12,4,'商品列表','el-icon-s-shop',12,'productList',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(13,5,'卡密列表','el-icon-s-unfold',13,'cardList',1,'2021-01-10 22:48:18','2021-01-12 00:56:12'),(14,6,'订单列表','el-icon-s-marketing',14,'orderList',1,'2021-01-10 22:57:11','2021-01-12 00:56:12'),(15,7,'支付配置','el-icon-s-help',15,'alipay',1,'2021-01-10 22:57:11','2021-01-12 00:56:12'),(16,8,'权限列表','el-icon-s-opportunity',16,'rightsList',1,'2021-01-10 22:57:11','2021-01-12 00:56:12'),(17,9,'角色列表','el-icon-s-promotion',17,'roleList',1,'2021-01-10 22:57:11','2021-01-12 00:56:12'),(18,NULL,'导出管理','el-icon-s-open',18,'',1,'2021-01-19 00:52:17','2021-01-19 22:16:36'),(19,18,'导出列表','el-icon-s-open',19,'exportFile',1,'2021-01-19 22:16:36','2021-01-19 22:16:36');
 /*!40000 ALTER TABLE `menu_list` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -175,13 +174,14 @@ CREATE TABLE `order` (
   `creator` bigint(20) DEFAULT NULL COMMENT '创建人',
   `quantity` bigint(20) DEFAULT NULL COMMENT '数量',
   `subject` varchar(50) DEFAULT NULL COMMENT '订单标题',
+  `address` varchar(200) DEFAULT NULL COMMENT '收货地址',
   `outTradeNo` varchar(50) DEFAULT NULL COMMENT '商户订单号',
   `total_amount` decimal(10,2) DEFAULT NULL COMMENT '总金额',
   `state` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态 0：未支付 1：已支付',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='订单';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -190,6 +190,7 @@ CREATE TABLE `order` (
 
 LOCK TABLES `order` WRITE;
 /*!40000 ALTER TABLE `order` DISABLE KEYS */;
+INSERT INTO `order` VALUES (1,3,3,1,'手机','南京','132131',4999.00,0,'2021-01-19 00:31:44','2021-01-19 00:31:44');
 /*!40000 ALTER TABLE `order` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -294,7 +295,7 @@ CREATE TABLE `role_menu_list` (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COMMENT='角色和菜单关联表';
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8 COMMENT='角色和菜单关联表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -303,7 +304,7 @@ CREATE TABLE `role_menu_list` (
 
 LOCK TABLES `role_menu_list` WRITE;
 /*!40000 ALTER TABLE `role_menu_list` DISABLE KEYS */;
-INSERT INTO `role_menu_list` VALUES (1,1,1,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(2,1,2,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(3,1,3,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(4,1,4,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(5,1,5,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(6,1,6,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(7,1,7,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(8,1,8,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(9,1,9,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(10,1,10,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(11,1,11,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(12,1,12,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(13,1,13,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(14,2,1,1,'2021-01-13 00:29:54','2021-01-13 00:29:54'),(15,2,2,1,'2021-01-13 00:29:54','2021-01-13 00:29:54'),(16,2,3,1,'2021-01-13 00:29:54','2021-01-13 00:29:54'),(17,2,10,1,'2021-01-13 00:29:54','2021-01-13 00:29:54'),(18,2,11,1,'2021-01-13 00:29:54','2021-01-13 00:29:54'),(19,2,4,1,'2021-01-16 16:38:11','2021-01-16 16:38:11'),(20,2,5,1,'2021-01-16 16:38:11','2021-01-16 16:38:11'),(21,2,6,1,'2021-01-16 16:38:11','2021-01-16 16:38:11'),(22,2,7,1,'2021-01-16 16:38:11','2021-01-16 16:38:11'),(23,2,12,1,'2021-01-16 16:38:11','2021-01-16 16:38:11'),(24,2,13,1,'2021-01-16 16:38:12','2021-01-16 16:38:12'),(25,2,14,1,'2021-01-16 16:38:12','2021-01-16 16:38:12'),(26,2,15,1,'2021-01-16 16:38:12','2021-01-16 16:38:12');
+INSERT INTO `role_menu_list` VALUES (1,1,1,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(2,1,2,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(3,1,3,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(4,1,4,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(5,1,5,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(6,1,6,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(7,1,7,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(8,1,8,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(9,1,9,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(10,1,10,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(11,1,11,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(12,1,12,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(13,1,13,1,'2021-01-10 22:49:45','2021-01-10 22:49:45'),(14,2,1,1,'2021-01-13 00:29:54','2021-01-13 00:29:54'),(15,2,2,1,'2021-01-13 00:29:54','2021-01-13 00:29:54'),(16,2,3,1,'2021-01-13 00:29:54','2021-01-13 00:29:54'),(17,2,10,1,'2021-01-13 00:29:54','2021-01-13 00:29:54'),(18,2,11,1,'2021-01-13 00:29:54','2021-01-13 00:29:54'),(19,2,4,1,'2021-01-16 16:38:11','2021-01-16 16:38:11'),(20,2,5,1,'2021-01-16 16:38:11','2021-01-16 16:38:11'),(21,2,6,1,'2021-01-16 16:38:11','2021-01-16 16:38:11'),(22,2,7,1,'2021-01-16 16:38:11','2021-01-16 16:38:11'),(23,2,12,1,'2021-01-16 16:38:11','2021-01-16 16:38:11'),(24,2,13,1,'2021-01-16 16:38:12','2021-01-16 16:38:12'),(25,2,14,1,'2021-01-16 16:38:12','2021-01-16 16:38:12'),(26,2,15,1,'2021-01-16 16:38:12','2021-01-16 16:38:12'),(27,1,18,1,'2021-01-19 00:53:59','2021-01-19 00:53:59'),(28,2,18,1,'2021-01-19 00:53:59','2021-01-19 00:53:59');
 /*!40000 ALTER TABLE `role_menu_list` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -378,4 +379,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-18  0:34:56
+-- Dump completed on 2021-01-20  0:48:30
