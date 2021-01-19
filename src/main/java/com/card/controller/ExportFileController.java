@@ -4,11 +4,11 @@ import com.card.entity.ExportFile;
 import com.card.entity.vo.ExportFileVO;
 import com.card.entity.vo.Result;
 import com.card.enu.ExportFileState;
+import com.card.security.utils.SecurityUtil;
 import com.card.service.CustomMultiThreadingService;
 import com.card.service.ExportFileService;
 import com.card.service.UserService;
 import com.card.utils.RandomUtils;
-import com.card.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -53,49 +52,41 @@ public class ExportFileController {
      * @param exportFileVO
      * @return
      */
-    @GetMapping("/downloadExportFile}")
+    @GetMapping("/downloadExportFile")
     public Result<Object> downloadExportFile(@RequestBody ExportFileVO exportFileVO) {
-        ExportFile exportFile = exportFileService.selectById(exportFileVO.getId());
-        if (exportFile == null) {
-            return Result.success("未查询到文件信息");
-        }
-        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(),true);
-        if (!longs.contains(exportFile.getCreator())) {
-            return Result.success("你没有权限删除");
-        }
+        ExportFile exportFile = exportFileService.getById(exportFileVO.getId());
+        if (exportFile == null) return Result.fail("未查询到文件信息");
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
+        if (!longs.contains(exportFile.getCreator())) return Result.fail("你没有权限");
         exportFileService.downloadExportFile(exportFile);
         return Result.success();
     }
 
     /**
      * 删除文件
-     * 需要管理员权限
      *
      * @param exportFileVO
      * @return
      */
-    @GetMapping("/deleteBatchIds")
-    public Result<Object> deleteBatchIds(@RequestBody ExportFileVO exportFileVO) {
-        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(),true);
-        ArrayList<Long> list = new ArrayList<>();
-        for (Long id : exportFileVO.getIds()) {
-            ExportFile exportFile = exportFileService.selectById(id);
-            if (exportFile != null && !longs.contains(exportFile.getCreator())) {
-                // 从服务器上删除文件
-                try {
-                    File f = new File(exportFile.getPath());
-                    if (f.exists()) {
-                        f.delete();
-                        list.add(id);
-                    }
-                } catch (Exception e) {
-                    log.error("文件内容读取异常，文件:" + e.getMessage());
+    @GetMapping("/removeById")
+    public Result<Object> removeById(@RequestBody ExportFileVO exportFileVO) {
+        List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
+        ExportFile exportFile = exportFileService.getById(exportFileVO.getId());
+        if (exportFile != null && longs.contains(exportFile.getCreator())) {
+            // 从服务器上删除文件
+            try {
+                File f = new File(exportFile.getPath());
+                if (f.exists()) {
+                    boolean delete = f.delete();
+                    if (delete) log.info("用户{}删除文件{}", SecurityUtil.getCurrentUser().getId(), exportFileVO.getPath());
                 }
+            } catch (Exception e) {
+                log.error("文件内容读取异常，文件:" + e.getMessage());
             }
         }
         // 从数据库中删除文件信息
-        exportFileService.deleteBatchIds(list);
-        log.info("用户{}删除了{}", SecurityUtil.getCurrentUser().getId(), list);
+        boolean remove = exportFileService.removeById(exportFileVO.getId());
+        if (remove) log.info("用户{}删除记录{}", SecurityUtil.getCurrentUser().getId(), exportFileVO.getId());
         return Result.success();
     }
 
@@ -119,7 +110,7 @@ public class ExportFileController {
         exportFile.setState(ExportFileState.Downloading.getValue());
         Integer insert = exportFileService.insert(exportFile);
         // 新建线程生成需要导出的文件到服务器/data/faka/exportFile文件夹下
-        customMultiThreadingService.executeAysncCardExport(exportFileVO.getStartTime(), exportFileVO.getEndTime(), exportFileService.selectById(Long.valueOf(insert)));
+        customMultiThreadingService.executeAysncCardExport(exportFileVO.getStartTime(), exportFileVO.getEndTime(), exportFileService.getById(Long.valueOf(insert)));
         return Result.success();
     }
 }

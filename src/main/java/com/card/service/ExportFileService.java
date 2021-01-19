@@ -70,12 +70,4 @@ public class ExportFileService extends ServiceImpl<ExportFileDao, ExportFile>  {
             exportFileDao.update(exportFile, wrapper);
         }
     }
-
-    public void deleteBatchIds(List<Long> ids) {
-        exportFileDao.deleteBatchIds(ids);
-    }
-
-    public ExportFile selectById(Long id) {
-        return exportFileDao.selectById(id);
-    }
 }
