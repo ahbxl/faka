@@ -60,7 +60,7 @@ public class ExportFileController {
     @PostMapping("/downloadExportFile")
     public void downloadExportFile(@RequestBody ExportFileVO exportFileVO) {
         ExportFile exportFile = exportFileService.getById(exportFileVO.getId());
-        if (exportFile == null) throw new RuntimeException("未查询到文件信息");
+        if (exportFile == null) throw new RuntimeException("不存在该文件");
         List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
         if (!longs.contains(exportFile.getCreator())) throw new RuntimeException("你没有权限");
         exportFileService.downloadExportFile(exportFile);
@@ -103,6 +103,7 @@ public class ExportFileController {
      */
     @PostMapping("/generateExportFile")
     public Result<Object> generateExportFile(@RequestBody ExportFileVO exportFileVO) {
+        // 如果不传时间默认近七天
         Date start = new Date();
         Calendar c = Calendar.getInstance();
         c.setTime(start);
@@ -111,6 +112,7 @@ public class ExportFileController {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日");
         String endTime = simpleDateFormat.format(exportFileVO.getEndTime() == null ? new Date() : exportFileVO.getEndTime());
         String startTime = simpleDateFormat.format(exportFileVO.getStartTime() == null ? start : exportFileVO.getStartTime());
+        // 随机生成文件名，防止重复
         String fileName = startTime + "至" + endTime + "卡密数据" + RandomUtils.getStringRandom(4) + ".xlsx";
         // 插入到数据库，状态值为正在生成
         ExportFile exportFile = new ExportFile();

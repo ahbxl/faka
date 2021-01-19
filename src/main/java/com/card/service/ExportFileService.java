@@ -55,7 +55,7 @@ public class ExportFileService extends ServiceImpl<ExportFileDao, ExportFile> {
             FileCopyUtils.copy(fis, os);
         } catch (IOException e) {
             log.error("文件内容读取异常，文件:" + e.getMessage());
-            throw new RuntimeException("不存在该文件");
+            throw new RuntimeException("文件内容读取异常");
         } finally {
             // 修改数据库中的文件状态为已下载
             lambdaUpdate().eq(ExportFile::getId, exportFile.getId())
