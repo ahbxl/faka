@@ -82,7 +82,7 @@ public class ExportFileController {
                 File f = new File(exportFile.getPath());
                 if (f.exists()) {
                     boolean delete = f.delete();
-                    if (delete) log.info("用户{}删除文件{}", SecurityUtil.getCurrentUser().getId(), exportFileVO.getPath());
+                    if (delete) log.info("用户id{}删除文件{}", SecurityUtil.getCurrentUser().getId(), exportFileVO.getPath());
                 }
             } catch (Exception e) {
                 log.error("文件内容读取异常，文件:" + e.getMessage());
@@ -90,7 +90,7 @@ public class ExportFileController {
         }
         // 从数据库中删除文件信息
         boolean remove = exportFileService.removeById(exportFileVO.getId());
-        if (remove) log.info("用户{}删除记录{}", SecurityUtil.getCurrentUser().getId(), exportFileVO.getId());
+        if (remove) log.info("用户id{}删除导出记录{}", SecurityUtil.getCurrentUser().getId(), exportFileVO.getName());
         return Result.success();
     }
 

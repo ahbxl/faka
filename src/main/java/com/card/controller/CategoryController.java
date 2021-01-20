@@ -57,7 +57,7 @@ public class CategoryController {
                 .in(Category::getCreator, longs)
                 .eq(Category::getId, categoryVO.getId())
                 .remove();
-        if (remove) log.info("用户{}删除了{}", SecurityUtil.getCurrentUser().getId(), categoryVO.getId());
+        if (remove) log.info("用户id{}删除分类{}", SecurityUtil.getCurrentUser().getId(), categoryVO.getName());
         return Result.success();
     }
 

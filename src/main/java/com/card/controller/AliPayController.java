@@ -51,7 +51,7 @@ public class AliPayController {
             aliPayConfig.setUserId(SecurityUtil.getCurrentUser().getId());
         }
         aliPayService.lambdaUpdate().in(AliPayConfig::getUserId, longs).update(aliPayConfig);
-        log.info("用户{}更新了{}", SecurityUtil.getCurrentUser().getId(), aliPayConfig);
+        log.info("用户id{}更新了{}", SecurityUtil.getCurrentUser().getId(), aliPayConfig);
         return Result.success();
     }
 
@@ -96,7 +96,7 @@ public class AliPayController {
             return Result.fail("您暂无权限");
         }
         aliPayService.cancelTrade(orderVO.getOutTradeNo());
-        log.info("用户{}取消了订单，订单号号为{}", SecurityUtil.getCurrentUser().getId(), orderVO.getOutTradeNo());
+        log.info("用户id{}取消了订单，订单号号为{}", SecurityUtil.getCurrentUser().getId(), orderVO.getOutTradeNo());
         return Result.success();
     }
 

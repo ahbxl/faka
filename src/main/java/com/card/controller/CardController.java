@@ -92,7 +92,7 @@ public class CardController {
                 .in(Card::getCreator, longs)
                 .eq(Card::getId, cardVO.getId())
                 .remove();
-        if (remove) log.info("用户{}删除卡密id{}", SecurityUtil.getCurrentUser().getId(), cardVO.getId());
+        if (remove) log.info("用户id{}删除卡密{}", SecurityUtil.getCurrentUser().getId(), cardVO.getContent());
         return Result.success();
     }
 }

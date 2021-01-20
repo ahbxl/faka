@@ -63,7 +63,7 @@ public class OrderController {
         List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
         boolean remove = orderService.lambdaUpdate().in(Order::getCreator, longs)
                 .eq(Order::getId, orderVO.getId()).remove();
-        if (remove) log.info("用户{}删除了订单，订单id为{}", SecurityUtil.getCurrentUser().getId(), orderVO.getId());
+        if (remove) log.info("用户id{}删除了订单，订单号为{}", SecurityUtil.getCurrentUser().getId(), orderVO.getOutTradeNo());
         return Result.success();
     }
 
@@ -79,7 +79,7 @@ public class OrderController {
                 .set(StrUtil.isNotBlank(order.getSubject()), Order::getSubject, order.getSubject())
                 .set(order.getState() != null, Order::getState, order.getState())
                 .update();
-        if (update) log.info("用户{}更新了订单{}", SecurityUtil.getCurrentUser().getId(), order);
+        if (update) log.info("用户id{}更新了订单{}", SecurityUtil.getCurrentUser().getId(), order);
         return Result.success();
     }
 

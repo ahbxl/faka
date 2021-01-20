@@ -90,7 +90,7 @@ public class ProductController {
         List<Long> longs = userService.selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
         boolean remove = productService.lambdaUpdate().in(Product::getCreator, longs)
                 .eq(Product::getId, productVO.getId()).remove();
-        if (remove) log.info("用户{}删除了{}", SecurityUtil.getCurrentUser().getId(), productVO.getId());
+        if (remove) log.info("用户id{}删除商品{}", SecurityUtil.getCurrentUser().getId(), productVO.getName());
         return Result.success();
     }
 
