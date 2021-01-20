@@ -45,12 +45,11 @@ public class ExportFileService extends ServiceImpl<ExportFileDao, ExportFile> {
         try {
             File file = new File(exportFile.getPath());
             String fileName = file.getName();
-            FileInputStream fis = new FileInputStream(exportFile.getPath());
+            FileInputStream fis = new FileInputStream(file);
             // 设置头部信息
-            response.setContentType("application/octet-stream;charset=UTF-8");
+            response.setContentType("application/octet-stream");
             response.setHeader("Content-Disposition", "attachment;filename="
-                    + new String(fileName.getBytes(), StandardCharsets.ISO_8859_1));
-            response.setCharacterEncoding("UTF-8");
+                    + new String(fileName.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1));
             OutputStream os = response.getOutputStream();
             FileCopyUtils.copy(fis, os);
         } catch (IOException e) {
