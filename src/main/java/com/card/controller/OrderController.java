@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Slf4j
@@ -101,5 +103,11 @@ public class OrderController {
             return Result.success(response.qrCode);
         }
         return Result.success("支付调用失败，原因：" + response.msg + "，" + response.subMsg);
+    }
+
+    @PostMapping("/orderCharts")
+    public Result<Object> orderCharts(@RequestBody OrderVO orderVO) {
+        Map<String, Long> map = orderService.orderCharts(orderVO);
+        return Result.success(map);
     }
 }

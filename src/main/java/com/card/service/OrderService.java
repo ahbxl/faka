@@ -1,6 +1,8 @@
 package com.card.service;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -9,11 +11,12 @@ import com.card.dao.ProductDao;
 import com.card.entity.Order;
 import com.card.entity.vo.OrderVO;
 import com.card.security.utils.SecurityUtil;
+import com.card.utils.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -53,5 +56,18 @@ public class OrderService extends ServiceImpl<OrderDao, Order> {
 
     public Order selectByOutTradeNo(String outTradeNo) {
         return lambdaQuery().eq(Order::getOutTradeNo, outTradeNo).one();
+    }
+
+    public Map<String, Long> orderCharts(OrderVO orderVO) {
+        Map<String, Long> map = new TreeMap<>();
+        ArrayList<Date> dayList = DateUtils.getDayList(7, true);
+        dayList.forEach(date -> {
+            long count = orderDao.selectCount(new QueryWrapper<Order>()
+                    .lambda()
+                    .between(Order::getCreateTime, DateUtils.getStartDate(date), DateUtils.getEndDate(date))).longValue();
+            map.put(DateUtil.format(date, "yyyy-MM-dd"), count);
+        });
+
+        return map;
     }
 }
