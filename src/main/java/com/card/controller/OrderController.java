@@ -105,9 +105,27 @@ public class OrderController {
         return Result.success("支付调用失败，原因：" + response.msg + "，" + response.subMsg);
     }
 
+    /**
+     * 订单统计图表
+     *
+     * @param orderVO
+     * @return
+     */
     @PostMapping("/orderCharts")
     public Result<Object> orderCharts(@RequestBody OrderVO orderVO) {
         Map<String, Long> map = orderService.orderCharts(orderVO);
+        return Result.success(map);
+    }
+
+    /**
+     * 收入统计图表
+     *
+     * @param orderVO
+     * @return
+     */
+    @PostMapping("/priceCharts")
+    public Result<Object> priceCharts(@RequestBody OrderVO orderVO) {
+        Map<String, BigDecimal> map = orderService.priceCharts(orderVO);
         return Result.success(map);
     }
 }

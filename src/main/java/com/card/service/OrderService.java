@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -60,14 +61,26 @@ public class OrderService extends ServiceImpl<OrderDao, Order> {
 
     public Map<String, Long> orderCharts(OrderVO orderVO) {
         Map<String, Long> map = new TreeMap<>();
-        ArrayList<Date> dayList = DateUtils.getDayList(7, true);
+        ArrayList<Date> dayList = DateUtils.getDayList(14, true);
         dayList.forEach(date -> {
             long count = orderDao.selectCount(new QueryWrapper<Order>()
                     .lambda()
                     .between(Order::getCreateTime, DateUtils.getStartDate(date), DateUtils.getEndDate(date))).longValue();
             map.put(DateUtil.format(date, "yyyy-MM-dd"), count);
         });
+        return map;
+    }
 
+    public Map<String, BigDecimal> priceCharts(OrderVO orderVO) {
+        Map<String, BigDecimal> map = new TreeMap<>();
+        ArrayList<Date> dayList = DateUtils.getDayList(14, true);
+        dayList.forEach(date -> {
+            Map<String, Object> map1 = getMap(new QueryWrapper<Order>()
+                    .select("IFNULL(sum(total_amount),0) as totalPrice")
+                    .between("create_time", DateUtils.getStartDate(date), DateUtils.getEndDate(date)));
+            BigDecimal sumCount = (BigDecimal) map1.get("totalPrice");
+            map.put(DateUtil.format(date, "yyyy-MM-dd"), sumCount);
+        });
         return map;
     }
 }
