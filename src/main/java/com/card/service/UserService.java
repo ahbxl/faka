@@ -73,4 +73,27 @@ public class UserService extends ServiceImpl<UserDao, User> {
         }
         return ids;
     }
+
+    /**
+     * 查询用户及其所有上级的id集合，包括自己
+     *
+     * @param id
+     * @param bool
+     * @return
+     */
+    public List<Long> selectTopUserIds(Long id, Boolean bool) {
+        List<Long> ids = Lists.newArrayList();
+        if (bool) ids.add(id);
+        selectById(id, ids);
+        return ids;
+    }
+
+    public List<Long> selectById(Long id, List<Long> ids) {
+        User user = lambdaQuery().eq(User::getId, id).one();
+        if (null != user && null != user.getParentId()) {
+            ids.add(user.getParentId());
+            selectById(id, ids);
+        }
+        return ids;
+    }
 }
