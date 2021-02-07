@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class UserService extends ServiceImpl<UserDao, User> {
-    @Autowired
-    private UserDao userDao;
 
     public IPage<User> selectPage(UserVO userVO) {
         List<Long> longs = selectUserIds(SecurityUtil.getCurrentUser().getId(), true);
