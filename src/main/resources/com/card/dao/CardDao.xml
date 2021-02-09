@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.card.dao.CardDao">
-    <select id="selectByStateAndTime" resultType="com.card.entity.Card">
+    <select id="selectByStateAndTime" resultType="com.card.entity.export.CardExport">
         select card.id id, card.content content, product.name productName
         from (select card.id, card.content, card.product_id
         from card

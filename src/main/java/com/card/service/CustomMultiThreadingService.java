@@ -43,9 +43,9 @@ public class CustomMultiThreadingService {
     @Async
     public void executeAysncCardExport(Date startTime, Date endTime, ExportFile exportFile) {
         // sheet1 数据
-        List<Card> cardExportsZero = cardDao.selectByStateAndTime(0, startTime, endTime);
+        List<CardExport> cardExportsZero = cardDao.selectByStateAndTime(0, startTime, endTime);
         // sheet2 数据
-        List<Card> cardExportsOne = cardDao.selectByStateAndTime(1, startTime, endTime);
+        List<CardExport> cardExportsOne = cardDao.selectByStateAndTime(1, startTime, endTime);
         // sheet1
         Map<String, Object> zeroSheet = ExcelUtils.createOneSheet("未售出的卡密", "未售出的卡密", CardExport.class, cardExportsZero);
         // sheet2
